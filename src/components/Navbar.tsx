@@ -22,27 +22,25 @@ export default function Navbar() {
               <img src='scorify.svg' className='w-7 h-7' />
               <h1 className='text-2xl text-bold'>Scorify</h1>
             </Link>
-            <div className='hidden md:block'>
-              <div className='ml-10 flex items-baseline space-x-4'>
-                <ul className='flex space-x-4'>
-                  <li>
-                    <Link
-                      to='/home'
-                      className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
-                    >
-                      Home
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to='/about'
-                      className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
-                    >
-                      About
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+            <div className='hidden md:block ml-10 flex items-baseline space-x-4'>
+              <ul className='flex space-x-4'>
+                <li>
+                  <Link
+                    to='/home'
+                    className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/about'
+                    className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
+                  >
+                    About
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
           <div className='md:hidden'>
@@ -60,27 +58,29 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`${isOpen ? "block" : "hidden"} md:hidden`}>
-        <div className='px-2 pt-2 pb-3 space-y-1 sm:px-3'>
-          <ul className='flex space-x-4'>
-            <li>
-              <Link
-                to='/home'
-                className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to='/about'
-                className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
-              >
-                About
-              </Link>
-            </li>
-          </ul>
-        </div>
+      <div
+        className={`${
+          isOpen ? "block" : "hidden"
+        } md:hidden px-2 pt-2 pb-3 space-y-1 sm:px-3`}
+      >
+        <ul className='flex space-x-4'>
+          <li>
+            <Link
+              to='/home'
+              className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
+            >
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              to='/about'
+              className='hover:text-gray-300 rounded-md hover:text-white hover:bg-gray-700 p-2'
+            >
+              About
+            </Link>
+          </li>
+        </ul>
       </div>
     </nav>
   );
