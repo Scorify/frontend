@@ -23,13 +23,18 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
-  const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
-  const [theme, setTheme] = useState(
-    prefersDarkMode.matches ? "dark" : "light"
-  );
+  let savedTheme = localStorage.getItem("theme");
+  if (!savedTheme) {
+    savedTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  const [theme, setTheme] = useState(savedTheme);
   const [muiTheme, setMuiTheme] = useState(
     theme === "dark" ? darkTheme : lightTheme
   );
+  localStorage.setItem("theme", theme);
 
   useEffect(() => {
     if (theme === "dark") {
@@ -37,6 +42,7 @@ export default function App() {
     } else {
       setMuiTheme(lightTheme);
     }
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   const router = createBrowserRouter([
