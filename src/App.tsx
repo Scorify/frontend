@@ -1,13 +1,10 @@
-import React, { Suspense } from "react";
+import { ReactElement, ReactNode, Suspense } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Main from "./components/Main";
 import "./index.css";
+import Index from "./pages/Index";
 
-const LazyComponent = ({
-  element,
-}: {
-  element: React.ReactNode;
-}): React.ReactElement => {
+const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
 };
 
@@ -15,49 +12,22 @@ export default function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <LazyComponent
-          element={
-            <>
-              <Navbar />
-              <div className='container mx-auto p-4'>
-                <h1 className='text-4xl font-bold mb-4'>Hello, DaisyUI!</h1>
-                <button className='btn btn-primary'>Click me</button>
-              </div>
-            </>
-          }
-        />
-      ),
-    },
-    {
-      path: "/home",
-      element: (
-        <LazyComponent
-          element={
-            <>
-              <Navbar />
-              <div className='container mx-auto p-4'>
-                <h1 className='text-4xl font-bold mb-4'>Home</h1>
-              </div>
-            </>
-          }
-        />
-      ),
-    },
-    {
-      path: "/about",
-      element: (
-        <LazyComponent
-          element={
-            <>
-              <Navbar />
-              <div className='container mx-auto p-4'>
-                <h1 className='text-4xl font-bold mb-4'>About</h1>
-              </div>
-            </>
-          }
-        />
-      ),
+      element: <LazyComponent element={<Main />} />,
+      children: [
+        {
+          index: true,
+          element: <LazyComponent element={<Index />} />,
+        },
+        {
+          path: "/home",
+          element: <LazyComponent element={<div>Home</div>} />,
+        },
+        {
+          path: "/about",
+          element: <LazyComponent element={<div>About</div>} />,
+        },
+        {},
+      ],
     },
   ]);
 
