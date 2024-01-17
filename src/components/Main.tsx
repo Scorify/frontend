@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "./Navbar";
-import Drawer from "./Drawer";
-import { Container, Box } from "@mui/material";
+
+import { Box, Container } from "@mui/material";
+
+import { Drawer, Navbar } from ".";
 
 type props = {
   theme: string;

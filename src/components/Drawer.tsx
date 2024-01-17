@@ -1,3 +1,5 @@
+import { Dispatch, KeyboardEvent, MouseEvent, SetStateAction } from "react";
+
 import HomeIcon from "@mui/icons-material/Home";
 import {
   Box,
@@ -8,7 +10,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Dispatch, KeyboardEvent, MouseEvent, SetStateAction } from "react";
 
 type props = {
   drawerState: boolean;

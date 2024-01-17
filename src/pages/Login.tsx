@@ -1,13 +1,6 @@
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Tooltip,
-  Link,
-  Button,
-} from "@mui/material";
-import PasswordInput from "../components/PasswordInput";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
+
+import { PasswordInput } from "../components";
 
 export default function Login() {
   return (
@@ -26,7 +19,7 @@ export default function Login() {
         <Box
           component='form'
           onSubmit={() => {
-            alert("bruh");
+            alert("TODO: Implement login");
           }}
         >
           <TextField
@@ -34,7 +27,7 @@ export default function Login() {
             required
             fullWidth
             id='username'
-            label='Team'
+            label='Username'
             name='username'
             autoFocus
           />
@@ -45,20 +38,6 @@ export default function Login() {
             label='Password'
             id='password'
           />
-          <Tooltip title='Reach out to Black Team' arrow>
-            <Link
-              sx={{
-                textDecoration: "none",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              {/* <Typography variant='body2' color='text.secondary'>
-                Forgot password?
-              </Typography> */}
-            </Link>
-          </Tooltip>
           <Button
             type='submit'
             fullWidth

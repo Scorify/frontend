@@ -1,8 +1,9 @@
+import { Dispatch, SetStateAction } from "react";
+
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
-import { Dispatch, SetStateAction } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, Button, Toolbar } from "@mui/material";
 
 type props = {
   theme: string;

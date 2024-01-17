@@ -1,11 +1,12 @@
 import { ReactElement, ReactNode, Suspense, useEffect, useState } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Main from "./components/Main";
-import Index from "./pages/Index";
-import { createTheme } from "@mui/material/styles";
+
 import { ThemeProvider } from "@emotion/react";
-import Login from "./pages/Login";
-import CssBaseline from "@mui/material/CssBaseline";
+import { CssBaseline } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
+import { Main } from "./components";
+import { Home, Login } from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
@@ -55,7 +56,7 @@ export default function App() {
       children: [
         {
           index: true,
-          element: <LazyComponent element={<Index />} />,
+          element: <LazyComponent element={<Home />} />,
         },
         {
           path: "login",
