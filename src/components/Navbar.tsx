@@ -25,13 +25,23 @@ export default function Navbar({ theme, setTheme, setDrawerState }: props) {
           <Box sx={{ flexGrow: 1 }}></Box>
           <Button
             onClick={() => {
+              window.location.href = "/login";
+            }}
+            sx={{
+              color: "inherit",
+            }}
+          >
+            Login
+          </Button>
+          <Button
+            onClick={() => {
               setTheme(theme === "dark" ? "light" : "dark");
             }}
           >
             {theme === "dark" ? (
-              <DarkModeIcon sx={{ color: "white" }} />
-            ) : (
               <LightModeIcon sx={{ color: "white" }} />
+            ) : (
+              <DarkModeIcon sx={{ color: "white" }} />
             )}
           </Button>
         </Toolbar>
