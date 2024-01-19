@@ -10,6 +10,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { Main } from "./components";
 import { Home, Login, Me, NotFound } from "./pages";
+import { useJWT } from "./hooks";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
@@ -29,6 +30,7 @@ const darkTheme = createTheme({
 
 export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies(["auth"]);
+  const jwt = useJWT(cookies.auth);
 
   let savedTheme = localStorage.getItem("theme");
   if (!savedTheme) {
@@ -61,6 +63,7 @@ export default function App() {
             <Main
               theme={theme}
               setTheme={setTheme}
+              jwt={jwt}
               cookies={cookies}
               removeCookie={removeCookie}
             />

@@ -5,7 +5,6 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import { CookieSetOptions } from "universal-cookie";
-import { jwtDecode } from "jwt-decode";
 
 import { JWT } from "../models";
 
@@ -15,14 +14,15 @@ type props = {
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   cookies: any;
   removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
+  jwt: JWT;
 };
 
 export default function Navbar({
   theme,
   setTheme,
   setDrawerState,
-  cookies,
   removeCookie,
+  jwt,
 }: props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -38,16 +38,12 @@ export default function Navbar({
             </Button>
           </Box>
           <Box sx={{ width: "34%", display: "flex", justifyContent: "center" }}>
-            {cookies.auth && (
-              <Typography variant='h6'>
-                {(jwtDecode(cookies.auth) as JWT).Username}
-              </Typography>
-            )}
+            {jwt && <Typography variant='h6'>{jwt?.Username}</Typography>}
           </Box>
           <Box
             sx={{ width: "33%", display: "flex", justifyContent: "flex-end" }}
           >
-            {cookies.auth ? (
+            {jwt ? (
               <Button
                 onClick={() => {
                   removeCookie("auth");

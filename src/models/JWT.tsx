@@ -1,4 +1,6 @@
-export type JWT = {
-  Username: string;
-  exp: number;
-};
+export type JWT =
+  | {
+      Username: string;
+      exp: number;
+    }
+  | undefined;

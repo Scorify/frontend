@@ -5,12 +5,14 @@ import { CookieSetOptions } from "universal-cookie";
 import { Box, Container } from "@mui/material";
 
 import { Drawer, Navbar } from ".";
+import { JWT } from "../models";
 
 type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
   cookies: any;
   removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
+  jwt: JWT;
 };
 
 export default function Main({
@@ -18,6 +20,7 @@ export default function Main({
   setTheme,
   cookies,
   removeCookie,
+  jwt,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
 
@@ -27,6 +30,7 @@ export default function Main({
         drawerState={drawerState}
         setDrawerState={setDrawerState}
         cookies={cookies}
+        jwt={jwt}
       />
       <Navbar
         theme={theme}
@@ -34,6 +38,7 @@ export default function Main({
         setDrawerState={setDrawerState}
         cookies={cookies}
         removeCookie={removeCookie}
+        jwt={jwt}
       />
       <Container component='main'>
         <Outlet />

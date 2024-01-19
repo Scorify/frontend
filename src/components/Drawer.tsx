@@ -14,17 +14,19 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { JWT } from "../models";
 
 type props = {
   drawerState: boolean;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   cookies: any;
+  jwt: JWT;
 };
 
 export default function DrawerComponent({
   drawerState,
   setDrawerState,
-  cookies,
+  jwt,
 }: props) {
   const toggleDrawer =
     (open: boolean) => (event: KeyboardEvent | MouseEvent) => {
@@ -60,7 +62,7 @@ export default function DrawerComponent({
             </ListItemButton>
           </ListItem>
         </List>
-        {cookies.auth && (
+        {jwt && (
           <>
             <Divider />
             <List>
