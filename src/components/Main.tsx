@@ -23,7 +23,11 @@ export default function Main({
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
-      <Drawer drawerState={drawerState} setDrawerState={setDrawerState} />
+      <Drawer
+        drawerState={drawerState}
+        setDrawerState={setDrawerState}
+        cookies={cookies}
+      />
       <Navbar
         theme={theme}
         setTheme={setTheme}
