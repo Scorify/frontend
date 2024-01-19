@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { Main } from "./components";
-import { Home, Login, Me } from "./pages";
+import { Home, Login, Me, NotFound } from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
@@ -79,6 +79,10 @@ export default function App() {
         {
           path: "me",
           element: <LazyComponent element={<Me />} />,
+        },
+        {
+          path: "*",
+          element: <LazyComponent element={<NotFound />} />,
         },
       ],
     },
