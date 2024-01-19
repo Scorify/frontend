@@ -28,55 +28,61 @@ export default function Navbar({
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
-          <Button
-            onClick={() => {
-              setDrawerState(true);
-            }}
-          >
-            <MenuIcon sx={{ color: "white" }} />
-          </Button>
-          <Box sx={{ flexGrow: 1 }}></Box>
-          {cookies.auth && (
-            <Typography variant='h6'>
-              {(jwtDecode(cookies.auth) as JWT).Username}
-            </Typography>
-          )}
-          <Box sx={{ flexGrow: 1 }}></Box>
-          {cookies.auth ? (
+          <Box sx={{ width: "33%" }}>
             <Button
               onClick={() => {
-                removeCookie("auth");
-                document.location.href = "/";
-              }}
-              sx={{
-                color: "inherit",
+                setDrawerState(true);
               }}
             >
-              Logout
+              <MenuIcon sx={{ color: "white" }} />
             </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                window.location.href = "/login";
-              }}
-              sx={{
-                color: "inherit",
-              }}
-            >
-              Login
-            </Button>
-          )}
-          <Button
-            onClick={() => {
-              setTheme(theme === "dark" ? "light" : "dark");
-            }}
-          >
-            {theme === "dark" ? (
-              <LightModeIcon sx={{ color: "white" }} />
-            ) : (
-              <DarkModeIcon sx={{ color: "white" }} />
+          </Box>
+          <Box sx={{ width: "34%", display: "flex", justifyContent: "center" }}>
+            {cookies.auth && (
+              <Typography variant='h6'>
+                {(jwtDecode(cookies.auth) as JWT).Username}
+              </Typography>
             )}
-          </Button>
+          </Box>
+          <Box
+            sx={{ width: "33%", display: "flex", justifyContent: "flex-end" }}
+          >
+            {cookies.auth ? (
+              <Button
+                onClick={() => {
+                  removeCookie("auth");
+                  document.location.href = "/";
+                }}
+                sx={{
+                  color: "inherit",
+                }}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  window.location.href = "/login";
+                }}
+                sx={{
+                  color: "inherit",
+                }}
+              >
+                Login
+              </Button>
+            )}
+            <Button
+              onClick={() => {
+                setTheme(theme === "dark" ? "light" : "dark");
+              }}
+            >
+              {theme === "dark" ? (
+                <LightModeIcon sx={{ color: "white" }} />
+              ) : (
+                <DarkModeIcon sx={{ color: "white" }} />
+              )}
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
