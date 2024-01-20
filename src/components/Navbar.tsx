@@ -38,7 +38,7 @@ export default function Navbar({
             </Button>
           </Box>
           <Box sx={{ width: "34%", display: "flex", justifyContent: "center" }}>
-            {jwt && <Typography variant='h6'>{jwt?.Username}</Typography>}
+            {jwt && <Typography variant='h6'>{jwt.username}</Typography>}
           </Box>
           <Box
             sx={{ width: "33%", display: "flex", justifyContent: "flex-end" }}

@@ -1,6 +1,7 @@
 export type JWT =
   | {
-      Username: string;
+      username: string;
+      role: "admin" | "user";
       exp: number;
     }
   | undefined;

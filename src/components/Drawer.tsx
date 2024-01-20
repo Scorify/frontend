@@ -4,6 +4,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
+import PasswordIcon from "@mui/icons-material/Password";
 import {
   Box,
   Divider,
@@ -69,37 +70,68 @@ export default function DrawerComponent({
               <ListItem
                 disablePadding
                 onClick={() => {
-                  window.location.href = "/admin";
+                  window.location.href = "/password";
                 }}
               >
                 <ListItemButton>
-                  <ListItemIcon>{<AdminPanelSettingsIcon />}</ListItemIcon>
-                  <ListItemText primary='Admin' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                disablePadding
-                onClick={() => {
-                  window.location.href = "/checks";
-                }}
-              >
-                <ListItemButton>
-                  <ListItemIcon>{<EditNoteIcon />}</ListItemIcon>
-                  <ListItemText primary='Checks' />
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                disablePadding
-                onClick={() => {
-                  window.location.href = "/users";
-                }}
-              >
-                <ListItemButton>
-                  <ListItemIcon>{<GroupIcon />}</ListItemIcon>
-                  <ListItemText primary='Users' />
+                  <ListItemIcon>{<PasswordIcon />}</ListItemIcon>
+                  <ListItemText primary='Change Password' />
                 </ListItemButton>
               </ListItem>
             </List>
+            <Divider />
+            {jwt.role === "user" && (
+              <List>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    window.location.href = "/checks";
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<EditNoteIcon />}</ListItemIcon>
+                    <ListItemText primary='Checks' />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            )}
+            {jwt.role === "admin" && (
+              <List>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    window.location.href = "/admin";
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<AdminPanelSettingsIcon />}</ListItemIcon>
+                    <ListItemText primary='Admin' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    window.location.href = "/checks";
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<EditNoteIcon />}</ListItemIcon>
+                    <ListItemText primary='Checks' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    window.location.href = "/users";
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<GroupIcon />}</ListItemIcon>
+                    <ListItemText primary='Users' />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            )}
           </>
         )}
       </Box>
