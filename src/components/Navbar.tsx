@@ -1,10 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from "@mui/icons-material/Logout";
-import MenuIcon from "@mui/icons-material/Menu";
+import { DarkMode, LightMode, Login, Logout, Menu } from "@mui/icons-material";
 import {
   AppBar,
   Box,
@@ -44,7 +39,7 @@ export default function Navbar({
                   setDrawerState(true);
                 }}
               >
-                <MenuIcon sx={{ color: "white" }} />
+                <Menu sx={{ color: "white" }} />
               </Button>
             </Tooltip>
           </Box>
@@ -66,7 +61,7 @@ export default function Navbar({
                     minWidth: "0px",
                   }}
                 >
-                  <LogoutIcon />
+                  <Logout />
                 </Button>
               </Tooltip>
             ) : (
@@ -80,7 +75,7 @@ export default function Navbar({
                     minWidth: "0px",
                   }}
                 >
-                  <LoginIcon />
+                  <Login />
                 </Button>
               </Tooltip>
             )}
@@ -97,9 +92,9 @@ export default function Navbar({
                 }}
               >
                 {theme === "dark" ? (
-                  <LightModeIcon sx={{ color: "white" }} />
+                  <LightMode sx={{ color: "white" }} />
                 ) : (
-                  <DarkModeIcon sx={{ color: "white" }} />
+                  <DarkMode sx={{ color: "white" }} />
                 )}
               </Button>
             </Tooltip>
