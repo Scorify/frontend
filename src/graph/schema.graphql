@@ -1,0 +1,22 @@
+query ME {
+  me {
+    id
+    username
+  }
+}
+
+mutation LOGIN($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    name
+    token
+    expires
+    path
+    domain
+    secure
+    httpOnly
+  }
+}
+
+mutation ChangePassword($oldPassword: String!, $newPassword: String!) {
+  changePassword(oldPassword: $oldPassword, newPassword: $newPassword)
+}

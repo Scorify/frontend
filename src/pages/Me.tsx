@@ -1,9 +1,7 @@
-import { useQuery } from "@apollo/client";
-
-import { ME } from "../queries/Me";
+import { useMeQuery } from "../graph";
 
 export default function Me() {
-  const { data, loading, error } = useQuery(ME);
+  const { data, loading, error } = useMeQuery();
 
   return (
     <div>

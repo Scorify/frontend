@@ -1,17 +1,16 @@
 import { useState } from "react";
 
+import { Box, Button, Container, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { useMutation } from "@apollo/client";
-import { Container, Box, Typography, Button } from "@mui/material";
 
 import { PasswordInput } from "../components";
-import { CHANGE_PASSWORD } from "../queries";
+import { useChangePasswordMutation } from "../graph";
 
 export default function ChangePassword() {
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
-  const [changePasswordMutation, {}] = useMutation(CHANGE_PASSWORD);
+  const [changePasswordMutation, { data, error }] = useChangePasswordMutation();
 
   const changePassword = () => {
     changePasswordMutation({
@@ -20,11 +19,19 @@ export default function ChangePassword() {
         newPassword: newPassword,
       },
     })
-      .then((response) => {
-        if (response.data.changePassword) {
-          enqueueSnackbar("Password changed successfully", {
-            variant: "success",
+      .then(() => {
+        if (data && data.changePassword) {
+          if (data.changePassword) {
+            enqueueSnackbar("Password changed successfully", {
+              variant: "success",
+            });
+          }
+        } else {
+          enqueueSnackbar(error?.message, {
+            variant: "error",
           });
+
+          console.log(error);
         }
       })
       .catch((error) => {
