@@ -1,10 +1,12 @@
 import { Dispatch, KeyboardEvent, MouseEvent, SetStateAction } from "react";
 
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import GroupIcon from "@mui/icons-material/Group";
-import HomeIcon from "@mui/icons-material/Home";
-import PasswordIcon from "@mui/icons-material/Password";
+import {
+  AdminPanelSettings,
+  EditNote,
+  Group,
+  Home,
+  Password,
+} from "@mui/icons-material";
 import {
   Box,
   Divider,
@@ -58,7 +60,7 @@ export default function DrawerComponent({
             }}
           >
             <ListItemButton>
-              <ListItemIcon>{<HomeIcon />}</ListItemIcon>
+              <ListItemIcon>{<Home />}</ListItemIcon>
               <ListItemText primary='Home' />
             </ListItemButton>
           </ListItem>
@@ -74,7 +76,7 @@ export default function DrawerComponent({
                 }}
               >
                 <ListItemButton>
-                  <ListItemIcon>{<PasswordIcon />}</ListItemIcon>
+                  <ListItemIcon>{<Password />}</ListItemIcon>
                   <ListItemText primary='Change Password' />
                 </ListItemButton>
               </ListItem>
@@ -89,7 +91,7 @@ export default function DrawerComponent({
                   }}
                 >
                   <ListItemButton>
-                    <ListItemIcon>{<EditNoteIcon />}</ListItemIcon>
+                    <ListItemIcon>{<EditNote />}</ListItemIcon>
                     <ListItemText primary='Checks' />
                   </ListItemButton>
                 </ListItem>
@@ -104,7 +106,7 @@ export default function DrawerComponent({
                   }}
                 >
                   <ListItemButton>
-                    <ListItemIcon>{<AdminPanelSettingsIcon />}</ListItemIcon>
+                    <ListItemIcon>{<AdminPanelSettings />}</ListItemIcon>
                     <ListItemText primary='Admin' />
                   </ListItemButton>
                 </ListItem>
@@ -115,7 +117,7 @@ export default function DrawerComponent({
                   }}
                 >
                   <ListItemButton>
-                    <ListItemIcon>{<EditNoteIcon />}</ListItemIcon>
+                    <ListItemIcon>{<EditNote />}</ListItemIcon>
                     <ListItemText primary='Checks' />
                   </ListItemButton>
                 </ListItem>
@@ -126,7 +128,7 @@ export default function DrawerComponent({
                   }}
                 >
                   <ListItemButton>
-                    <ListItemIcon>{<GroupIcon />}</ListItemIcon>
+                    <ListItemIcon>{<Group />}</ListItemIcon>
                     <ListItemText primary='Users' />
                   </ListItemButton>
                 </ListItem>
