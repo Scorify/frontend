@@ -1,12 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
+import { CookieSetOptions } from "universal-cookie";
 
 import { PasswordInput } from "../components";
 import { useChangePasswordMutation } from "../graph";
 
-export default function ChangePassword() {
+type props = {
+  removeCookies: (name: "auth", options?: CookieSetOptions | undefined) => void;
+};
+
+export default function ChangePassword({ removeCookies }: props) {
+  const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
@@ -22,9 +29,16 @@ export default function ChangePassword() {
       .then(() => {
         if (data && data.changePassword) {
           if (data.changePassword) {
-            enqueueSnackbar("Password changed successfully", {
-              variant: "success",
-            });
+            removeCookies("auth");
+
+            navigate("/login");
+
+            enqueueSnackbar(
+              "Password changed successfully, please reauthenticate with new one",
+              {
+                variant: "success",
+              }
+            );
           }
         } else {
           enqueueSnackbar(error?.message, {

@@ -1,4 +1,5 @@
 import { Dispatch, KeyboardEvent, MouseEvent, SetStateAction } from "react";
+import { useNavigate } from "react-router";
 
 import {
   AdminPanelSettings,
@@ -31,6 +32,7 @@ export default function DrawerComponent({
   setDrawerState,
   jwt,
 }: props) {
+  const navigate = useNavigate();
   const toggleDrawer =
     (open: boolean) => (event: KeyboardEvent | MouseEvent) => {
       if (
@@ -56,7 +58,7 @@ export default function DrawerComponent({
           <ListItem
             disablePadding
             onClick={() => {
-              window.location.href = "/";
+              navigate("/");
             }}
           >
             <ListItemButton>
@@ -72,7 +74,7 @@ export default function DrawerComponent({
               <ListItem
                 disablePadding
                 onClick={() => {
-                  window.location.href = "/password";
+                  navigate("/password");
                 }}
               >
                 <ListItemButton>
@@ -87,7 +89,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    window.location.href = "/checks";
+                    navigate("/checks");
                   }}
                 >
                   <ListItemButton>
@@ -102,7 +104,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    window.location.href = "/admin";
+                    navigate("/admin");
                   }}
                 >
                   <ListItemButton>
@@ -113,7 +115,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    window.location.href = "/checks";
+                    navigate("/checks");
                   }}
                 >
                   <ListItemButton>
@@ -124,7 +126,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    window.location.href = "/users";
+                    navigate("/users");
                   }}
                 >
                   <ListItemButton>

@@ -34,7 +34,6 @@ export default function Login({ setCookie }: props) {
       })
         .then(() => {
           if (data && data.login) {
-            console.log(data.login);
             setCookie("auth", data.login.token, {
               path: data.login.path,
               expires: new Date(data.login.expires * 1000),
