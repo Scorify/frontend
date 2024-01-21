@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, Typography } from "@mui/material";
@@ -19,40 +19,30 @@ export default function ChangePassword({ removeCookies }: props) {
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
   const [changePasswordMutation, { data, error }] = useChangePasswordMutation();
 
-  const changePassword = () => {
-    changePasswordMutation({
-      variables: {
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-      },
-    })
-      .then(() => {
-        if (data && data.changePassword) {
-          if (data.changePassword) {
-            removeCookies("auth");
+  useEffect(() => {
+    if (data && data.changePassword) {
+      removeCookies("auth");
 
-            navigate("/login");
+      navigate("/login");
 
-            enqueueSnackbar(
-              "Password changed successfully, please reauthenticate with new one",
-              {
-                variant: "success",
-              }
-            );
-          }
-        } else {
-          enqueueSnackbar(error?.message, {
-            variant: "error",
-          });
-
-          console.log(error);
+      enqueueSnackbar(
+        "Password changed successfully, please reauthenticate with new one",
+        {
+          variant: "success",
         }
-      })
-      .catch((error) => {
-        enqueueSnackbar("Invalid username or password", { variant: "error" });
-        console.log(error);
+      );
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (error && error.message) {
+      enqueueSnackbar("Encountered an error: " + error.message, {
+        variant: "error",
       });
-  };
+
+      console.log(error);
+    }
+  }, [error]);
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -101,7 +91,18 @@ export default function ChangePassword({ removeCookies }: props) {
               confirmNewPassword &&
               newPassword === confirmNewPassword
             ) {
-              changePassword();
+              changePasswordMutation({
+                variables: {
+                  oldPassword: oldPassword,
+                  newPassword: newPassword,
+                },
+              }).catch((error) => {
+                enqueueSnackbar("An error occurred while preforming request", {
+                  variant: "error",
+                });
+
+                console.log(error);
+              });
             } else {
               enqueueSnackbar("Passwords do not match", { variant: "error" });
             }

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { PasswordInput } from "../components";
 import { useLoginMutation } from "../graph";
+import { useEffect } from "react";
 
 type props = {
   setCookie: (
@@ -17,6 +18,28 @@ type props = {
 export default function Login({ setCookie }: props) {
   const [loginMutation, { data, error }] = useLoginMutation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (data && data.login) {
+      setCookie("auth", data.login.token, {
+        path: data.login.path,
+        expires: new Date(data.login.expires * 1000),
+        httpOnly: data.login.httpOnly,
+        secure: data.login.secure,
+      });
+
+      navigate("/");
+
+      enqueueSnackbar("Logged in successfully", { variant: "success" });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (error && error.message) {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.log(error);
+    }
+  }, [error]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,33 +54,13 @@ export default function Login({ setCookie }: props) {
           username: username,
           password: password,
         },
-      })
-        .then(() => {
-          if (data && data.login) {
-            setCookie("auth", data.login.token, {
-              path: data.login.path,
-              expires: new Date(data.login.expires * 1000),
-              httpOnly: data.login.httpOnly,
-              secure: data.login.secure,
-            });
-
-            navigate("/");
-
-            enqueueSnackbar("Logged in successfully", { variant: "success" });
-          } else {
-            if (error && error.message) {
-              enqueueSnackbar(error.message, { variant: "error" });
-              console.log(error);
-            }
-          }
-        })
-        .catch((error) => {
-          enqueueSnackbar("An error occurred while preforming request", {
-            variant: "error",
-          });
-
-          console.log(error);
+      }).catch((error) => {
+        enqueueSnackbar("An error occurred while preforming request", {
+          variant: "error",
         });
+
+        console.log(error);
+      });
     }
   };
 

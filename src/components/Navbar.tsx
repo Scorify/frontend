@@ -69,7 +69,7 @@ export default function Navbar({
                 <Button
                   onClick={() => {
                     removeCookie("auth");
-                    document.location.href = "/";
+                    navigate("/login");
                   }}
                   sx={{
                     color: "inherit",
