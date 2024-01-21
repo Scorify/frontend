@@ -1,12 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
+
 import { DarkMode, LightMode, Login, Logout, Menu } from "@mui/icons-material";
 import {
   AppBar,
   Box,
   Button,
   Toolbar,
-  Typography,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import { CookieSetOptions } from "universal-cookie";
 
@@ -44,7 +45,19 @@ export default function Navbar({
             </Tooltip>
           </Box>
           <Box sx={{ width: "34%", display: "flex", justifyContent: "center" }}>
-            {jwt && <Typography variant='h6'>{jwt.username}</Typography>}
+            {jwt && (
+              <Button
+                onClick={() => {
+                  document.location.href = "/";
+                }}
+                sx={{
+                  color: "inherit",
+                  textTransform: "none",
+                }}
+              >
+                <Typography variant='h6'>{jwt.username}</Typography>
+              </Button>
+            )}
           </Box>
           <Box
             sx={{ width: "33%", display: "flex", justifyContent: "flex-end" }}
