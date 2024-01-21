@@ -1,4 +1,5 @@
+import { CHANGE_PASSWORD } from "./ChangePassword";
 import { LOGIN } from "./Login";
 import { ME } from "./Me";
 
-export { LOGIN, ME };
+export { CHANGE_PASSWORD, LOGIN, ME };
