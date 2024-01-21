@@ -1,10 +1,11 @@
-import { useMutation } from "@apollo/client";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { CookieSetOptions } from "universal-cookie";
+import { useNavigate } from "react-router-dom";
 
 import { PasswordInput } from "../components";
-import { LOGIN } from "../queries";
+import { useLoginMutation } from "../graph";
+import { useEffect } from "react";
 
 type props = {
   setCookie: (
@@ -15,36 +16,52 @@ type props = {
 };
 
 export default function Login({ setCookie }: props) {
-  const [loginMutation, {}] = useMutation(LOGIN);
+  const [loginMutation, { data, error }] = useLoginMutation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (data && data.login) {
+      setCookie("auth", data.login.token, {
+        path: data.login.path,
+        expires: new Date(data.login.expires * 1000),
+        httpOnly: data.login.httpOnly,
+        secure: data.login.secure,
+      });
+
+      navigate("/");
+
+      enqueueSnackbar("Logged in successfully", { variant: "success" });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (error && error.message) {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.log(error);
+    }
+  }, [error]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    loginMutation({
-      variables: {
-        username: data.get("username"),
-        password: data.get("password"),
-      },
-    })
-      .then((response) => {
-        if (response.data.login) {
-          enqueueSnackbar("Logged in successfully", { variant: "success" });
+    const form_data = new FormData(event.currentTarget);
 
-          setCookie("auth", response.data.login.token, {
-            path: response.data.login.path,
-            domain: response.data.login.domain,
-            expires: new Date(response.data.login.expires * 1000),
-            secure: response.data.login.secure,
-            httpOnly: response.data.login.httpOnly,
-          });
+    let username = form_data.get("username")?.toString();
+    let password = form_data.get("password")?.toString();
 
-          document.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        enqueueSnackbar("Invalid username or password", { variant: "error" });
+    if (username && password) {
+      loginMutation({
+        variables: {
+          username: username,
+          password: password,
+        },
+      }).catch((error) => {
+        enqueueSnackbar("An error occurred while preforming request", {
+          variant: "error",
+        });
+
         console.log(error);
       });
+    }
   };
 
   return (

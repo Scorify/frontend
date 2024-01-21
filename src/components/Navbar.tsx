@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { useNavigate } from "react-router";
 
 import { DarkMode, LightMode, Login, Logout, Menu } from "@mui/icons-material";
 import {
@@ -29,6 +30,7 @@ export default function Navbar({
   removeCookie,
   jwt,
 }: props) {
+  const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
@@ -67,7 +69,7 @@ export default function Navbar({
                 <Button
                   onClick={() => {
                     removeCookie("auth");
-                    document.location.href = "/";
+                    navigate("/login");
                   }}
                   sx={{
                     color: "inherit",
@@ -81,7 +83,7 @@ export default function Navbar({
               <Tooltip title='Login'>
                 <Button
                   onClick={() => {
-                    window.location.href = "/login";
+                    navigate("/login");
                   }}
                   sx={{
                     color: "inherit",
