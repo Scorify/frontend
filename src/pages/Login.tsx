@@ -54,12 +54,6 @@ export default function Login({ setCookie }: props) {
           username: username,
           password: password,
         },
-      }).catch((error) => {
-        enqueueSnackbar("An error occurred while preforming request", {
-          variant: "error",
-        });
-
-        console.log(error);
       });
     }
   };
