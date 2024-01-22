@@ -96,12 +96,6 @@ export default function ChangePassword({ removeCookies }: props) {
                   oldPassword: oldPassword,
                   newPassword: newPassword,
                 },
-              }).catch((error) => {
-                enqueueSnackbar("An error occurred while preforming request", {
-                  variant: "error",
-                });
-
-                console.log(error);
               });
             } else {
               enqueueSnackbar("Passwords do not match", { variant: "error" });

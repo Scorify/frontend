@@ -50,7 +50,7 @@ export default function Navbar({
             {jwt && (
               <Button
                 onClick={() => {
-                  document.location.href = "/";
+                  navigate("/");
                 }}
                 sx={{
                   color: "inherit",
