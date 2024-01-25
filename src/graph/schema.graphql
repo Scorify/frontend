@@ -1,11 +1,11 @@
-query ME {
+query Me {
   me {
     id
     username
   }
 }
 
-mutation LOGIN($username: String!, $password: String!) {
+mutation Login($username: String!, $password: String!) {
   login(username: $username, password: $password) {
     name
     token
@@ -19,4 +19,20 @@ mutation LOGIN($username: String!, $password: String!) {
 
 mutation ChangePassword($oldPassword: String!, $newPassword: String!) {
   changePassword(oldPassword: $oldPassword, newPassword: $newPassword)
+}
+
+query Checks {
+  checks {
+    id
+    name
+    source {
+      name
+      schema
+    }
+  }
+
+  checkSources {
+    name
+    schema
+  }
 }

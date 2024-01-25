@@ -126,7 +126,7 @@ export type User = {
 
 
 export const MeDocument = gql`
-    query ME {
+    query Me {
   me {
     id
     username
@@ -166,7 +166,7 @@ export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const LoginDocument = gql`
-    mutation LOGIN($username: String!, $password: String!) {
+    mutation Login($username: String!, $password: String!) {
   login(username: $username, password: $password) {
     name
     token
@@ -237,6 +237,54 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const ChecksDocument = gql`
+    query Checks {
+  checks {
+    id
+    name
+    source {
+      name
+      schema
+    }
+  }
+  checkSources {
+    name
+    schema
+  }
+}
+    `;
+
+/**
+ * __useChecksQuery__
+ *
+ * To run a query within a React component, call `useChecksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChecksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChecksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChecksQuery(baseOptions?: Apollo.QueryHookOptions<ChecksQuery, ChecksQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChecksQuery, ChecksQueryVariables>(ChecksDocument, options);
+      }
+export function useChecksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChecksQuery, ChecksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChecksQuery, ChecksQueryVariables>(ChecksDocument, options);
+        }
+export function useChecksSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ChecksQuery, ChecksQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ChecksQuery, ChecksQueryVariables>(ChecksDocument, options);
+        }
+export type ChecksQueryHookResult = ReturnType<typeof useChecksQuery>;
+export type ChecksLazyQueryHookResult = ReturnType<typeof useChecksLazyQuery>;
+export type ChecksSuspenseQueryHookResult = ReturnType<typeof useChecksSuspenseQuery>;
+export type ChecksQueryResult = Apollo.QueryResult<ChecksQuery, ChecksQueryVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -257,3 +305,8 @@ export type ChangePasswordMutationVariables = Exact<{
 
 
 export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: boolean };
+
+export type ChecksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, source: { __typename?: 'CheckSource', name: string, schema: string } }>, checkSources: Array<{ __typename?: 'CheckSource', name: string, schema: string }> };
