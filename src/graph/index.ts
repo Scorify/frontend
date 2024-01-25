@@ -17,6 +17,27 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Check = {
+  __typename?: 'Check';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  source: CheckSource;
+};
+
+export type CheckConfig = {
+  __typename?: 'CheckConfig';
+  check: Check;
+  config: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  user: User;
+};
+
+export type CheckSource = {
+  __typename?: 'CheckSource';
+  name: Scalars['String']['output'];
+  schema: Scalars['String']['output'];
+};
+
 export type LoginOutput = {
   __typename?: 'LoginOutput';
   domain: Scalars['String']['output'];
@@ -31,7 +52,11 @@ export type LoginOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: Scalars['Boolean']['output'];
+  createCheck: Check;
+  deleteCheck: Scalars['Boolean']['output'];
+  editCheckConfig: CheckConfig;
   login: LoginOutput;
+  updateCheck: Check;
 };
 
 
@@ -41,14 +66,56 @@ export type MutationChangePasswordArgs = {
 };
 
 
+export type MutationCreateCheckArgs = {
+  config: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  source: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteCheckArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationEditCheckConfigArgs = {
+  config: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationLoginArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
 };
 
+
+export type MutationUpdateCheckArgs = {
+  config?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  source?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
+  check: Check;
+  checkConfigs: Array<CheckConfig>;
+  checkSource: CheckSource;
+  checkSources: Array<CheckSource>;
+  checks: Array<Check>;
   me: User;
+};
+
+
+export type QueryCheckArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryCheckSourceArgs = {
+  name: Scalars['String']['input'];
 };
 
 export type User = {
