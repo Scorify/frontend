@@ -1,11 +1,12 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { CookieSetOptions } from "universal-cookie";
-import { useNavigate } from "react-router-dom";
 
 import { PasswordInput } from "../components";
 import { useLoginMutation } from "../graph";
-import { useEffect } from "react";
 
 type props = {
   setCookie: (
