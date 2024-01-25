@@ -115,7 +115,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    navigate("/checks");
+                    navigate("/admin/checks");
                   }}
                 >
                   <ListItemButton>
@@ -126,7 +126,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    navigate("/users");
+                    navigate("/admin/users");
                   }}
                 >
                   <ListItemButton>
