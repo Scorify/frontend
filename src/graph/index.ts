@@ -21,21 +21,15 @@ export type Check = {
   __typename?: 'Check';
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  source: CheckSource;
+  source: Source;
 };
 
-export type CheckConfig = {
-  __typename?: 'CheckConfig';
+export type Config = {
+  __typename?: 'Config';
   check: Check;
   config: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   user: User;
-};
-
-export type CheckSource = {
-  __typename?: 'CheckSource';
-  name: Scalars['String']['output'];
-  schema: Scalars['String']['output'];
 };
 
 export type LoginOutput = {
@@ -54,7 +48,7 @@ export type Mutation = {
   changePassword: Scalars['Boolean']['output'];
   createCheck: Check;
   deleteCheck: Scalars['Boolean']['output'];
-  editCheckConfig: CheckConfig;
+  editConfig: Config;
   login: LoginOutput;
   updateCheck: Check;
 };
@@ -78,7 +72,7 @@ export type MutationDeleteCheckArgs = {
 };
 
 
-export type MutationEditCheckConfigArgs = {
+export type MutationEditConfigArgs = {
   config: Scalars['String']['input'];
   id: Scalars['ID']['input'];
 };
@@ -100,11 +94,12 @@ export type MutationUpdateCheckArgs = {
 export type Query = {
   __typename?: 'Query';
   check: Check;
-  checkConfigs: Array<CheckConfig>;
-  checkSource: CheckSource;
-  checkSources: Array<CheckSource>;
   checks: Array<Check>;
+  config: Config;
+  configs: Array<Config>;
   me: User;
+  source: Source;
+  sources: Array<Source>;
 };
 
 
@@ -114,8 +109,19 @@ export type QueryCheckArgs = {
 };
 
 
-export type QueryCheckSourceArgs = {
+export type QueryConfigArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QuerySourceArgs = {
   name: Scalars['String']['input'];
+};
+
+export type Source = {
+  __typename?: 'Source';
+  name: Scalars['String']['output'];
+  schema: Scalars['String']['output'];
 };
 
 export type User = {
@@ -247,7 +253,7 @@ export const ChecksDocument = gql`
       schema
     }
   }
-  checkSources {
+  sources {
     name
     schema
   }
@@ -285,6 +291,46 @@ export type ChecksQueryHookResult = ReturnType<typeof useChecksQuery>;
 export type ChecksLazyQueryHookResult = ReturnType<typeof useChecksLazyQuery>;
 export type ChecksSuspenseQueryHookResult = ReturnType<typeof useChecksSuspenseQuery>;
 export type ChecksQueryResult = Apollo.QueryResult<ChecksQuery, ChecksQueryVariables>;
+export const CreateCheckDocument = gql`
+    mutation CreateCheck($name: String!, $source: String!, $config: String!) {
+  createCheck(name: $name, source: $source, config: $config) {
+    id
+    name
+    source {
+      name
+      schema
+    }
+  }
+}
+    `;
+export type CreateCheckMutationFn = Apollo.MutationFunction<CreateCheckMutation, CreateCheckMutationVariables>;
+
+/**
+ * __useCreateCheckMutation__
+ *
+ * To run a mutation, you first call `useCreateCheckMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCheckMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCheckMutation, { data, loading, error }] = useCreateCheckMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      source: // value for 'source'
+ *      config: // value for 'config'
+ *   },
+ * });
+ */
+export function useCreateCheckMutation(baseOptions?: Apollo.MutationHookOptions<CreateCheckMutation, CreateCheckMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCheckMutation, CreateCheckMutationVariables>(CreateCheckDocument, options);
+      }
+export type CreateCheckMutationHookResult = ReturnType<typeof useCreateCheckMutation>;
+export type CreateCheckMutationResult = Apollo.MutationResult<CreateCheckMutation>;
+export type CreateCheckMutationOptions = Apollo.BaseMutationOptions<CreateCheckMutation, CreateCheckMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -309,4 +355,13 @@ export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: 
 export type ChecksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, source: { __typename?: 'CheckSource', name: string, schema: string } }>, checkSources: Array<{ __typename?: 'CheckSource', name: string, schema: string }> };
+export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
+
+export type CreateCheckMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+  source: Scalars['String']['input'];
+  config: Scalars['String']['input'];
+}>;
+
+
+export type CreateCheckMutation = { __typename?: 'Mutation', createCheck: { __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } } };

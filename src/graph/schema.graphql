@@ -31,8 +31,19 @@ query Checks {
     }
   }
 
-  checkSources {
+  sources {
     name
     schema
+  }
+}
+
+mutation CreateCheck($name: String!, $source: String!, $config: String!) {
+  createCheck(name: $name, source: $source, config: $config) {
+    id
+    name
+    source {
+      name
+      schema
+    }
   }
 }
