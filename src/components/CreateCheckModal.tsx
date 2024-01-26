@@ -71,11 +71,6 @@ export default function CreateCheckModal({ data, open, setOpen }: props) {
       }
     }
 
-    console.log({
-      source: source,
-      schema: schema,
-      config: config,
-    });
     setConfig(newConfig);
   }, [schema]);
 
@@ -211,7 +206,7 @@ export default function CreateCheckModal({ data, open, setOpen }: props) {
                 variables: {
                   source: source,
                   name: name,
-                  config: "{}",
+                  config: JSON.stringify(config),
                 },
               });
             }}
