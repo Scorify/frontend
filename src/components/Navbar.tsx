@@ -13,6 +13,7 @@ import {
 import { CookieSetOptions } from "universal-cookie";
 
 import { JWT } from "../models";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 type props = {
   theme: string;
@@ -21,6 +22,7 @@ type props = {
   cookies: any;
   removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
   jwt: JWT;
+  apolloClient: ApolloClient<NormalizedCacheObject>;
 };
 
 export default function Navbar({
@@ -29,6 +31,7 @@ export default function Navbar({
   setDrawerState,
   removeCookie,
   jwt,
+  apolloClient,
 }: props) {
   const navigate = useNavigate();
   return (
@@ -69,6 +72,7 @@ export default function Navbar({
                 <Button
                   onClick={() => {
                     removeCookie("auth");
+                    apolloClient.clearStore();
                     navigate("/login");
                   }}
                   sx={{

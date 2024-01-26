@@ -13,11 +13,44 @@ type LoginOutput {
   httpOnly: Boolean!
 }
 
+type Source {
+  name: String!
+  schema: String!
+}
+
+type Check {
+  id: ID!
+  name: String!
+  source: Source!
+}
+
+type Config {
+  id: ID!
+  config: String!
+  check: Check!
+  user: User!
+}
+
 type Query {
   me: User!
+
+  sources: [Source!]!
+  source(name: String!): Source!
+
+  checks: [Check!]!
+  check(id: ID, name: String): Check!
+
+  configs: [Config!]!
+  config(id: ID!): Config!
 }
 
 type Mutation {
   login(username: String!, password: String!): LoginOutput!
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
+
+  createCheck(name: String!, source: String!, config: String!): Check!
+  updateCheck(id: ID!, name: String, source: String, config: String): Check!
+  deleteCheck(id: ID!): Boolean!
+
+  editConfig(id: ID!, config: String!): Config!
 }

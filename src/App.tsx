@@ -8,9 +8,10 @@ import { SnackbarProvider } from "notistack";
 import { useCookies } from "react-cookie";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import { Main } from "./components";
-import { ChangePassword, Home, Login, Me, NotFound } from "./pages";
+import { Main, Error, Admin } from "./components";
+import { ChangePassword, Home, Login, Me } from "./pages";
 import { useJWT } from "./hooks";
+import Checks from "./pages/Checks";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
@@ -54,6 +55,12 @@ export default function App() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  const client = new ApolloClient({
+    uri: "http://localhost:8080/query",
+    cache: new InMemoryCache(),
+    credentials: "include",
+  });
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -66,6 +73,7 @@ export default function App() {
               jwt={jwt}
               cookies={cookies}
               removeCookie={removeCookie}
+              apolloClient={client}
             />
           }
         />
@@ -92,18 +100,42 @@ export default function App() {
           ),
         },
         {
+          path: "admin",
+          element: <LazyComponent element={<Admin jwt={jwt} />} />,
+          children: [
+            {
+              index: true,
+              element: (
+                <LazyComponent
+                  element={<Error code={404} message={"Page Not Found"} />}
+                />
+              ),
+            },
+            {
+              path: "checks",
+              element: <LazyComponent element={<Checks />} />,
+            },
+            // {
+            //   path: "*",
+            //   element: (
+            //     <LazyComponent
+            //       element={<Error code={404} message={"Page Not Found"} />}
+            //     />
+            //   ),
+            // },
+          ],
+        },
+        {
           path: "*",
-          element: <LazyComponent element={<NotFound />} />,
+          element: (
+            <LazyComponent
+              element={<Error code={404} message={"Page Not Found"} />}
+            />
+          ),
         },
       ],
     },
   ]);
-
-  const client = new ApolloClient({
-    uri: "http://localhost:8080/query",
-    cache: new InMemoryCache(),
-    credentials: "include",
-  });
 
   return (
     <ThemeProvider theme={muiTheme}>

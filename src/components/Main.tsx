@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { CookieSetOptions } from "universal-cookie";
 
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
 
 import { Drawer, Navbar } from ".";
@@ -13,6 +14,7 @@ type props = {
   cookies: any;
   removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
   jwt: JWT;
+  apolloClient: ApolloClient<NormalizedCacheObject>;
 };
 
 export default function Main({
@@ -21,6 +23,7 @@ export default function Main({
   cookies,
   removeCookie,
   jwt,
+  apolloClient,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
 
@@ -39,6 +42,7 @@ export default function Main({
         cookies={cookies}
         removeCookie={removeCookie}
         jwt={jwt}
+        apolloClient={apolloClient}
       />
       <Container component='main'>
         <Outlet />

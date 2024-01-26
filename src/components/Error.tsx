@@ -1,6 +1,11 @@
-import { Typography, Container, Box } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 
-export default function NotFound() {
+type props = {
+  code: number;
+  message: string;
+};
+
+export default function Error({ code, message }: props) {
   return (
     <Container>
       <Box
@@ -12,10 +17,10 @@ export default function NotFound() {
         }}
       >
         <Typography component='h1' variant='h3'>
-          Page Not Found
+          {message}
         </Typography>
         <Typography component='h1' variant='h1'>
-          404
+          {code}
         </Typography>
       </Box>
     </Container>
