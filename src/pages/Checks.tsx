@@ -68,7 +68,11 @@ export default function Checks() {
             ) : (
               <>
                 {data.checks.map((check) => (
-                  <EditCheck key={check.name} check={check} />
+                  <EditCheck
+                    key={check.name}
+                    check={check}
+                    handleRefetch={handleRefetch}
+                  />
                 ))}
               </>
             ))}
