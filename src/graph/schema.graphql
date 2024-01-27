@@ -25,6 +25,7 @@ query Checks {
   checks {
     id
     name
+    config
     source {
       name
       schema
@@ -39,6 +40,22 @@ query Checks {
 
 mutation CreateCheck($name: String!, $source: String!, $config: String!) {
   createCheck(name: $name, source: $source, config: $config) {
+    id
+    name
+    source {
+      name
+      schema
+    }
+  }
+}
+
+mutation UpdateCheck(
+  $id: ID!
+  $name: String
+  $source: String
+  $config: String
+) {
+  updateCheck(id: $id, name: $name, source: $source, config: $config) {
     id
     name
     source {
