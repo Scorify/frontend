@@ -21,9 +21,15 @@ type props = {
   data: ChecksQuery | undefined;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
+  handleRefetch: () => void;
 };
 
-export default function CreateCheckModal({ data, open, setOpen }: props) {
+export default function CreateCheckModal({
+  data,
+  open,
+  setOpen,
+  handleRefetch,
+}: props) {
   const [createCheckMutation] = useCreateCheckMutation({
     onCompleted: () => {
       enqueueSnackbar("Check created successfully", { variant: "success" });
@@ -208,7 +214,7 @@ export default function CreateCheckModal({ data, open, setOpen }: props) {
                   name: name,
                   config: JSON.stringify(config),
                 },
-              });
+              }).then(handleRefetch);
             }}
           >
             Create Check

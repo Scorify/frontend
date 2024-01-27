@@ -7,12 +7,21 @@ import CreateCheckModal from "../components/CreateCheckModal";
 import { EditCheck } from "../components";
 
 export default function Checks() {
-  const { data, loading, error } = useChecksQuery();
+  const { data, loading, error, refetch } = useChecksQuery();
   const [open, setOpen] = useState(false);
+
+  const handleRefetch = () => {
+    refetch();
+  };
 
   return (
     <Box>
-      <CreateCheckModal open={open} setOpen={setOpen} data={data} />
+      <CreateCheckModal
+        open={open}
+        setOpen={setOpen}
+        data={data}
+        handleRefetch={handleRefetch}
+      />
       <Container component='main' maxWidth='md'>
         <Box
           sx={{
