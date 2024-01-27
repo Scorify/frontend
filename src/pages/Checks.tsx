@@ -59,15 +59,7 @@ export default function Checks() {
             ) : (
               <>
                 {data.checks.map((check) => (
-                  <EditCheck
-                    key={check.name}
-                    title={check.name}
-                    expandedContent={
-                      <Typography component='h1' variant='h4' key={check.name}>
-                        {check.name}
-                      </Typography>
-                    }
-                  />
+                  <EditCheck key={check.name} check={check} />
                 ))}
               </>
             ))}

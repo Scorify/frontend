@@ -1,21 +1,24 @@
-import { ReactNode, useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { Transition } from "react-transition-group";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
+  Divider,
   Collapse,
   IconButton,
+  Typography,
 } from "@mui/material";
+import { ChecksQuery } from "../graph";
 
 type props = {
-  title: string;
-  expandedContent: ReactNode;
+  check: ChecksQuery["checks"][0];
 };
 
-export default function EditCheck({ title, expandedContent }: props) {
+export default function EditCheck({ check }: props) {
   const [expanded, setExpanded] = useState(false);
   const transitionContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -24,29 +27,30 @@ export default function EditCheck({ title, expandedContent }: props) {
   };
 
   const transitionStyles = {
-    entering: {
-      height: 0,
-      overflow: "hidden",
-      transition: "height 0.3s ease-out",
-    },
-    entered: { height: "auto", transition: "height 0.3s ease-out" },
-    exiting: {
-      height: 0,
-      overflow: "hidden",
-      transition: "height 0.3s ease-out",
-    },
-    exited: {
-      height: 0,
-      overflow: "hidden",
-      transition: "height 0.3s ease-out",
-    },
-    unmounted: { height: 0, overflow: "hidden" },
+    entering: { height: 0, overflow: "hidden" },
+    entered: { height: "auto", overflow: "visible" },
+    exiting: { height: "auto", overflow: "visible" },
+    exited: { height: 0, overflow: "hidden" },
+    unmounted: {},
   };
 
   return (
-    <Card sx={{ width: "100%", marginBottom: "24px" }}>
+    <Card sx={{ width: "100%", marginBottom: "24px" }} variant='elevation'>
       <CardHeader
-        title={title}
+        title={
+          <Box display='flex' flexDirection='row' alignItems='baseline'>
+            <Typography variant='h6' component='div' marginRight='24px'>
+              {check.name}
+            </Typography>
+            <Typography
+              variant='subtitle1'
+              color='textSecondary'
+              component='div'
+            >
+              {check.source.name}
+            </Typography>
+          </Box>
+        }
         action={
           <IconButton aria-label='expand' onClick={handleExpandClick}>
             <ExpandMore />
@@ -56,8 +60,7 @@ export default function EditCheck({ title, expandedContent }: props) {
       />
       <Transition
         in={expanded}
-        timeout={1000}
-        unmountOnExit
+        timeout={{ enter: 300, exit: 300 }}
         nodeRef={transitionContainerRef}
       >
         {(state) => (
@@ -67,9 +70,11 @@ export default function EditCheck({ title, expandedContent }: props) {
             ref={transitionContainerRef}
             style={{
               ...transitionStyles[state],
+              transition: "height 0.3s ease-in-out",
             }}
           >
-            <CardContent>{expandedContent}</CardContent>
+            <Divider sx={{ margin: "0px 12px" }} />
+            <CardContent>{check.source.schema}</CardContent>
           </Collapse>
         )}
       </Transition>
