@@ -4,6 +4,7 @@ import { Container, Box, Button, Typography } from "@mui/material";
 
 import { useChecksQuery } from "../graph";
 import CreateCheckModal from "../components/CreateCheckModal";
+import { EditCheck } from "../components";
 
 export default function Checks() {
   const { data, loading, error } = useChecksQuery();
@@ -58,9 +59,15 @@ export default function Checks() {
             ) : (
               <>
                 {data.checks.map((check) => (
-                  <Typography component='h1' variant='h4' key={check.name}>
-                    {check.name}
-                  </Typography>
+                  <EditCheck
+                    key={check.name}
+                    title={check.name}
+                    expandedContent={
+                      <Typography component='h1' variant='h4' key={check.name}>
+                        {check.name}
+                      </Typography>
+                    }
+                  />
                 ))}
               </>
             ))}
