@@ -21,7 +21,7 @@ import {
   useDeleteCheckMutation,
   useUpdateCheckMutation,
 } from "../graph";
-import { ConfigField } from "./";
+import { ConfigField, DeleteCheckModal } from "./";
 
 type props = {
   check: ChecksQuery["checks"][0];
@@ -45,6 +45,8 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   useEffect(() => {
     setNameChanged(name != check.name);
   }, [name, check.name]);
+
+  const [open, setOpen] = useState(false);
 
   const [updateCheckMutation] = useUpdateCheckMutation({
     onCompleted: () => {
@@ -114,116 +116,130 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   };
 
   return (
-    <Card
-      sx={{
-        width: "100%",
-        marginBottom: "24px",
-        display: visible ? "block" : "none",
-      }}
-      variant='elevation'
-    >
-      <CardHeader
-        title={
-          <Box display='flex' flexDirection='row' alignItems='baseline'>
-            {expanded ? (
-              <TextField
-                label='Name'
-                value={name}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-                sx={{ marginRight: "24px" }}
-                size='small'
-              />
-            ) : (
-              <Typography variant='h6' component='div' marginRight='24px'>
-                {check.name}
-              </Typography>
-            )}
-            <Typography
-              variant='subtitle1'
-              color='textSecondary'
-              component='div'
-            >
-              {check.source.name}
-            </Typography>
-          </Box>
-        }
-        action={
-          <Box display='flex' flexDirection='row' gap='12px'>
-            <IconButton aria-label='expand'>
-              <ExpandMore />
-            </IconButton>
-            <Slide
-              in={expanded}
-              timeout={300}
-              style={{
-                transformOrigin: "right",
-              }}
-              direction='left'
-              unmountOnExit
-              mountOnEnter
-            >
-              <Button variant='contained' onClick={handleDelete} color='error'>
-                Delete
-              </Button>
-            </Slide>
-            <Slide
-              in={configChanged || nameChanged}
-              timeout={300}
-              style={{
-                transformOrigin: "right",
-              }}
-              direction='left'
-              unmountOnExit
-              mountOnEnter
-            >
-              <Button
-                variant='contained'
-                onClick={(e) => {
-                  if (!expanded) {
-                    e.stopPropagation();
-                  }
-
-                  handleSave();
-                }}
-              >
-                Save
-              </Button>
-            </Slide>
-          </Box>
-        }
-        onClick={handleExpandClick}
+    <>
+      <DeleteCheckModal
+        check={check.name}
+        open={open}
+        setOpen={setOpen}
+        handleDelete={handleDelete}
       />
-      {expanded && <Divider sx={{ margin: "0px 20%" }} />}
-
-      <Collapse in={expanded} timeout={300}>
-        <CardContent>
-          <Box
-            sx={{
-              display: "flex",
-              gap: "16px",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            {Object.entries(JSON.parse(check.source.schema)).map(
-              ([index, type]) => (
-                <ConfigField
-                  key={index}
-                  index={index}
-                  handleInputChange={handleInputChange}
-                  value={type as "string" | "int" | "bool"}
-                  config={config}
+      <Card
+        sx={{
+          width: "100%",
+          marginBottom: "24px",
+          display: visible ? "block" : "none",
+        }}
+        variant='elevation'
+      >
+        <CardHeader
+          title={
+            <Box display='flex' flexDirection='row' alignItems='baseline'>
+              {expanded ? (
+                <TextField
+                  label='Name'
+                  value={name}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                  sx={{ marginRight: "24px" }}
+                  size='small'
                 />
-              )
-            )}
-          </Box>
-        </CardContent>
-      </Collapse>
-    </Card>
+              ) : (
+                <Typography variant='h6' component='div' marginRight='24px'>
+                  {check.name}
+                </Typography>
+              )}
+              <Typography
+                variant='subtitle1'
+                color='textSecondary'
+                component='div'
+              >
+                {check.source.name}
+              </Typography>
+            </Box>
+          }
+          action={
+            <Box display='flex' flexDirection='row' gap='12px'>
+              <IconButton>
+                <ExpandMore />
+              </IconButton>
+              <Slide
+                in={expanded}
+                timeout={300}
+                style={{
+                  transformOrigin: "right",
+                }}
+                direction='left'
+                unmountOnExit
+                mountOnEnter
+              >
+                <Button
+                  variant='contained'
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                  color='error'
+                >
+                  Delete
+                </Button>
+              </Slide>
+              <Slide
+                in={configChanged || nameChanged}
+                timeout={300}
+                style={{
+                  transformOrigin: "right",
+                }}
+                direction='left'
+                unmountOnExit
+                mountOnEnter
+              >
+                <Button
+                  variant='contained'
+                  onClick={(e) => {
+                    if (!expanded) {
+                      e.stopPropagation();
+                    }
+
+                    handleSave();
+                  }}
+                >
+                  Save
+                </Button>
+              </Slide>
+            </Box>
+          }
+          onClick={handleExpandClick}
+        />
+        {expanded && <Divider sx={{ margin: "0px 20%" }} />}
+
+        <Collapse in={expanded} timeout={300}>
+          <CardContent>
+            <Box
+              sx={{
+                display: "flex",
+                gap: "16px",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              }}
+            >
+              {Object.entries(JSON.parse(check.source.schema)).map(
+                ([index, type]) => (
+                  <ConfigField
+                    key={index}
+                    index={index}
+                    handleInputChange={handleInputChange}
+                    value={type as "string" | "int" | "bool"}
+                    config={config}
+                  />
+                )
+              )}
+            </Box>
+          </CardContent>
+        </Collapse>
+      </Card>
+    </>
   );
 }
