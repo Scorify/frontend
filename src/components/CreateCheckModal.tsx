@@ -186,10 +186,6 @@ export default function CreateCheckModal({
             </Box>
           </FormControl>
 
-          <Typography component='h1' variant='body1' marginTop='12px'>
-            <b>Config:</b> {JSON.stringify(config)}
-          </Typography>
-
           <Button
             variant='contained'
             sx={{ marginTop: "24px" }}

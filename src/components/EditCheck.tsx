@@ -12,6 +12,7 @@ import {
   IconButton,
   Slide,
   Typography,
+  TextField,
 } from "@mui/material";
 
 import { enqueueSnackbar } from "notistack";
@@ -105,7 +106,6 @@ export default function EditCheck({ check, handleRefetch }: props) {
       />
 
       <Collapse in={expanded} timeout={300}>
-        <Divider sx={{ margin: "0px 12px" }} />
         <CardContent>
           <Box
             sx={{
@@ -127,10 +127,6 @@ export default function EditCheck({ check, handleRefetch }: props) {
               )
             )}
           </Box>
-          <Typography component='h1' variant='body1' marginTop='12px'>
-            <b>Config: </b>
-            {JSON.stringify(config)}
-          </Typography>
         </CardContent>
       </Collapse>
     </Card>
