@@ -1,17 +1,42 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { Container, Box, Button, Typography } from "@mui/material";
+import {
+  Container,
+  Box,
+  Button,
+  Typography,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Clear } from "@mui/icons-material";
 
 import { useChecksQuery } from "../graph";
 import CreateCheckModal from "../components/CreateCheckModal";
+import { EditCheck } from "../components";
 
 export default function Checks() {
-  const { data, loading, error } = useChecksQuery();
+  const { data, loading, error, refetch } = useChecksQuery();
   const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const urlSearchParams = new URLSearchParams(location.search);
+  const [search, setSearch] = useState(urlSearchParams.get("q") || "");
+
+  const handleRefetch = () => {
+    refetch();
+  };
 
   return (
     <Box>
-      <CreateCheckModal open={open} setOpen={setOpen} data={data} />
+      <CreateCheckModal
+        open={open}
+        setOpen={setOpen}
+        data={data}
+        handleRefetch={handleRefetch}
+      />
       <Container component='main' maxWidth='md'>
         <Box
           sx={{
@@ -24,7 +49,7 @@ export default function Checks() {
           <Typography component='h1' variant='h3' sx={{ marginBottom: "24px" }}>
             Checks
           </Typography>
-          <Box marginBottom='24px'>
+          <Box marginBottom='24px' display='flex' gap='12px'>
             <Button
               variant='contained'
               onClick={() => {
@@ -33,6 +58,33 @@ export default function Checks() {
             >
               Create Check
             </Button>
+            <TextField
+              label='Search'
+              size='small'
+              onChange={(e) => {
+                setSearch(e.target.value);
+
+                urlSearchParams.set("q", e.target.value);
+
+                navigate(`?${urlSearchParams.toString()}`);
+              }}
+              value={search}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      size='small'
+                      onClick={() => {
+                        setSearch("");
+                        navigate("");
+                      }}
+                    >
+                      <Clear />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Box>
 
           {loading && (
@@ -58,9 +110,17 @@ export default function Checks() {
             ) : (
               <>
                 {data.checks.map((check) => (
-                  <Typography component='h1' variant='h4' key={check.name}>
-                    {check.name}
-                  </Typography>
+                  <EditCheck
+                    key={check.name}
+                    check={check}
+                    handleRefetch={handleRefetch}
+                    visible={
+                      check.name.toLowerCase().includes(search.toLowerCase()) ||
+                      check.source.name
+                        .toLowerCase()
+                        .includes(search.toLowerCase())
+                    }
+                  />
                 ))}
               </>
             ))}

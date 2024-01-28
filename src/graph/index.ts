@@ -19,6 +19,7 @@ export type Scalars = {
 
 export type Check = {
   __typename?: 'Check';
+  config: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   source: Source;
@@ -88,7 +89,6 @@ export type MutationUpdateCheckArgs = {
   config?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
-  source?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query = {
@@ -248,6 +248,7 @@ export const ChecksDocument = gql`
   checks {
     id
     name
+    config
     source {
       name
       schema
@@ -331,6 +332,77 @@ export function useCreateCheckMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateCheckMutationHookResult = ReturnType<typeof useCreateCheckMutation>;
 export type CreateCheckMutationResult = Apollo.MutationResult<CreateCheckMutation>;
 export type CreateCheckMutationOptions = Apollo.BaseMutationOptions<CreateCheckMutation, CreateCheckMutationVariables>;
+export const UpdateCheckDocument = gql`
+    mutation UpdateCheck($id: ID!, $name: String, $config: String) {
+  updateCheck(id: $id, name: $name, config: $config) {
+    id
+    name
+    source {
+      name
+      schema
+    }
+  }
+}
+    `;
+export type UpdateCheckMutationFn = Apollo.MutationFunction<UpdateCheckMutation, UpdateCheckMutationVariables>;
+
+/**
+ * __useUpdateCheckMutation__
+ *
+ * To run a mutation, you first call `useUpdateCheckMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCheckMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCheckMutation, { data, loading, error }] = useUpdateCheckMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      config: // value for 'config'
+ *   },
+ * });
+ */
+export function useUpdateCheckMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCheckMutation, UpdateCheckMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCheckMutation, UpdateCheckMutationVariables>(UpdateCheckDocument, options);
+      }
+export type UpdateCheckMutationHookResult = ReturnType<typeof useUpdateCheckMutation>;
+export type UpdateCheckMutationResult = Apollo.MutationResult<UpdateCheckMutation>;
+export type UpdateCheckMutationOptions = Apollo.BaseMutationOptions<UpdateCheckMutation, UpdateCheckMutationVariables>;
+export const DeleteCheckDocument = gql`
+    mutation DeleteCheck($id: ID!) {
+  deleteCheck(id: $id)
+}
+    `;
+export type DeleteCheckMutationFn = Apollo.MutationFunction<DeleteCheckMutation, DeleteCheckMutationVariables>;
+
+/**
+ * __useDeleteCheckMutation__
+ *
+ * To run a mutation, you first call `useDeleteCheckMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCheckMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCheckMutation, { data, loading, error }] = useDeleteCheckMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCheckMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCheckMutation, DeleteCheckMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCheckMutation, DeleteCheckMutationVariables>(DeleteCheckDocument, options);
+      }
+export type DeleteCheckMutationHookResult = ReturnType<typeof useDeleteCheckMutation>;
+export type DeleteCheckMutationResult = Apollo.MutationResult<DeleteCheckMutation>;
+export type DeleteCheckMutationOptions = Apollo.BaseMutationOptions<DeleteCheckMutation, DeleteCheckMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -355,7 +427,7 @@ export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: 
 export type ChecksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
+export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, config: string, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
 
 export type CreateCheckMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -365,3 +437,19 @@ export type CreateCheckMutationVariables = Exact<{
 
 
 export type CreateCheckMutation = { __typename?: 'Mutation', createCheck: { __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } } };
+
+export type UpdateCheckMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type UpdateCheckMutation = { __typename?: 'Mutation', updateCheck: { __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } } };
+
+export type DeleteCheckMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteCheckMutation = { __typename?: 'Mutation', deleteCheck: boolean };

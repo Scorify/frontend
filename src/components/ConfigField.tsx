@@ -6,6 +6,7 @@ type props = {
   index: string;
   value: "string" | "int" | "bool";
   config: { [key: string]: string | number | boolean };
+  default?: string | number | boolean;
   sx?: SxProps<Theme>;
 };
 

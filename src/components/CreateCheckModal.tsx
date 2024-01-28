@@ -21,9 +21,15 @@ type props = {
   data: ChecksQuery | undefined;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
+  handleRefetch: () => void;
 };
 
-export default function CreateCheckModal({ data, open, setOpen }: props) {
+export default function CreateCheckModal({
+  data,
+  open,
+  setOpen,
+  handleRefetch,
+}: props) {
   const [createCheckMutation] = useCreateCheckMutation({
     onCompleted: () => {
       enqueueSnackbar("Check created successfully", { variant: "success" });
@@ -180,10 +186,6 @@ export default function CreateCheckModal({ data, open, setOpen }: props) {
             </Box>
           </FormControl>
 
-          <Typography component='h1' variant='body1' marginTop='12px'>
-            <b>Config:</b> {JSON.stringify(config)}
-          </Typography>
-
           <Button
             variant='contained'
             sx={{ marginTop: "24px" }}
@@ -208,7 +210,7 @@ export default function CreateCheckModal({ data, open, setOpen }: props) {
                   name: name,
                   config: JSON.stringify(config),
                 },
-              });
+              }).then(handleRefetch);
             }}
           >
             Create Check
