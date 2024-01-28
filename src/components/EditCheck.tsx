@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { Transition } from "react-transition-group";
+import { useEffect, useState } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
@@ -11,12 +10,13 @@ import {
   Collapse,
   Divider,
   IconButton,
+  Slide,
   Typography,
 } from "@mui/material";
 
+import { enqueueSnackbar } from "notistack";
 import { ChecksQuery, useUpdateCheckMutation } from "../graph";
 import { ConfigField } from "./";
-import { enqueueSnackbar } from "notistack";
 
 type props = {
   check: ChecksQuery["checks"][0];
@@ -25,7 +25,6 @@ type props = {
 
 export default function EditCheck({ check, handleRefetch }: props) {
   const [expanded, setExpanded] = useState(false);
-  const transitionContainerRef = useRef<HTMLDivElement | null>(null);
   const [config, setConfig] = useState<{
     [key: string]: string | number | boolean;
   }>(JSON.parse(check.config));
@@ -64,14 +63,6 @@ export default function EditCheck({ check, handleRefetch }: props) {
     });
   };
 
-  const transitionStyles = {
-    entering: { height: 0, overflow: "hidden" },
-    entered: { height: "auto", overflow: "visible" },
-    exiting: { height: "auto", overflow: "visible" },
-    exited: { height: 0, overflow: "hidden" },
-    unmounted: {},
-  };
-
   return (
     <Card sx={{ width: "100%", marginBottom: "24px" }} variant='elevation'>
       <CardHeader
@@ -90,64 +81,58 @@ export default function EditCheck({ check, handleRefetch }: props) {
           </Box>
         }
         action={
-          <>
+          <Box display='flex' flexDirection='row'>
             <IconButton aria-label='expand' onClick={handleExpandClick}>
               <ExpandMore />
             </IconButton>
-            {configChanged && (
+            <Slide
+              in={configChanged}
+              timeout={300}
+              style={{
+                transformOrigin: "right",
+              }}
+              direction='left'
+              unmountOnExit
+              mountOnEnter
+            >
               <Button variant='contained' onClick={handleSave}>
                 Save
               </Button>
-            )}
-          </>
+            </Slide>
+          </Box>
         }
         onClick={handleExpandClick}
       />
-      <Transition
-        in={expanded}
-        timeout={{ enter: 300, exit: 300 }}
-        nodeRef={transitionContainerRef}
-      >
-        {(state) => (
-          <Collapse
-            in={expanded}
-            timeout={300}
-            ref={transitionContainerRef}
-            style={{
-              ...transitionStyles[state],
-              transition: "height 0.3s ease-in-out",
+
+      <Collapse in={expanded} timeout={300}>
+        <Divider sx={{ margin: "0px 12px" }} />
+        <CardContent>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "16px",
+              flexWrap: "wrap",
+              justifyContent: "center",
             }}
           >
-            <Divider sx={{ margin: "0px 12px" }} />
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "16px",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                }}
-              >
-                {Object.entries(JSON.parse(check.source.schema)).map(
-                  ([index, type]) => (
-                    <ConfigField
-                      key={index}
-                      index={index}
-                      handleInputChange={handleInputChange}
-                      value={type as "string" | "int" | "bool"}
-                      config={config}
-                    />
-                  )
-                )}
-              </Box>
-              <Typography component='h1' variant='body1' marginTop='12px'>
-                <b>Config: </b>
-                {JSON.stringify(config)}
-              </Typography>
-            </CardContent>
-          </Collapse>
-        )}
-      </Transition>
+            {Object.entries(JSON.parse(check.source.schema)).map(
+              ([index, type]) => (
+                <ConfigField
+                  key={index}
+                  index={index}
+                  handleInputChange={handleInputChange}
+                  value={type as "string" | "int" | "bool"}
+                  config={config}
+                />
+              )
+            )}
+          </Box>
+          <Typography component='h1' variant='body1' marginTop='12px'>
+            <b>Config: </b>
+            {JSON.stringify(config)}
+          </Typography>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 }
