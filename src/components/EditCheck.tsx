@@ -8,6 +8,7 @@ import {
   CardContent,
   CardHeader,
   Collapse,
+  Grow,
   Divider,
   IconButton,
   Slide,
@@ -123,123 +124,125 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
         setOpen={setOpen}
         handleDelete={handleDelete}
       />
-      <Card
-        sx={{
-          width: "100%",
-          marginBottom: "24px",
-          display: visible ? "block" : "none",
-        }}
-        variant='elevation'
-      >
-        <CardHeader
-          title={
-            <Box display='flex' flexDirection='row' alignItems='baseline'>
-              {expanded ? (
-                <TextField
-                  label='Name'
-                  value={name}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                  sx={{ marginRight: "24px" }}
-                  size='small'
-                />
-              ) : (
-                <Typography variant='h6' component='div' marginRight='24px'>
-                  {check.name}
-                </Typography>
-              )}
-              <Typography
-                variant='subtitle1'
-                color='textSecondary'
-                component='div'
-              >
-                {check.source.name}
-              </Typography>
-            </Box>
-          }
-          action={
-            <Box display='flex' flexDirection='row' gap='12px'>
-              <IconButton>
-                <ExpandMore />
-              </IconButton>
-              <Slide
-                in={expanded}
-                timeout={300}
-                style={{
-                  transformOrigin: "right",
-                }}
-                direction='left'
-                unmountOnExit
-                mountOnEnter
-              >
-                <Button
-                  variant='contained'
-                  onClick={() => {
-                    setOpen(true);
-                  }}
-                  color='error'
-                >
-                  Delete
-                </Button>
-              </Slide>
-              <Slide
-                in={configChanged || nameChanged}
-                timeout={300}
-                style={{
-                  transformOrigin: "right",
-                }}
-                direction='left'
-                unmountOnExit
-                mountOnEnter
-              >
-                <Button
-                  variant='contained'
-                  onClick={(e) => {
-                    if (!expanded) {
+      <Grow in={true}>
+        <Card
+          sx={{
+            width: "100%",
+            marginBottom: "24px",
+            display: visible ? "block" : "none",
+          }}
+          variant='elevation'
+        >
+          <CardHeader
+            title={
+              <Box display='flex' flexDirection='row' alignItems='baseline'>
+                {expanded ? (
+                  <TextField
+                    label='Name'
+                    value={name}
+                    onClick={(e) => {
                       e.stopPropagation();
-                    }
-
-                    handleSave();
-                  }}
-                >
-                  Save
-                </Button>
-              </Slide>
-            </Box>
-          }
-          onClick={handleExpandClick}
-        />
-        {expanded && <Divider sx={{ margin: "0px 20%" }} />}
-
-        <Collapse in={expanded} timeout={300}>
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                gap: "16px",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {Object.entries(JSON.parse(check.source.schema)).map(
-                ([index, type]) => (
-                  <ConfigField
-                    key={index}
-                    index={index}
-                    handleInputChange={handleInputChange}
-                    value={type as "string" | "int" | "bool"}
-                    config={config}
+                    }}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                    sx={{ marginRight: "24px" }}
+                    size='small'
                   />
-                )
-              )}
-            </Box>
-          </CardContent>
-        </Collapse>
-      </Card>
+                ) : (
+                  <Typography variant='h6' component='div' marginRight='24px'>
+                    {check.name}
+                  </Typography>
+                )}
+                <Typography
+                  variant='subtitle1'
+                  color='textSecondary'
+                  component='div'
+                >
+                  {check.source.name}
+                </Typography>
+              </Box>
+            }
+            action={
+              <Box display='flex' flexDirection='row' gap='12px'>
+                <IconButton>
+                  <ExpandMore />
+                </IconButton>
+                <Slide
+                  in={expanded}
+                  timeout={300}
+                  style={{
+                    transformOrigin: "right",
+                  }}
+                  direction='left'
+                  unmountOnExit
+                  mountOnEnter
+                >
+                  <Button
+                    variant='contained'
+                    onClick={() => {
+                      setOpen(true);
+                    }}
+                    color='error'
+                  >
+                    Delete
+                  </Button>
+                </Slide>
+                <Slide
+                  in={configChanged || nameChanged}
+                  timeout={300}
+                  style={{
+                    transformOrigin: "right",
+                  }}
+                  direction='left'
+                  unmountOnExit
+                  mountOnEnter
+                >
+                  <Button
+                    variant='contained'
+                    onClick={(e) => {
+                      if (!expanded) {
+                        e.stopPropagation();
+                      }
+
+                      handleSave();
+                    }}
+                  >
+                    Save
+                  </Button>
+                </Slide>
+              </Box>
+            }
+            onClick={handleExpandClick}
+          />
+          {expanded && <Divider sx={{ margin: "0px 20%" }} />}
+
+          <Collapse in={expanded} timeout={300}>
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "16px",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                }}
+              >
+                {Object.entries(JSON.parse(check.source.schema)).map(
+                  ([index, type]) => (
+                    <ConfigField
+                      key={index}
+                      index={index}
+                      handleInputChange={handleInputChange}
+                      value={type as "string" | "int" | "bool"}
+                      config={config}
+                    />
+                  )
+                )}
+              </Box>
+            </CardContent>
+          </Collapse>
+        </Card>
+      </Grow>
     </>
   );
 }
