@@ -49,13 +49,8 @@ mutation CreateCheck($name: String!, $source: String!, $config: String!) {
   }
 }
 
-mutation UpdateCheck(
-  $id: ID!
-  $name: String
-  $source: String
-  $config: String
-) {
-  updateCheck(id: $id, name: $name, source: $source, config: $config) {
+mutation UpdateCheck($id: ID!, $name: String, $config: String) {
+  updateCheck(id: $id, name: $name, config: $config) {
     id
     name
     source {
@@ -63,4 +58,8 @@ mutation UpdateCheck(
       schema
     }
   }
+}
+
+mutation DeleteCheck($id: ID!) {
+  deleteCheck(id: $id)
 }
