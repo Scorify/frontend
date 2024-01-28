@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,6 +9,7 @@ import {
   CardHeader,
   Collapse,
   Divider,
+  IconButton,
   Slide,
   TextField,
   Typography,
@@ -24,9 +26,10 @@ import { ConfigField } from "./";
 type props = {
   check: ChecksQuery["checks"][0];
   handleRefetch: () => void;
+  visible: boolean;
 };
 
-export default function EditCheck({ check, handleRefetch }: props) {
+export default function EditCheck({ check, visible, handleRefetch }: props) {
   const [expanded, setExpanded] = useState(false);
 
   const [config, setConfig] = useState<{
@@ -111,7 +114,14 @@ export default function EditCheck({ check, handleRefetch }: props) {
   };
 
   return (
-    <Card sx={{ width: "100%", marginBottom: "24px" }} variant='elevation'>
+    <Card
+      sx={{
+        width: "100%",
+        marginBottom: "24px",
+        display: visible ? "block" : "none",
+      }}
+      variant='elevation'
+    >
       <CardHeader
         title={
           <Box display='flex' flexDirection='row' alignItems='baseline'>
@@ -126,6 +136,7 @@ export default function EditCheck({ check, handleRefetch }: props) {
                   setName(e.target.value);
                 }}
                 sx={{ marginRight: "24px" }}
+                size='small'
               />
             ) : (
               <Typography variant='h6' component='div' marginRight='24px'>
@@ -143,6 +154,9 @@ export default function EditCheck({ check, handleRefetch }: props) {
         }
         action={
           <Box display='flex' flexDirection='row' gap='12px'>
+            <IconButton aria-label='expand'>
+              <ExpandMore />
+            </IconButton>
             <Slide
               in={expanded}
               timeout={300}
