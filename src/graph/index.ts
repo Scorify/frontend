@@ -48,10 +48,13 @@ export type Mutation = {
   __typename?: 'Mutation';
   changePassword: Scalars['Boolean']['output'];
   createCheck: Check;
+  createUser: User;
   deleteCheck: Scalars['Boolean']['output'];
+  deleteUser: Scalars['Boolean']['output'];
   editConfig: Config;
   login: LoginOutput;
   updateCheck: Check;
+  updateUser: User;
 };
 
 
@@ -68,7 +71,20 @@ export type MutationCreateCheckArgs = {
 };
 
 
+export type MutationCreateUserArgs = {
+  number?: InputMaybe<Scalars['Int']['input']>;
+  password: Scalars['String']['input'];
+  role: Role;
+  username: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteCheckArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteUserArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -89,6 +105,15 @@ export type MutationUpdateCheckArgs = {
   config?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationUpdateUserArgs = {
+  id: Scalars['ID']['input'];
+  number?: InputMaybe<Scalars['Int']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  role?: InputMaybe<Role>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query = {
@@ -118,6 +143,11 @@ export type QuerySourceArgs = {
   name: Scalars['String']['input'];
 };
 
+export enum Role {
+  Admin = 'ADMIN',
+  User = 'USER'
+}
+
 export type Source = {
   __typename?: 'Source';
   name: Scalars['String']['output'];
@@ -127,6 +157,8 @@ export type Source = {
 export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
+  number?: Maybe<Scalars['Int']['output']>;
+  role: Role;
   username: Scalars['String']['output'];
 };
 
