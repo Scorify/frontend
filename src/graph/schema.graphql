@@ -96,19 +96,16 @@ mutation UpdateUser(
   $id: ID!
   $username: String
   $password: String
-  $role: Role
   $number: Int
 ) {
   updateUser(
     id: $id
     username: $username
     password: $password
-    role: $role
     number: $number
   ) {
     id
     username
-    role
     number
   }
 }

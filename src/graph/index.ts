@@ -112,7 +112,6 @@ export type MutationUpdateUserArgs = {
   id: Scalars['ID']['input'];
   number?: InputMaybe<Scalars['Int']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
-  role?: InputMaybe<Role>;
   username?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -523,17 +522,10 @@ export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutati
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const UpdateUserDocument = gql`
-    mutation UpdateUser($id: ID!, $username: String, $password: String, $role: Role, $number: Int) {
-  updateUser(
-    id: $id
-    username: $username
-    password: $password
-    role: $role
-    number: $number
-  ) {
+    mutation UpdateUser($id: ID!, $username: String, $password: String, $number: Int) {
+  updateUser(id: $id, username: $username, password: $password, number: $number) {
     id
     username
-    role
     number
   }
 }
@@ -556,7 +548,6 @@ export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, U
  *      id: // value for 'id'
  *      username: // value for 'username'
  *      password: // value for 'password'
- *      role: // value for 'role'
  *      number: // value for 'number'
  *   },
  * });
@@ -669,12 +660,11 @@ export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   username?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
-  role?: InputMaybe<Role>;
   number?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: string, username: string, role: Role, number?: number | null } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: string, username: string, number?: number | null } };
 
 export type DeleteUserMutationVariables = Exact<{
   id: Scalars['ID']['input'];
