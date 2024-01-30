@@ -88,6 +88,7 @@ export default function Login({ setCookie }: props) {
             name='password'
             label='Password'
             id='password'
+            fullWidth
           />
           <Button
             type='submit'

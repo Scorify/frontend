@@ -61,6 +61,7 @@ export default function ChangePassword({ removeCookies }: props) {
           onChange={(e) => {
             setOldPassword(e.target.value);
           }}
+          fullWidth
         />
         <PasswordInput
           label='New Password'
@@ -68,6 +69,7 @@ export default function ChangePassword({ removeCookies }: props) {
           onChange={(e) => {
             setNewPassword(e.target.value);
           }}
+          fullWidth
         />
         <PasswordInput
           label='Confirm New Password'
@@ -75,6 +77,7 @@ export default function ChangePassword({ removeCookies }: props) {
           onChange={(e) => {
             setConfirmNewPassword(e.target.value);
           }}
+          fullWidth
         />
         {newPassword &&
           confirmNewPassword &&
