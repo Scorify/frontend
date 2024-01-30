@@ -145,8 +145,8 @@ export type QuerySourceArgs = {
 };
 
 export enum Role {
-  Admin = 'ADMIN',
-  User = 'USER'
+  Admin = 'admin',
+  User = 'user'
 }
 
 export type Source = {
