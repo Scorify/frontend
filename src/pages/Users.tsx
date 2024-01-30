@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { useUsersQuery } from "../graph";
-import { CreateUserModal } from "../components";
+import { CreateUserModal, EditUser } from "../components";
 
 export default function Checks() {
   const { data, loading, error, refetch } = useUsersQuery();
@@ -108,20 +108,17 @@ export default function Checks() {
             ) : (
               <>
                 {data.users.map((user) => (
-                  <Typography component='h1' variant='h4'>
-                    {user.username}
-                  </Typography>
-                  //   <EditUser
-                  //     key={check.name}
-                  //     check={check}
-                  //     handleRefetch={handleRefetch}
-                  //     visible={
-                  //       check.name.toLowerCase().includes(search.toLowerCase()) ||
-                  //       check.source.name
-                  //         .toLowerCase()
-                  //         .includes(search.toLowerCase())
-                  //     }
-                  //   />
+                  <EditUser
+                    key={user.id}
+                    user={user}
+                    handleRefetch={handleRefetch}
+                    visible={
+                      user.username
+                        .toLowerCase()
+                        .includes(search.toLowerCase()) ||
+                      user.role.toLowerCase().includes(search.toLowerCase())
+                    }
+                  />
                 ))}
               </>
             ))}
