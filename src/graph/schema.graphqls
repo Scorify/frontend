@@ -1,6 +1,13 @@
+enum Role {
+  admin
+  user
+}
+
 type User {
   id: ID!
   username: String!
+  role: Role!
+  number: Int
 }
 
 type LoginOutput {
@@ -34,6 +41,7 @@ type Config {
 
 type Query {
   me: User!
+  users: [User!]!
 
   sources: [Source!]!
   source(name: String!): Source!
@@ -52,6 +60,15 @@ type Mutation {
   createCheck(name: String!, source: String!, config: String!): Check!
   updateCheck(id: ID!, name: String, config: String): Check!
   deleteCheck(id: ID!): Boolean!
+
+  createUser(
+    username: String!
+    password: String!
+    role: Role!
+    number: Int
+  ): User!
+  updateUser(id: ID!, username: String, password: String, number: Int): User!
+  deleteUser(id: ID!): Boolean!
 
   editConfig(id: ID!, config: String!): Config!
 }

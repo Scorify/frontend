@@ -18,7 +18,7 @@ import { ChecksQuery, useCreateCheckMutation } from "../graph";
 import { ConfigField } from "./";
 
 type props = {
-  data: ChecksQuery | undefined;
+  data?: ChecksQuery;
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   handleRefetch: () => void;
@@ -34,6 +34,7 @@ export default function CreateCheckModal({
     onCompleted: () => {
       enqueueSnackbar("Check created successfully", { variant: "success" });
       setOpen(false);
+      handleRefetch();
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -210,7 +211,7 @@ export default function CreateCheckModal({
                   name: name,
                   config: JSON.stringify(config),
                 },
-              }).then(handleRefetch);
+              });
             }}
           >
             Create Check

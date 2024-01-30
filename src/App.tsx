@@ -8,10 +8,9 @@ import { SnackbarProvider } from "notistack";
 import { useCookies } from "react-cookie";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import { Main, Error, Admin } from "./components";
-import { ChangePassword, Home, Login, Me } from "./pages";
+import { Admin, Error, Main } from "./components";
 import { useJWT } from "./hooks";
-import Checks from "./pages/Checks";
+import { ChangePassword, Checks, Home, Login, Me, Users } from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
@@ -115,14 +114,10 @@ export default function App() {
               path: "checks",
               element: <LazyComponent element={<Checks />} />,
             },
-            // {
-            //   path: "*",
-            //   element: (
-            //     <LazyComponent
-            //       element={<Error code={404} message={"Page Not Found"} />}
-            //     />
-            //   ),
-            // },
+            {
+              path: "users",
+              element: <LazyComponent element={<Users />} />,
+            },
           ],
         },
         {

@@ -15,6 +15,7 @@ type props = {
   name?: string;
   label?: string;
   id?: string;
+  fullWidth?: boolean;
 };
 
 export default function PasswordInput({
@@ -27,6 +28,7 @@ export default function PasswordInput({
   name,
   label,
   id,
+  fullWidth,
 }: props) {
   const [password, setPassword] = useState<string>(
     value === undefined ? "" : value
@@ -59,7 +61,7 @@ export default function PasswordInput({
         setPassword(e.target.value);
       }}
       onBlur={handleBlur}
-      fullWidth
+      fullWidth={fullWidth}
       margin={margin}
       required={required}
       name={name}

@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
 type props = {
-  check: string;
+  user: string;
   open: boolean;
   setOpen: (open: boolean) => void;
   handleDelete: () => void;
 };
 
-export default function DeleteCheckModal({
-  check,
+export default function DeleteUserModal({
+  user,
   open,
   setOpen,
   handleDelete,
@@ -19,8 +19,8 @@ export default function DeleteCheckModal({
   const [match, setMatch] = useState<boolean>(false);
 
   useEffect(() => {
-    setMatch(confirm === check);
-  }, [confirm, check]);
+    setMatch(confirm === user);
+  }, [confirm, user]);
 
   return (
     <Modal
@@ -52,14 +52,14 @@ export default function DeleteCheckModal({
           }}
         >
           <Typography component='h1' variant='h3'>
-            Delete Check
+            Delete User
           </Typography>
           <Typography component='h2' variant='body1'>
-            To confirm deletion of check, type the name (<b>{check}</b>) of the
-            check below.
+            To confirm deletion of user, type the name (<b>{user}</b>) of the
+            user below.
           </Typography>
           <TextField
-            label='Check Name'
+            label='User Name'
             variant='outlined'
             sx={{
               marginTop: "24px",
@@ -76,7 +76,7 @@ export default function DeleteCheckModal({
             onClick={handleDelete}
             disabled={!match}
           >
-            Delete Check
+            Delete User
           </Button>
         </Box>
       </Box>

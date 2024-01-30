@@ -63,3 +63,53 @@ mutation UpdateCheck($id: ID!, $name: String, $config: String) {
 mutation DeleteCheck($id: ID!) {
   deleteCheck(id: $id)
 }
+
+query Users {
+  users {
+    id
+    username
+    role
+    number
+  }
+}
+
+mutation CreateUser(
+  $username: String!
+  $password: String!
+  $role: Role!
+  $number: Int
+) {
+  createUser(
+    username: $username
+    password: $password
+    role: $role
+    number: $number
+  ) {
+    id
+    username
+    role
+    number
+  }
+}
+
+mutation UpdateUser(
+  $id: ID!
+  $username: String
+  $password: String
+  $number: Int
+) {
+  updateUser(
+    id: $id
+    username: $username
+    password: $password
+    number: $number
+  ) {
+    id
+    username
+    number
+  }
+}
+
+mutation DeleteUser($id: ID!) {
+  deleteUser(id: $id)
+}

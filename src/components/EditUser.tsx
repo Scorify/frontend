@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
@@ -8,51 +8,50 @@ import {
   CardContent,
   CardHeader,
   Collapse,
-  Grow,
   Divider,
+  Grow,
   IconButton,
   Slide,
   TextField,
   Typography,
 } from "@mui/material";
-
 import { enqueueSnackbar } from "notistack";
+
+import { DeleteUserModal, PasswordInput } from ".";
 import {
-  ChecksQuery,
-  useDeleteCheckMutation,
-  useUpdateCheckMutation,
+  UsersQuery,
+  useDeleteUserMutation,
+  useUpdateUserMutation,
 } from "../graph";
-import { ConfigField, DeleteCheckModal } from "./";
 
 type props = {
-  check: ChecksQuery["checks"][0];
+  user: UsersQuery["users"][0];
   handleRefetch: () => void;
   visible: boolean;
 };
 
-export default function EditCheck({ check, visible, handleRefetch }: props) {
+export default function EditCheck({ user, visible, handleRefetch }: props) {
   const [expanded, setExpanded] = useState(false);
 
-  const [config, setConfig] = useState<{
-    [key: string]: string | number | boolean;
-  }>(JSON.parse(check.config));
-  const [configChanged, setConfigChanged] = useState(false);
-  useEffect(() => {
-    setConfigChanged(JSON.stringify(config) != check.config);
-  }, [config, check.config]);
+  const [name, setName] = useState<string>(user.username);
+  const nameChanged = useMemo(
+    () => name !== user.username,
+    [name, user.username]
+  );
 
-  const [name, setName] = useState<string>(check.name);
-  const [nameChanged, setNameChanged] = useState(name != check.name);
-  useEffect(() => {
-    setNameChanged(name != check.name);
-  }, [name, check.name]);
+  const [password, setPassword] = useState<string>("");
+  const passwordChanged = useMemo(() => password !== "", [password]);
+
+  const [number, setNumber] = useState<number | null | undefined>(user.number);
+  const numberChanged = useMemo(() => number !== user.number, [number]);
 
   const [open, setOpen] = useState(false);
 
-  const [updateCheckMutation] = useUpdateCheckMutation({
+  const [updateUserMutation] = useUpdateUserMutation({
     onCompleted: () => {
-      enqueueSnackbar("Check updated successfully", { variant: "success" });
+      enqueueSnackbar("User updated successfully", { variant: "success" });
       handleRefetch();
+      setPassword("");
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -60,9 +59,9 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
     },
   });
 
-  const [DeleteCheckMutation] = useDeleteCheckMutation({
+  const [deleteUserMutation] = useDeleteUserMutation({
     onCompleted: () => {
-      enqueueSnackbar("Check deleted successfully", { variant: "success" });
+      enqueueSnackbar("User deleted successfully", { variant: "success" });
       handleRefetch();
     },
     onError: (error) => {
@@ -70,56 +69,34 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
       console.log(error);
     },
   });
-
-  const handleInputChange = (key: string, value: string | number | boolean) => {
-    setConfig({
-      ...config,
-      [key]: value,
-    });
-  };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   const handleSave = () => {
-    if (nameChanged && configChanged) {
-      updateCheckMutation({
-        variables: {
-          id: check.id,
-          config: JSON.stringify(config),
-          name: name,
-        },
-      });
-    } else if (nameChanged) {
-      updateCheckMutation({
-        variables: {
-          id: check.id,
-          name: name,
-        },
-      });
-    } else if (configChanged) {
-      updateCheckMutation({
-        variables: {
-          id: check.id,
-          config: JSON.stringify(config),
-        },
-      });
-    }
+    updateUserMutation({
+      variables: {
+        id: user.id,
+        username: nameChanged ? name : undefined,
+        password: passwordChanged ? password : undefined,
+        number: numberChanged ? number : undefined,
+      },
+    });
   };
 
   const handleDelete = () => {
-    DeleteCheckMutation({
+    deleteUserMutation({
       variables: {
-        id: check.id,
+        id: user.id,
       },
     });
   };
 
   return (
     <>
-      <DeleteCheckModal
-        check={check.name}
+      <DeleteUserModal
+        user={user.username}
         open={open}
         setOpen={setOpen}
         handleDelete={handleDelete}
@@ -151,7 +128,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   />
                 ) : (
                   <Typography variant='h6' component='div' marginRight='24px'>
-                    {check.name}
+                    {user.username}
                   </Typography>
                 )}
                 <Typography
@@ -159,7 +136,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   color='textSecondary'
                   component='div'
                 >
-                  {check.source.name}
+                  {user.role}
                 </Typography>
               </Box>
             }
@@ -189,7 +166,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   </Button>
                 </Slide>
                 <Slide
-                  in={configChanged || nameChanged}
+                  in={nameChanged || passwordChanged || numberChanged}
                   timeout={300}
                   style={{
                     transformOrigin: "right",
@@ -227,16 +204,23 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   justifyContent: "center",
                 }}
               >
-                {Object.entries(JSON.parse(check.source.schema)).map(
-                  ([index, type]) => (
-                    <ConfigField
-                      key={index}
-                      index={index}
-                      handleInputChange={handleInputChange}
-                      value={type as "string" | "int" | "bool"}
-                      config={config}
-                    />
-                  )
+                <PasswordInput
+                  label='Password'
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                {user.role === "user" && (
+                  <TextField
+                    label='Number'
+                    value={number}
+                    onChange={(e) => {
+                      setNumber(parseInt(e.target.value));
+                    }}
+                    sx={{ marginRight: "24px" }}
+                    type='number'
+                  />
                 )}
               </Box>
             </CardContent>
