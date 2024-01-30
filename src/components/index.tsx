@@ -1,6 +1,7 @@
 import Admin from "./Admin";
 import ConfigField from "./ConfigField";
 import CreateCheckModal from "./CreateCheckModal";
+import CreateUserModal from "./CreateUserModal";
 import DeleteCheckModal from "./DeleteCheckModal";
 import DrawerComponent from "./Drawer";
 import EditCheck from "./EditCheck";
@@ -13,6 +14,7 @@ export {
   Admin,
   ConfigField,
   CreateCheckModal,
+  CreateUserModal,
   DeleteCheckModal,
   DrawerComponent as Drawer,
   EditCheck,
