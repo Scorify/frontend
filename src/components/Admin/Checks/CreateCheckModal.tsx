@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
-import { ChecksQuery, useCreateCheckMutation } from "../graph";
-import { ConfigField } from "./";
+import { ChecksQuery, useCreateCheckMutation } from "../../../graph";
+import { ConfigField } from "../..";
 
 type props = {
   data?: ChecksQuery;

@@ -21,8 +21,8 @@ import {
   ChecksQuery,
   useDeleteCheckMutation,
   useUpdateCheckMutation,
-} from "../graph";
-import { ConfigField, DeleteCheckModal } from "./";
+} from "../../../graph";
+import { ConfigField, DeleteCheckModal } from "../..";
 
 type props = {
   check: ChecksQuery["checks"][0];

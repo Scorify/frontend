@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
-import { Error } from "../components";
-import { JWT } from "../models";
+import { Error } from "..";
+import { JWT } from "../../models";
 
 type props = {
   jwt: JWT;

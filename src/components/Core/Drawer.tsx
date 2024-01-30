@@ -18,7 +18,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { JWT } from "../models";
+import { JWT } from "../../models";
 
 type props = {
   drawerState: boolean;

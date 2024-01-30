@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
-import { Role, useCreateUserMutation } from "../graph";
-import { PasswordInput } from "./";
+import { Role, useCreateUserMutation } from "../../../graph";
+import { PasswordInput } from "../..";
 
 type props = {
   open: boolean;
