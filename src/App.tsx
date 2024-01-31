@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, Suspense, useEffect, useState } from "react";
+import { ReactElement, ReactNode, Suspense, useMemo, useState } from "react";
 
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { ThemeProvider } from "@emotion/react";
@@ -40,18 +40,10 @@ export default function App() {
   }
 
   const [theme, setTheme] = useState(savedTheme);
-  const [muiTheme, setMuiTheme] = useState(
-    theme === "dark" ? darkTheme : lightTheme
-  );
-  localStorage.setItem("theme", theme);
-
-  useEffect(() => {
-    if (theme === "dark") {
-      setMuiTheme(darkTheme);
-    } else {
-      setMuiTheme(lightTheme);
-    }
+  const muiTheme = useMemo(() => {
     localStorage.setItem("theme", theme);
+
+    return theme === "dark" ? darkTheme : lightTheme;
   }, [theme]);
 
   const client = new ApolloClient({
