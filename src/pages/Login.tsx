@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
@@ -17,11 +16,8 @@ type props = {
 };
 
 export default function Login({ setCookie }: props) {
-  const [loginMutation, { data, error }] = useLoginMutation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (data && data.login) {
+  const [loginMutation] = useLoginMutation({
+    onCompleted: (data) => {
       setCookie("auth", data.login.token, {
         path: data.login.path,
         expires: new Date(data.login.expires * 1000),
@@ -32,15 +28,13 @@ export default function Login({ setCookie }: props) {
       navigate("/");
 
       enqueueSnackbar("Logged in successfully", { variant: "success" });
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error && error.message) {
+    },
+    onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
       console.log(error);
-    }
-  }, [error]);
+    },
+  });
+  const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
