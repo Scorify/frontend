@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, Typography } from "@mui/material";
@@ -14,13 +14,13 @@ type props = {
 
 export default function ChangePassword({ removeCookies }: props) {
   const navigate = useNavigate();
+
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
-  const [changePasswordMutation, { data, error }] = useChangePasswordMutation();
 
-  useEffect(() => {
-    if (data && data.changePassword) {
+  const [changePasswordMutation] = useChangePasswordMutation({
+    onCompleted: () => {
       removeCookies("auth");
 
       navigate("/login");
@@ -31,18 +31,15 @@ export default function ChangePassword({ removeCookies }: props) {
           variant: "success",
         }
       );
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error && error.message) {
+    },
+    onError: (error) => {
       enqueueSnackbar("Encountered an error: " + error.message, {
         variant: "error",
       });
 
       console.log(error);
-    }
-  }, [error]);
+    },
+  });
 
   return (
     <Container component='main' maxWidth='xs'>
