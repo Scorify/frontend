@@ -17,12 +17,12 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
-import { DeleteUserModal, PasswordInput } from ".";
+import { DeleteUserModal, PasswordInput } from "../..";
 import {
   UsersQuery,
   useDeleteUserMutation,
   useUpdateUserMutation,
-} from "../graph";
+} from "../../../graph";
 
 type props = {
   user: UsersQuery["users"][0];

@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Clear } from "@mui/icons-material";
 import {
+  Container,
   Box,
   Button,
-  Container,
-  IconButton,
-  InputAdornment,
-  TextField,
   Typography,
+  TextField,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Clear } from "@mui/icons-material";
 
-import { useUsersQuery } from "../graph";
-import { CreateUserModal, EditUser } from "../components";
+import { useChecksQuery } from "../../graph";
+import CreateCheckModal from "../../components/Admin/Checks/CreateCheckModal";
+import { EditCheck } from "../../components";
 
 export default function Checks() {
-  const { data, loading, error, refetch } = useUsersQuery();
+  const { data, loading, error, refetch } = useChecksQuery();
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -30,9 +31,10 @@ export default function Checks() {
 
   return (
     <Box>
-      <CreateUserModal
+      <CreateCheckModal
         open={open}
         setOpen={setOpen}
+        data={data}
         handleRefetch={handleRefetch}
       />
       <Container component='main' maxWidth='md'>
@@ -45,7 +47,7 @@ export default function Checks() {
           }}
         >
           <Typography component='h1' variant='h3' sx={{ marginBottom: "24px" }}>
-            Users
+            Checks
           </Typography>
           <Box marginBottom='24px' display='flex' gap='12px'>
             <Button
@@ -54,7 +56,7 @@ export default function Checks() {
                 setOpen(true);
               }}
             >
-              Create User
+              Create Check
             </Button>
             <TextField
               label='Search'
@@ -101,22 +103,22 @@ export default function Checks() {
             </>
           )}
           {data &&
-            (!data.users.length ? (
+            (!data.checks.length ? (
               <Typography component='h1' variant='h4'>
-                No Users Exist
+                No Checks Configured
               </Typography>
             ) : (
               <>
-                {data.users.map((user) => (
-                  <EditUser
-                    key={user.id}
-                    user={user}
+                {data.checks.map((check) => (
+                  <EditCheck
+                    key={check.name}
+                    check={check}
                     handleRefetch={handleRefetch}
                     visible={
-                      user.username
+                      check.name.toLowerCase().includes(search.toLowerCase()) ||
+                      check.source.name
                         .toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      user.role.toLowerCase().includes(search.toLowerCase())
+                        .includes(search.toLowerCase())
                     }
                   />
                 ))}

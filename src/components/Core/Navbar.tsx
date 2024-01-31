@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { CookieSetOptions } from "universal-cookie";
 
-import { JWT } from "../models";
+import { JWT } from "../../models";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 type props = {

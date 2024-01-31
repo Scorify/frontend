@@ -1,23 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { Clear } from "@mui/icons-material";
 import {
-  Container,
   Box,
   Button,
-  Typography,
-  TextField,
-  InputAdornment,
+  Container,
   IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Clear } from "@mui/icons-material";
 
-import { useChecksQuery } from "../graph";
-import CreateCheckModal from "../components/CreateCheckModal";
-import { EditCheck } from "../components";
+import { useUsersQuery } from "../../graph";
+import { CreateUserModal, EditUser } from "../../components";
 
 export default function Checks() {
-  const { data, loading, error, refetch } = useChecksQuery();
+  const { data, loading, error, refetch } = useUsersQuery();
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -31,10 +30,9 @@ export default function Checks() {
 
   return (
     <Box>
-      <CreateCheckModal
+      <CreateUserModal
         open={open}
         setOpen={setOpen}
-        data={data}
         handleRefetch={handleRefetch}
       />
       <Container component='main' maxWidth='md'>
@@ -47,7 +45,7 @@ export default function Checks() {
           }}
         >
           <Typography component='h1' variant='h3' sx={{ marginBottom: "24px" }}>
-            Checks
+            Users
           </Typography>
           <Box marginBottom='24px' display='flex' gap='12px'>
             <Button
@@ -56,7 +54,7 @@ export default function Checks() {
                 setOpen(true);
               }}
             >
-              Create Check
+              Create User
             </Button>
             <TextField
               label='Search'
@@ -103,22 +101,22 @@ export default function Checks() {
             </>
           )}
           {data &&
-            (!data.checks.length ? (
+            (!data.users.length ? (
               <Typography component='h1' variant='h4'>
-                No Checks Configured
+                No Users Exist
               </Typography>
             ) : (
               <>
-                {data.checks.map((check) => (
-                  <EditCheck
-                    key={check.name}
-                    check={check}
+                {data.users.map((user) => (
+                  <EditUser
+                    key={user.id}
+                    user={user}
                     handleRefetch={handleRefetch}
                     visible={
-                      check.name.toLowerCase().includes(search.toLowerCase()) ||
-                      check.source.name
+                      user.username
                         .toLowerCase()
-                        .includes(search.toLowerCase())
+                        .includes(search.toLowerCase()) ||
+                      user.role.toLowerCase().includes(search.toLowerCase())
                     }
                   />
                 ))}

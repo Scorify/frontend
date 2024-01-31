@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   Box,
@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
-import { ChecksQuery, useCreateCheckMutation } from "../graph";
-import { ConfigField } from "./";
+import { ChecksQuery, useCreateCheckMutation } from "../../../graph";
+import { ConfigField } from "../..";
 
 type props = {
   data?: ChecksQuery;
@@ -43,23 +43,19 @@ export default function CreateCheckModal({
 
   const [source, setSource] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [schema, setSchema] = useState<{
-    [key: string]: "string" | "int" | "bool";
-  }>({});
+
   const [config, setConfig] = useState<{
     [key: string]: string | number | boolean;
   }>({});
 
-  useEffect(() => {
+  const schema = useMemo<{ [key: string]: "string" | "int" | "bool" }>(() => {
     if (data && data.sources.find((s) => s.name === source)) {
-      setSchema(
-        JSON.parse(
-          (data.sources.find((s) => s.name === source) as { schema: string })
-            .schema
-        ) || {}
+      return JSON.parse(
+        (data.sources.find((s) => s.name === source) as { schema: string })
+          .schema
       );
-    } else if (source === "") {
-      setSchema({});
+    } else {
+      return {};
     }
   }, [data, source]);
 

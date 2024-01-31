@@ -5,8 +5,8 @@ import { CookieSetOptions } from "universal-cookie";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
 
-import { Drawer, Navbar } from ".";
-import { JWT } from "../models";
+import { Drawer, Navbar } from "..";
+import { JWT } from "../../models";
 
 type props = {
   theme: string;
@@ -34,6 +34,7 @@ export default function Main({
         setDrawerState={setDrawerState}
         cookies={cookies}
         jwt={jwt}
+        removeCookie={removeCookie}
       />
       <Navbar
         theme={theme}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
@@ -8,8 +8,8 @@ import {
   CardContent,
   CardHeader,
   Collapse,
-  Grow,
   Divider,
+  Grow,
   IconButton,
   Slide,
   TextField,
@@ -17,12 +17,12 @@ import {
 } from "@mui/material";
 
 import { enqueueSnackbar } from "notistack";
+import { ConfigField, DeleteCheckModal } from "../..";
 import {
   ChecksQuery,
   useDeleteCheckMutation,
   useUpdateCheckMutation,
-} from "../graph";
-import { ConfigField, DeleteCheckModal } from "./";
+} from "../../../graph";
 
 type props = {
   check: ChecksQuery["checks"][0];
@@ -36,16 +36,13 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   const [config, setConfig] = useState<{
     [key: string]: string | number | boolean;
   }>(JSON.parse(check.config));
-  const [configChanged, setConfigChanged] = useState(false);
-  useEffect(() => {
-    setConfigChanged(JSON.stringify(config) != check.config);
-  }, [config, check.config]);
+  const configChanged = useMemo(
+    () => JSON.stringify(config) != check.config,
+    [config, check.config]
+  );
 
   const [name, setName] = useState<string>(check.name);
-  const [nameChanged, setNameChanged] = useState(name != check.name);
-  useEffect(() => {
-    setNameChanged(name != check.name);
-  }, [name, check.name]);
+  const nameChanged = useMemo(() => name != check.name, [name, check.name]);
 
   const [open, setOpen] = useState(false);
 

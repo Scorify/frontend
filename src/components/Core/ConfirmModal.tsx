@@ -1,26 +1,28 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState, ReactElement } from "react";
 
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
 type props = {
-  user: string;
+  title: string;
+  subtitle: string | ReactElement;
+  buttonText: string;
+  value: string;
   open: boolean;
   setOpen: (open: boolean) => void;
-  handleDelete: () => void;
+  onConfirm: () => void;
 };
 
-export default function DeleteUserModal({
-  user,
+export default function ConfirmModal({
+  title,
+  subtitle,
+  buttonText,
+  value,
   open,
   setOpen,
-  handleDelete,
+  onConfirm,
 }: props) {
   const [confirm, setConfirm] = useState<string>("");
-  const [match, setMatch] = useState<boolean>(false);
-
-  useEffect(() => {
-    setMatch(confirm === user);
-  }, [confirm, user]);
+  const match = useMemo(() => confirm === value, [confirm, value]);
 
   return (
     <Modal
@@ -52,11 +54,10 @@ export default function DeleteUserModal({
           }}
         >
           <Typography component='h1' variant='h3'>
-            Delete User
+            {title}
           </Typography>
           <Typography component='h2' variant='body1'>
-            To confirm deletion of user, type the name (<b>{user}</b>) of the
-            user below.
+            {subtitle}
           </Typography>
           <TextField
             label='User Name'
@@ -73,10 +74,10 @@ export default function DeleteUserModal({
           <Button
             variant='contained'
             sx={{ marginTop: "24px" }}
-            onClick={handleDelete}
+            onClick={onConfirm}
             disabled={!match}
           >
-            Delete User
+            {buttonText}
           </Button>
         </Box>
       </Box>
