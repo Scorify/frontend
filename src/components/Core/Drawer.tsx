@@ -6,6 +6,8 @@ import {
   EditNote,
   Group,
   Home,
+  Login,
+  Logout,
   Password,
 } from "@mui/icons-material";
 import {
@@ -18,6 +20,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { CookieSetOptions } from "universal-cookie";
+
 import { JWT } from "../../models";
 
 type props = {
@@ -25,11 +29,13 @@ type props = {
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   cookies: any;
   jwt: JWT;
+  removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
 };
 
 export default function DrawerComponent({
   drawerState,
   setDrawerState,
+  removeCookie,
   jwt,
 }: props) {
   const navigate = useNavigate();
@@ -67,10 +73,22 @@ export default function DrawerComponent({
             </ListItemButton>
           </ListItem>
         </List>
-        {jwt && (
+        <Divider />
+        {jwt ? (
           <>
-            <Divider />
             <List>
+              <ListItem
+                disablePadding
+                onClick={() => {
+                  removeCookie("auth");
+                  navigate("/");
+                }}
+              >
+                <ListItemButton>
+                  <ListItemIcon>{<Logout />}</ListItemIcon>
+                  <ListItemText primary='Logout' />
+                </ListItemButton>
+              </ListItem>
               <ListItem
                 disablePadding
                 onClick={() => {
@@ -137,6 +155,20 @@ export default function DrawerComponent({
               </List>
             )}
           </>
+        ) : (
+          <List>
+            <ListItem
+              disablePadding
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              <ListItemButton>
+                <ListItemIcon>{<Login />}</ListItemIcon>
+                <ListItemText primary='Login' />
+              </ListItemButton>
+            </ListItem>
+          </List>
         )}
       </Box>
     </Drawer>

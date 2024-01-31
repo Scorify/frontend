@@ -34,6 +34,7 @@ export default function Main({
         setDrawerState={setDrawerState}
         cookies={cookies}
         jwt={jwt}
+        removeCookie={removeCookie}
       />
       <Navbar
         theme={theme}
