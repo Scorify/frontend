@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
@@ -16,11 +16,7 @@ export default function DeleteCheckModal({
   handleDelete,
 }: props) {
   const [confirm, setConfirm] = useState<string>("");
-  const [match, setMatch] = useState<boolean>(false);
-
-  useEffect(() => {
-    setMatch(confirm === check);
-  }, [confirm, check]);
+  const match = useMemo(() => confirm === check, [confirm, check]);
 
   return (
     <Modal
