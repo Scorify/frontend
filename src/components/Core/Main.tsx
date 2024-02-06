@@ -5,7 +5,9 @@ import { CookieSetOptions } from "universal-cookie";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
 
+import { enqueueSnackbar } from "notistack";
 import { Drawer, Navbar } from "..";
+import { useGlobalNotificationSubscription } from "../../graph";
 import { JWT } from "../../models";
 
 type props = {
@@ -26,6 +28,15 @@ export default function Main({
   apolloClient,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
+
+  useGlobalNotificationSubscription({
+    onData: (data) => {
+      console.log(data.data.data?.globalNotification);
+      if (data.data.data?.globalNotification) {
+        enqueueSnackbar(data.data.data.globalNotification, { variant: "info" });
+      }
+    },
+  });
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
