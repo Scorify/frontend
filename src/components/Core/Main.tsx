@@ -33,7 +33,9 @@ export default function Main({
     onData: (data) => {
       console.log(data.data.data?.globalNotification);
       if (data.data.data?.globalNotification) {
-        enqueueSnackbar(data.data.data.globalNotification, { variant: "info" });
+        enqueueSnackbar(data.data.data.globalNotification.message, {
+          variant: data.data.data.globalNotification.type,
+        });
       }
     },
   });
