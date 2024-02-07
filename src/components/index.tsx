@@ -1,4 +1,5 @@
 import Admin from "./Admin/Admin";
+import Notification from "./Admin/AdminPanel/Notification";
 import ConfigField from "./Admin/Checks/ConfigField";
 import CreateCheckModal from "./Admin/Checks/CreateCheckModal";
 import DeleteCheckModal from "./Admin/Checks/DeleteCheckModal";
@@ -27,5 +28,6 @@ export {
   Error,
   Main,
   Navbar,
+  Notification,
   PasswordInput,
 };
