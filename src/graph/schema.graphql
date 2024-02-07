@@ -115,5 +115,8 @@ mutation DeleteUser($id: ID!) {
 }
 
 subscription GlobalNotification {
-  globalNotification
+  globalNotification {
+    message
+    type
+  }
 }
