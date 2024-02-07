@@ -115,6 +115,20 @@ export type MutationUpdateUserArgs = {
   username?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  message: Scalars['String']['output'];
+  type: NotificationType;
+};
+
+export enum NotificationType {
+  Default = 'default',
+  Error = 'error',
+  Info = 'info',
+  Success = 'success',
+  Warning = 'warning'
+}
+
 export type Query = {
   __typename?: 'Query';
   check: Check;
@@ -152,6 +166,11 @@ export type Source = {
   __typename?: 'Source';
   name: Scalars['String']['output'];
   schema: Scalars['String']['output'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  globalNotification: Notification;
 };
 
 export type User = {
@@ -590,6 +609,36 @@ export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const GlobalNotificationDocument = gql`
+    subscription GlobalNotification {
+  globalNotification {
+    message
+    type
+  }
+}
+    `;
+
+/**
+ * __useGlobalNotificationSubscription__
+ *
+ * To run a query within a React component, call `useGlobalNotificationSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalNotificationSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalNotificationSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalNotificationSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GlobalNotificationSubscription, GlobalNotificationSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<GlobalNotificationSubscription, GlobalNotificationSubscriptionVariables>(GlobalNotificationDocument, options);
+      }
+export type GlobalNotificationSubscriptionHookResult = ReturnType<typeof useGlobalNotificationSubscription>;
+export type GlobalNotificationSubscriptionResult = Apollo.SubscriptionResult<GlobalNotificationSubscription>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -672,3 +721,8 @@ export type DeleteUserMutationVariables = Exact<{
 
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: boolean };
+
+export type GlobalNotificationSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GlobalNotificationSubscription = { __typename?: 'Subscription', globalNotification: { __typename?: 'Notification', message: string, type: NotificationType } };

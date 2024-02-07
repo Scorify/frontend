@@ -113,3 +113,10 @@ mutation UpdateUser(
 mutation DeleteUser($id: ID!) {
   deleteUser(id: $id)
 }
+
+subscription GlobalNotification {
+  globalNotification {
+    message
+    type
+  }
+}
