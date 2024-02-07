@@ -115,6 +115,20 @@ export type MutationUpdateUserArgs = {
   username?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  message: Scalars['String']['output'];
+  type: NotificationType;
+};
+
+export enum NotificationType {
+  Default = 'default',
+  Error = 'error',
+  Info = 'info',
+  Success = 'success',
+  Warning = 'warning'
+}
+
 export type Query = {
   __typename?: 'Query';
   check: Check;
@@ -156,7 +170,7 @@ export type Source = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  globalNotification: Scalars['String']['output'];
+  globalNotification: Notification;
 };
 
 export type User = {
@@ -597,7 +611,10 @@ export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const GlobalNotificationDocument = gql`
     subscription GlobalNotification {
-  globalNotification
+  globalNotification {
+    message
+    type
+  }
 }
     `;
 
@@ -708,4 +725,4 @@ export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: boolean 
 export type GlobalNotificationSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalNotificationSubscription = { __typename?: 'Subscription', globalNotification: string };
+export type GlobalNotificationSubscription = { __typename?: 'Subscription', globalNotification: { __typename?: 'Notification', message: string, type: NotificationType } };
