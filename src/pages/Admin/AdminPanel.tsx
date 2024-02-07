@@ -3,17 +3,19 @@ import { useState } from "react";
 import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
 
 import { Notification } from "../../components";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminPanel() {
-  const urlSearchParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const urlParams = new URLSearchParams(location.search);
 
-  let param = urlSearchParams.get("selected") || "notification";
-  if (!(param in ["notification"])) {
+  let param = urlParams.get("selected") || "notification";
+  if (!["notification", "engine"].includes(param)) {
     param = "notification";
   }
 
   const [selected, setSelected] = useState<"notification" | "engine">(
-    param as "notification"
+    param as "notification" | "engine"
   );
 
   const components = {
@@ -41,6 +43,9 @@ export default function AdminPanel() {
             sx={{ flexGrow: 1 }}
             onClick={() => {
               setSelected("notification");
+
+              urlParams.set("selected", "notification");
+              navigate(`?${urlParams.toString()}`);
             }}
           >
             Send Notification
@@ -50,6 +55,9 @@ export default function AdminPanel() {
             sx={{ flexGrow: 1 }}
             onClick={() => {
               setSelected("engine");
+
+              urlParams.set("selected", "engine");
+              navigate(`?${urlParams.toString()}`);
             }}
           >
             Engine State
