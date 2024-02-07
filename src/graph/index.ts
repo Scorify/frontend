@@ -53,6 +53,7 @@ export type Mutation = {
   deleteUser: Scalars['Boolean']['output'];
   editConfig: Config;
   login: LoginOutput;
+  sendGlobalNotification: Scalars['Boolean']['output'];
   updateCheck: Check;
   updateUser: User;
 };
@@ -98,6 +99,12 @@ export type MutationEditConfigArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+};
+
+
+export type MutationSendGlobalNotificationArgs = {
+  message: Scalars['String']['input'];
+  type: NotificationType;
 };
 
 
@@ -639,6 +646,38 @@ export function useGlobalNotificationSubscription(baseOptions?: Apollo.Subscript
       }
 export type GlobalNotificationSubscriptionHookResult = ReturnType<typeof useGlobalNotificationSubscription>;
 export type GlobalNotificationSubscriptionResult = Apollo.SubscriptionResult<GlobalNotificationSubscription>;
+export const SendGlobalNotificationDocument = gql`
+    mutation SendGlobalNotification($message: String!, $type: NotificationType!) {
+  sendGlobalNotification(message: $message, type: $type)
+}
+    `;
+export type SendGlobalNotificationMutationFn = Apollo.MutationFunction<SendGlobalNotificationMutation, SendGlobalNotificationMutationVariables>;
+
+/**
+ * __useSendGlobalNotificationMutation__
+ *
+ * To run a mutation, you first call `useSendGlobalNotificationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendGlobalNotificationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendGlobalNotificationMutation, { data, loading, error }] = useSendGlobalNotificationMutation({
+ *   variables: {
+ *      message: // value for 'message'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useSendGlobalNotificationMutation(baseOptions?: Apollo.MutationHookOptions<SendGlobalNotificationMutation, SendGlobalNotificationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendGlobalNotificationMutation, SendGlobalNotificationMutationVariables>(SendGlobalNotificationDocument, options);
+      }
+export type SendGlobalNotificationMutationHookResult = ReturnType<typeof useSendGlobalNotificationMutation>;
+export type SendGlobalNotificationMutationResult = Apollo.MutationResult<SendGlobalNotificationMutation>;
+export type SendGlobalNotificationMutationOptions = Apollo.BaseMutationOptions<SendGlobalNotificationMutation, SendGlobalNotificationMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -726,3 +765,11 @@ export type GlobalNotificationSubscriptionVariables = Exact<{ [key: string]: nev
 
 
 export type GlobalNotificationSubscription = { __typename?: 'Subscription', globalNotification: { __typename?: 'Notification', message: string, type: NotificationType } };
+
+export type SendGlobalNotificationMutationVariables = Exact<{
+  message: Scalars['String']['input'];
+  type: NotificationType;
+}>;
+
+
+export type SendGlobalNotificationMutation = { __typename?: 'Mutation', sendGlobalNotification: boolean };
