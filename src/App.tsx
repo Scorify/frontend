@@ -19,7 +19,15 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { Admin, Error, Main } from "./components";
 import { useJWT } from "./hooks";
-import { ChangePassword, Checks, Home, Login, Me, Users } from "./pages";
+import {
+  AdminPanel,
+  ChangePassword,
+  Checks,
+  Home,
+  Login,
+  Me,
+  Users,
+} from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
@@ -127,11 +135,7 @@ export default function App() {
           children: [
             {
               index: true,
-              element: (
-                <LazyComponent
-                  element={<Error code={404} message={"Page Not Found"} />}
-                />
-              ),
+              element: <LazyComponent element={<AdminPanel />} />,
             },
             {
               path: "checks",
