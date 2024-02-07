@@ -120,3 +120,7 @@ subscription GlobalNotification {
     type
   }
 }
+
+mutation SendGlobalNotification($message: String!, $type: NotificationType!) {
+  sendGlobalNotification(message: $message, type: $type)
+}
