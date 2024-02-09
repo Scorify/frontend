@@ -71,6 +71,7 @@ export default function App() {
 
   const httpLink = new HttpLink({
     uri: "http://localhost:8080/query",
+    credentials: "include",
   });
 
   const splitLink = split(
@@ -88,7 +89,6 @@ export default function App() {
   const client = new ApolloClient({
     link: splitLink,
     cache: new InMemoryCache(),
-    credentials: "include",
   });
 
   const router = createBrowserRouter([
