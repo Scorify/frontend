@@ -200,6 +200,8 @@ export const MeDocument = gql`
   me {
     id
     username
+    role
+    number
   }
 }
     `;
@@ -726,7 +728,7 @@ export type AdminLoginMutationOptions = Apollo.BaseMutationOptions<AdminLoginMut
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, role: Role, number?: number | null } };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];

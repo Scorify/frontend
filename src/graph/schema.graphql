@@ -2,6 +2,8 @@ query Me {
   me {
     id
     username
+    role
+    number
   }
 }
 
