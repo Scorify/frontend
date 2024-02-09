@@ -102,6 +102,7 @@ export default function App() {
               setTheme={setTheme}
               jwt={jwt}
               cookies={cookies}
+              setCookie={setCookie}
               removeCookie={removeCookie}
               apolloClient={client}
             />

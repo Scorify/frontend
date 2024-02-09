@@ -13,24 +13,30 @@ import { JWT } from "../../models";
 type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
+  jwt: JWT;
   cookies: {
     auth?: any;
     admin?: any;
   };
+  setCookie: (
+    name: "auth" | "admin",
+    value: any,
+    options?: CookieSetOptions | undefined
+  ) => void;
   removeCookie: (
     name: "auth" | "admin",
     options?: CookieSetOptions | undefined
   ) => void;
-  jwt: JWT;
   apolloClient: ApolloClient<NormalizedCacheObject>;
 };
 
 export default function Main({
   theme,
   setTheme,
-  cookies,
-  removeCookie,
   jwt,
+  cookies,
+  setCookie,
+  removeCookie,
   apolloClient,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
@@ -51,8 +57,9 @@ export default function Main({
       <Drawer
         drawerState={drawerState}
         setDrawerState={setDrawerState}
-        cookies={cookies}
         jwt={jwt}
+        cookies={cookies}
+        setCookie={setCookie}
         removeCookie={removeCookie}
       />
       <Navbar
