@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
+import { CookieSetOptions } from "universal-cookie";
 
 import { DeleteUserModal, PasswordInput } from "../..";
 import {
@@ -23,14 +24,30 @@ import {
   useDeleteUserMutation,
   useUpdateUserMutation,
 } from "../../../graph";
+import { JWT } from "../../../models";
 
 type props = {
   user: UsersQuery["users"][0];
   handleRefetch: () => void;
   visible: boolean;
+  jwt: JWT;
+  removeCookie: (
+    name: "auth" | "admin",
+    options?: CookieSetOptions | undefined
+  ) => void;
+  setCookie: (
+    name: "auth" | "admin",
+    value: any,
+    options?: CookieSetOptions | undefined
+  ) => void;
 };
 
-export default function EditCheck({ user, visible, handleRefetch }: props) {
+export default function EditCheck({
+  jwt,
+  user,
+  visible,
+  handleRefetch,
+}: props) {
   const [expanded, setExpanded] = useState(false);
 
   const [name, setName] = useState<string>(user.username);
@@ -145,26 +162,28 @@ export default function EditCheck({ user, visible, handleRefetch }: props) {
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                <Slide
-                  in={expanded}
-                  timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    onClick={() => {
-                      setOpen(true);
+                {jwt?.username !== user.username && (
+                  <Slide
+                    in={expanded}
+                    timeout={300}
+                    style={{
+                      transformOrigin: "right",
                     }}
-                    color='error'
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
                   >
-                    Delete
-                  </Button>
-                </Slide>
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                      color='error'
+                    >
+                      Delete
+                    </Button>
+                  </Slide>
+                )}
                 <Slide
                   in={nameChanged || passwordChanged || numberChanged}
                   timeout={300}

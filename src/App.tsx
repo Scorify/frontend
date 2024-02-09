@@ -143,7 +143,17 @@ export default function App() {
             },
             {
               path: "users",
-              element: <LazyComponent element={<Users />} />,
+              element: (
+                <LazyComponent
+                  element={
+                    <Users
+                      jwt={jwt}
+                      removeCookie={removeCookie}
+                      setCookie={setCookie}
+                    />
+                  }
+                />
+              ),
             },
           ],
         },
