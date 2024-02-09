@@ -27,9 +27,15 @@ import { JWT } from "../../models";
 type props = {
   drawerState: boolean;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
-  cookies: any;
+  cookies: {
+    auth?: any;
+    admin?: any;
+  };
   jwt: JWT;
-  removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
+  removeCookie: (
+    name: "auth" | "admin",
+    options?: CookieSetOptions | undefined
+  ) => void;
 };
 
 export default function DrawerComponent({

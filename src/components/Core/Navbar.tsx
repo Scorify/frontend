@@ -19,8 +19,14 @@ type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
-  cookies: any;
-  removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
+  cookies: {
+    auth?: any;
+    admin?: any;
+  };
+  removeCookie: (
+    name: "auth" | "admin",
+    options?: CookieSetOptions | undefined
+  ) => void;
   jwt: JWT;
   apolloClient: ApolloClient<NormalizedCacheObject>;
 };

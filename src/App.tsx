@@ -46,7 +46,7 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
-  const [cookies, setCookie, removeCookie] = useCookies(["auth"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
   const jwt = useJWT(cookies.auth);
 
   let savedTheme = localStorage.getItem("theme");
