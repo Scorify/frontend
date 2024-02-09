@@ -9,6 +9,7 @@ import {
   Login,
   Logout,
   Password,
+  KeyboardReturn,
 } from "@mui/icons-material";
 import {
   Box,
@@ -27,16 +28,29 @@ import { JWT } from "../../models";
 type props = {
   drawerState: boolean;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
-  cookies: any;
   jwt: JWT;
-  removeCookie: (name: "auth", options?: CookieSetOptions | undefined) => void;
+  cookies: {
+    auth?: any;
+    admin?: any;
+  };
+  setCookie: (
+    name: "auth" | "admin",
+    value: any,
+    options?: CookieSetOptions | undefined
+  ) => void;
+  removeCookie: (
+    name: "auth" | "admin",
+    options?: CookieSetOptions | undefined
+  ) => void;
 };
 
 export default function DrawerComponent({
   drawerState,
   setDrawerState,
-  removeCookie,
   jwt,
+  cookies,
+  setCookie,
+  removeCookie,
 }: props) {
   const navigate = useNavigate();
   const toggleDrawer =
@@ -77,6 +91,21 @@ export default function DrawerComponent({
         {jwt ? (
           <>
             <List>
+              {cookies.admin && (
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    setCookie("auth", cookies.admin);
+                    removeCookie("admin");
+                    navigate("/");
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<KeyboardReturn />}</ListItemIcon>
+                    <ListItemText primary='Return to Admin User' />
+                  </ListItemButton>
+                </ListItem>
+              )}
               <ListItem
                 disablePadding
                 onClick={() => {

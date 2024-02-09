@@ -2,6 +2,8 @@ query Me {
   me {
     id
     username
+    role
+    number
   }
 }
 
@@ -123,4 +125,16 @@ subscription GlobalNotification {
 
 mutation SendGlobalNotification($message: String!, $type: NotificationType!) {
   sendGlobalNotification(message: $message, type: $type)
+}
+
+mutation AdminLogin($id: ID!) {
+  adminLogin(id: $id) {
+    name
+    token
+    expires
+    path
+    domain
+    secure
+    httpOnly
+  }
 }

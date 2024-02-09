@@ -16,21 +16,44 @@ import {
   Typography,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { CookieSetOptions } from "universal-cookie";
 
 import { DeleteUserModal, PasswordInput } from "../..";
 import {
   UsersQuery,
+  useAdminLoginMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
 } from "../../../graph";
+import { JWT } from "../../../models";
 
 type props = {
   user: UsersQuery["users"][0];
   handleRefetch: () => void;
   visible: boolean;
+  jwt: JWT;
+  setCookie: (
+    name: "auth" | "admin",
+    value: any,
+    options?: CookieSetOptions | undefined
+  ) => void;
+  cookies: {
+    auth?: any;
+    admin?: any;
+  };
 };
 
-export default function EditCheck({ user, visible, handleRefetch }: props) {
+export default function EditCheck({
+  jwt,
+  user,
+  visible,
+  handleRefetch,
+  setCookie,
+  cookies,
+}: props) {
+  const navigate = useNavigate();
+
   const [expanded, setExpanded] = useState(false);
 
   const [name, setName] = useState<string>(user.username);
@@ -45,7 +68,7 @@ export default function EditCheck({ user, visible, handleRefetch }: props) {
   const [number, setNumber] = useState<number | null | undefined>(user.number);
   const numberChanged = useMemo(() => number !== user.number, [number]);
 
-  const [open, setOpen] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [updateUserMutation] = useUpdateUserMutation({
     onCompleted: () => {
@@ -63,6 +86,30 @@ export default function EditCheck({ user, visible, handleRefetch }: props) {
     onCompleted: () => {
       enqueueSnackbar("User deleted successfully", { variant: "success" });
       handleRefetch();
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.log(error);
+    },
+  });
+
+  const [adminLoginMutation] = useAdminLoginMutation({
+    onCompleted: (data) => {
+      setCookie("admin", cookies.auth);
+      setCookie("auth", data.adminLogin.token);
+      navigate("/");
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.log(error);
+    },
+  });
+
+  const [adminViewAsMutation] = useAdminLoginMutation({
+    onCompleted: (data) => {
+      setCookie("admin", cookies.auth);
+      setCookie("auth", data.adminLogin.token);
+      navigate("/");
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -97,8 +144,8 @@ export default function EditCheck({ user, visible, handleRefetch }: props) {
     <>
       <DeleteUserModal
         user={user.username}
-        open={open}
-        setOpen={setOpen}
+        open={openDeleteModal}
+        setOpen={setOpenDeleteModal}
         handleDelete={handleDelete}
       />
       <Grow in={true}>
@@ -145,26 +192,78 @@ export default function EditCheck({ user, visible, handleRefetch }: props) {
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                <Slide
-                  in={expanded}
-                  timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    onClick={() => {
-                      setOpen(true);
-                    }}
-                    color='error'
-                  >
-                    Delete
-                  </Button>
-                </Slide>
+                {jwt?.username !== user.username && (
+                  <>
+                    <Slide
+                      in={expanded}
+                      timeout={300}
+                      style={{
+                        transformOrigin: "right",
+                      }}
+                      direction='left'
+                      unmountOnExit
+                      mountOnEnter
+                    >
+                      <Button
+                        variant='contained'
+                        onClick={() => {
+                          adminLoginMutation({
+                            variables: {
+                              id: user.id,
+                            },
+                          });
+                        }}
+                        color='primary'
+                      >
+                        Login
+                      </Button>
+                    </Slide>
+                    <Slide
+                      in={expanded}
+                      timeout={300}
+                      style={{
+                        transformOrigin: "right",
+                      }}
+                      direction='left'
+                      unmountOnExit
+                      mountOnEnter
+                    >
+                      <Button
+                        variant='contained'
+                        onClick={() => {
+                          adminViewAsMutation({
+                            variables: {
+                              id: user.id,
+                            },
+                          });
+                        }}
+                        color='success'
+                      >
+                        View As
+                      </Button>
+                    </Slide>
+                    <Slide
+                      in={expanded}
+                      timeout={300}
+                      style={{
+                        transformOrigin: "right",
+                      }}
+                      direction='left'
+                      unmountOnExit
+                      mountOnEnter
+                    >
+                      <Button
+                        variant='contained'
+                        onClick={() => {
+                          setOpenDeleteModal(true);
+                        }}
+                        color='error'
+                      >
+                        Delete
+                      </Button>
+                    </Slide>
+                  </>
+                )}
                 <Slide
                   in={nameChanged || passwordChanged || numberChanged}
                   timeout={300}

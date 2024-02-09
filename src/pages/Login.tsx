@@ -9,7 +9,7 @@ import { useLoginMutation } from "../graph";
 
 type props = {
   setCookie: (
-    name: "auth",
+    name: "auth" | "admin",
     value: any,
     options?: CookieSetOptions | undefined
   ) => void;

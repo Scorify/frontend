@@ -46,7 +46,7 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
-  const [cookies, setCookie, removeCookie] = useCookies(["auth"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
   const jwt = useJWT(cookies.auth);
 
   let savedTheme = localStorage.getItem("theme");
@@ -71,6 +71,7 @@ export default function App() {
 
   const httpLink = new HttpLink({
     uri: "http://localhost:8080/query",
+    credentials: "include",
   });
 
   const splitLink = split(
@@ -88,7 +89,6 @@ export default function App() {
   const client = new ApolloClient({
     link: splitLink,
     cache: new InMemoryCache(),
-    credentials: "include",
   });
 
   const router = createBrowserRouter([
@@ -102,6 +102,7 @@ export default function App() {
               setTheme={setTheme}
               jwt={jwt}
               cookies={cookies}
+              setCookie={setCookie}
               removeCookie={removeCookie}
               apolloClient={client}
             />
@@ -143,7 +144,13 @@ export default function App() {
             },
             {
               path: "users",
-              element: <LazyComponent element={<Users />} />,
+              element: (
+                <LazyComponent
+                  element={
+                    <Users jwt={jwt} cookies={cookies} setCookie={setCookie} />
+                  }
+                />
+              ),
             },
           ],
         },
