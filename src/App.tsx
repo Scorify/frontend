@@ -146,11 +146,7 @@ export default function App() {
               element: (
                 <LazyComponent
                   element={
-                    <Users
-                      jwt={jwt}
-                      removeCookie={removeCookie}
-                      setCookie={setCookie}
-                    />
+                    <Users jwt={jwt} cookies={cookies} setCookie={setCookie} />
                   }
                 />
               ),

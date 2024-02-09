@@ -19,10 +19,10 @@ import { JWT } from "../../models";
 
 type props = {
   jwt: JWT;
-  removeCookie: (
-    name: "auth" | "admin",
-    options?: CookieSetOptions | undefined
-  ) => void;
+  cookies: {
+    auth?: any;
+    admin?: any;
+  };
   setCookie: (
     name: "auth" | "admin",
     value: any,
@@ -30,7 +30,7 @@ type props = {
   ) => void;
 };
 
-export default function Checks({ jwt, removeCookie, setCookie }: props) {
+export default function Checks({ jwt, cookies, setCookie }: props) {
   const { data, loading, error, refetch } = useUsersQuery();
   const [open, setOpen] = useState(false);
 
@@ -134,8 +134,8 @@ export default function Checks({ jwt, removeCookie, setCookie }: props) {
                       user.role.toLowerCase().includes(search.toLowerCase())
                     }
                     jwt={jwt}
-                    removeCookie={removeCookie}
                     setCookie={setCookie}
+                    cookies={cookies}
                   />
                 ))}
               </>
