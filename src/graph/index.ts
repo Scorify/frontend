@@ -46,6 +46,7 @@ export type LoginOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  adminLogin: LoginOutput;
   changePassword: Scalars['Boolean']['output'];
   createCheck: Check;
   createUser: User;
@@ -56,6 +57,11 @@ export type Mutation = {
   sendGlobalNotification: Scalars['Boolean']['output'];
   updateCheck: Check;
   updateUser: User;
+};
+
+
+export type MutationAdminLoginArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -678,6 +684,45 @@ export function useSendGlobalNotificationMutation(baseOptions?: Apollo.MutationH
 export type SendGlobalNotificationMutationHookResult = ReturnType<typeof useSendGlobalNotificationMutation>;
 export type SendGlobalNotificationMutationResult = Apollo.MutationResult<SendGlobalNotificationMutation>;
 export type SendGlobalNotificationMutationOptions = Apollo.BaseMutationOptions<SendGlobalNotificationMutation, SendGlobalNotificationMutationVariables>;
+export const AdminLoginDocument = gql`
+    mutation AdminLogin($id: ID!) {
+  adminLogin(id: $id) {
+    name
+    token
+    expires
+    path
+    domain
+    secure
+    httpOnly
+  }
+}
+    `;
+export type AdminLoginMutationFn = Apollo.MutationFunction<AdminLoginMutation, AdminLoginMutationVariables>;
+
+/**
+ * __useAdminLoginMutation__
+ *
+ * To run a mutation, you first call `useAdminLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminLoginMutation, { data, loading, error }] = useAdminLoginMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAdminLoginMutation(baseOptions?: Apollo.MutationHookOptions<AdminLoginMutation, AdminLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminLoginMutation, AdminLoginMutationVariables>(AdminLoginDocument, options);
+      }
+export type AdminLoginMutationHookResult = ReturnType<typeof useAdminLoginMutation>;
+export type AdminLoginMutationResult = Apollo.MutationResult<AdminLoginMutation>;
+export type AdminLoginMutationOptions = Apollo.BaseMutationOptions<AdminLoginMutation, AdminLoginMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -773,3 +818,10 @@ export type SendGlobalNotificationMutationVariables = Exact<{
 
 
 export type SendGlobalNotificationMutation = { __typename?: 'Mutation', sendGlobalNotification: boolean };
+
+export type AdminLoginMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type AdminLoginMutation = { __typename?: 'Mutation', adminLogin: { __typename?: 'LoginOutput', name: string, token: string, expires: number, path: string, domain: string, secure: boolean, httpOnly: boolean } };
