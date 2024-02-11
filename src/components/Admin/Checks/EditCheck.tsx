@@ -41,15 +41,15 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
     [config, check.config.config]
   );
 
-  const [edittableFields, setEdittableFields] = useState<string[]>(
+  const [editableFields, setEditableFields] = useState<string[]>(
     check.config.editable_fields
   );
   const editableFieldsChanged = useMemo(() => {
     return (
-      [...edittableFields].sort().join(",") !=
+      [...editableFields].sort().join(",") !=
       [...check.config.editable_fields].sort().join(",")
     );
-  }, [edittableFields, check.config.editable_fields]);
+  }, [editableFields, check.config.editable_fields]);
 
   const [name, setName] = useState<string>(check.name);
   const nameChanged = useMemo(() => name != check.name, [name, check.name]);
@@ -95,7 +95,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
         id: check.id,
         name: nameChanged ? name : undefined,
         config: configChanged ? JSON.stringify(config) : undefined,
-        editable_fields: editableFieldsChanged ? edittableFields : undefined,
+        editable_fields: editableFieldsChanged ? editableFields : undefined,
       },
     });
   };
@@ -233,11 +233,11 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
               </Box>
               <Divider sx={{ margin: "16px 20% 20px 20%" }} />
               <Multiselect
-                label='Set User Edittable Fields'
+                label='Set User Editable Fields'
                 placeholder='Select fields'
                 options={Object.keys(config)}
-                selected={edittableFields}
-                setSelected={setEdittableFields}
+                selected={editableFields}
+                setSelected={setEditableFields}
               />
             </CardContent>
           </Collapse>
