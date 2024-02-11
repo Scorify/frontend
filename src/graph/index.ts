@@ -15,20 +15,27 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  JSON: { input: any; output: any; }
 };
 
 export type Check = {
   __typename?: 'Check';
-  config: Scalars['String']['output'];
+  config: CheckConfiguration;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   source: Source;
 };
 
+export type CheckConfiguration = {
+  __typename?: 'CheckConfiguration';
+  config: Scalars['JSON']['output'];
+  editable_fields: Array<Scalars['String']['output']>;
+};
+
 export type Config = {
   __typename?: 'Config';
   check: Check;
-  config: Scalars['String']['output'];
+  config: CheckConfiguration;
   id: Scalars['ID']['output'];
   user: User;
 };
@@ -115,7 +122,8 @@ export type MutationSendGlobalNotificationArgs = {
 
 
 export type MutationUpdateCheckArgs = {
-  config?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  editable_fields?: InputMaybe<Array<Scalars['String']['input']>>;
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
 };
@@ -314,7 +322,10 @@ export const ChecksDocument = gql`
   checks {
     id
     name
-    config
+    config {
+      config
+      editable_fields
+    }
     source {
       name
       schema
@@ -399,8 +410,13 @@ export type CreateCheckMutationHookResult = ReturnType<typeof useCreateCheckMuta
 export type CreateCheckMutationResult = Apollo.MutationResult<CreateCheckMutation>;
 export type CreateCheckMutationOptions = Apollo.BaseMutationOptions<CreateCheckMutation, CreateCheckMutationVariables>;
 export const UpdateCheckDocument = gql`
-    mutation UpdateCheck($id: ID!, $name: String, $config: String) {
-  updateCheck(id: $id, name: $name, config: $config) {
+    mutation UpdateCheck($id: ID!, $name: String, $config: JSON, $editable_fields: [String!]) {
+  updateCheck(
+    id: $id
+    name: $name
+    config: $config
+    editable_fields: $editable_fields
+  ) {
     id
     name
     source {
@@ -428,6 +444,7 @@ export type UpdateCheckMutationFn = Apollo.MutationFunction<UpdateCheckMutation,
  *      id: // value for 'id'
  *      name: // value for 'name'
  *      config: // value for 'config'
+ *      editable_fields: // value for 'editable_fields'
  *   },
  * });
  */
@@ -749,7 +766,7 @@ export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: 
 export type ChecksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, config: string, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
+export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, config: { __typename?: 'CheckConfiguration', config: any, editable_fields: Array<string> }, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
 
 export type CreateCheckMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -763,7 +780,8 @@ export type CreateCheckMutation = { __typename?: 'Mutation', createCheck: { __ty
 export type UpdateCheckMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
-  config?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  editable_fields?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
