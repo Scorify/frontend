@@ -43,12 +43,15 @@ export default function Main({
 
   useGlobalNotificationSubscription({
     onData: (data) => {
-      console.log(data.data.data?.globalNotification);
       if (data.data.data?.globalNotification) {
         enqueueSnackbar(data.data.data.globalNotification.message, {
           variant: data.data.data.globalNotification.type,
         });
       }
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
     },
   });
 

@@ -36,8 +36,7 @@ export default function ChangePassword({ removeCookies }: props) {
       enqueueSnackbar("Encountered an error: " + error.message, {
         variant: "error",
       });
-
-      console.log(error);
+      console.error(error);
     },
   });
 

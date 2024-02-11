@@ -31,7 +31,7 @@ export default function Login({ setCookie }: props) {
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
-      console.log(error);
+      console.error(error);
     },
   });
   const navigate = useNavigate();
