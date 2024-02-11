@@ -50,6 +50,13 @@ export default function Main({
         });
       }
     },
+    onError: (error) => {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+      });
+
+      console.error(error);
+    },
   });
 
   return (
