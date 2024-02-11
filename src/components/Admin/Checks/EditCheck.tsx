@@ -53,7 +53,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
-      console.log(error);
+      console.error(error);
     },
   });
 
@@ -64,7 +64,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
-      console.log(error);
+      console.error(error);
     },
   });
 
