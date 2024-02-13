@@ -80,6 +80,7 @@ export type MutationChangePasswordArgs = {
 
 export type MutationCreateCheckArgs = {
   config: Scalars['String']['input'];
+  editable_fields: Array<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   source: Scalars['String']['input'];
 };
@@ -370,8 +371,13 @@ export type ChecksLazyQueryHookResult = ReturnType<typeof useChecksLazyQuery>;
 export type ChecksSuspenseQueryHookResult = ReturnType<typeof useChecksSuspenseQuery>;
 export type ChecksQueryResult = Apollo.QueryResult<ChecksQuery, ChecksQueryVariables>;
 export const CreateCheckDocument = gql`
-    mutation CreateCheck($name: String!, $source: String!, $config: String!) {
-  createCheck(name: $name, source: $source, config: $config) {
+    mutation CreateCheck($name: String!, $source: String!, $config: String!, $editable_fields: [String!]!) {
+  createCheck(
+    name: $name
+    source: $source
+    config: $config
+    editable_fields: $editable_fields
+  ) {
     id
     name
     source {
@@ -399,6 +405,7 @@ export type CreateCheckMutationFn = Apollo.MutationFunction<CreateCheckMutation,
  *      name: // value for 'name'
  *      source: // value for 'source'
  *      config: // value for 'config'
+ *      editable_fields: // value for 'editable_fields'
  *   },
  * });
  */
@@ -772,6 +779,7 @@ export type CreateCheckMutationVariables = Exact<{
   name: Scalars['String']['input'];
   source: Scalars['String']['input'];
   config: Scalars['String']['input'];
+  editable_fields: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
