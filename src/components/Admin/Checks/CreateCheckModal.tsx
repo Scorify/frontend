@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
@@ -14,8 +15,8 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
+import { ConfigField, Multiselect } from "../..";
 import { ChecksQuery, useCreateCheckMutation } from "../../../graph";
-import { ConfigField } from "../..";
 
 type props = {
   data?: ChecksQuery;
@@ -76,6 +77,8 @@ export default function CreateCheckModal({
 
     setConfig(newConfig);
   }, [schema]);
+
+  const [editableFields, setEditableFields] = useState<string[]>([]);
 
   const handleInputChange = (key: string, value: string | number | boolean) => {
     setConfig({
@@ -158,13 +161,20 @@ export default function CreateCheckModal({
             <Box
               sx={{
                 display: "flex",
-                gap: "16px",
+                gap: "8px",
                 flexWrap: "wrap",
                 justifyContent: "center",
               }}
             >
               {source !== "" && data && schema ? (
-                <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "0px 16px",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                >
                   {Object.entries(schema).map(([index, type]) => (
                     <ConfigField
                       key={index}
@@ -174,18 +184,31 @@ export default function CreateCheckModal({
                       config={config}
                     />
                   ))}
-                </>
+                </Box>
               ) : (
                 <Typography component='h1' variant='body1' marginTop='12px'>
                   Select a source to see the configuration options
                 </Typography>
               )}
             </Box>
+            {source !== "" && data && schema && (
+              <>
+                <Divider sx={{ margin: "16px 20% 20px 20%" }} />
+                <Multiselect
+                  label='Set User Editable Fields'
+                  placeholder='Select fields'
+                  options={Object.keys(config)}
+                  selected={editableFields}
+                  setSelected={setEditableFields}
+                />
+              </>
+            )}
           </FormControl>
 
           <Button
             variant='contained'
             sx={{ marginTop: "24px" }}
+            disabled={source === "" || name === ""}
             onClick={() => {
               if (source === "") {
                 enqueueSnackbar("Source must be set", {
@@ -206,6 +229,7 @@ export default function CreateCheckModal({
                   source: source,
                   name: name,
                   config: JSON.stringify(config),
+                  editable_fields: editableFields,
                 },
               });
             }}

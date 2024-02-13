@@ -27,7 +27,10 @@ query Checks {
   checks {
     id
     name
-    config
+    config {
+      config
+      editable_fields
+    }
     source {
       name
       schema
@@ -40,8 +43,18 @@ query Checks {
   }
 }
 
-mutation CreateCheck($name: String!, $source: String!, $config: String!) {
-  createCheck(name: $name, source: $source, config: $config) {
+mutation CreateCheck(
+  $name: String!
+  $source: String!
+  $config: String!
+  $editable_fields: [String!]!
+) {
+  createCheck(
+    name: $name
+    source: $source
+    config: $config
+    editable_fields: $editable_fields
+  ) {
     id
     name
     source {
@@ -51,8 +64,18 @@ mutation CreateCheck($name: String!, $source: String!, $config: String!) {
   }
 }
 
-mutation UpdateCheck($id: ID!, $name: String, $config: String) {
-  updateCheck(id: $id, name: $name, config: $config) {
+mutation UpdateCheck(
+  $id: ID!
+  $name: String
+  $config: JSON
+  $editable_fields: [String!]
+) {
+  updateCheck(
+    id: $id
+    name: $name
+    config: $config
+    editable_fields: $editable_fields
+  ) {
     id
     name
     source {

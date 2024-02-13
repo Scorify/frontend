@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 
 import { enqueueSnackbar } from "notistack";
-import { ConfigField, DeleteCheckModal } from "../..";
+import { ConfigField, DeleteCheckModal, Multiselect } from "../..";
 import {
   ChecksQuery,
   useDeleteCheckMutation,
@@ -34,12 +34,22 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   const [expanded, setExpanded] = useState(false);
 
   const [config, setConfig] = useState<{
-    [key: string]: string | number | boolean;
-  }>(JSON.parse(check.config));
+    [key: string]: number | boolean | string;
+  }>(JSON.parse(check.config.config));
   const configChanged = useMemo(
-    () => JSON.stringify(config) != check.config,
-    [config, check.config]
+    () => JSON.stringify(config) != check.config.config,
+    [config, check.config.config]
   );
+
+  const [editableFields, setEditableFields] = useState<string[]>(
+    check.config.editable_fields
+  );
+  const editableFieldsChanged = useMemo(() => {
+    return (
+      [...editableFields].sort().join(",") !=
+      [...check.config.editable_fields].sort().join(",")
+    );
+  }, [editableFields, check.config.editable_fields]);
 
   const [name, setName] = useState<string>(check.name);
   const nameChanged = useMemo(() => name != check.name, [name, check.name]);
@@ -68,11 +78,11 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
     },
   });
 
-  const handleInputChange = (key: string, value: string | number | boolean) => {
-    setConfig({
-      ...config,
-      [key]: value,
-    });
+  const handleConfigChange = (
+    key: string,
+    value: string | number | boolean
+  ) => {
+    setConfig({ ...config, [key]: value });
   };
 
   const handleExpandClick = () => {
@@ -80,29 +90,14 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   };
 
   const handleSave = () => {
-    if (nameChanged && configChanged) {
-      updateCheckMutation({
-        variables: {
-          id: check.id,
-          config: JSON.stringify(config),
-          name: name,
-        },
-      });
-    } else if (nameChanged) {
-      updateCheckMutation({
-        variables: {
-          id: check.id,
-          name: name,
-        },
-      });
-    } else if (configChanged) {
-      updateCheckMutation({
-        variables: {
-          id: check.id,
-          config: JSON.stringify(config),
-        },
-      });
-    }
+    updateCheckMutation({
+      variables: {
+        id: check.id,
+        name: nameChanged ? name : undefined,
+        config: configChanged ? JSON.stringify(config) : undefined,
+        editable_fields: editableFieldsChanged ? editableFields : undefined,
+      },
+    });
   };
 
   const handleDelete = () => {
@@ -186,7 +181,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   </Button>
                 </Slide>
                 <Slide
-                  in={configChanged || nameChanged}
+                  in={configChanged || nameChanged || editableFieldsChanged}
                   timeout={300}
                   style={{
                     transformOrigin: "right",
@@ -229,13 +224,21 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                     <ConfigField
                       key={index}
                       index={index}
-                      handleInputChange={handleInputChange}
+                      handleInputChange={handleConfigChange}
                       value={type as "string" | "int" | "bool"}
                       config={config}
                     />
                   )
                 )}
               </Box>
+              <Divider sx={{ margin: "16px 20% 20px 20%" }} />
+              <Multiselect
+                label='Set User Editable Fields'
+                placeholder='Select fields'
+                options={Object.keys(config)}
+                selected={editableFields}
+                setSelected={setEditableFields}
+              />
             </CardContent>
           </Collapse>
         </Card>

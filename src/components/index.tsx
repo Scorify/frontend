@@ -11,6 +11,7 @@ import ConfirmModal from "./Core/ConfirmModal";
 import DrawerComponent from "./Core/Drawer";
 import Error from "./Core/Error";
 import Main from "./Core/Main";
+import Multiselect from "./Core/Multiselect";
 import Navbar from "./Core/Navbar";
 import PasswordInput from "./Core/PasswordInput";
 
@@ -27,6 +28,7 @@ export {
   EditUser,
   Error,
   Main,
+  Multiselect,
   Navbar,
   Notification,
   PasswordInput,
