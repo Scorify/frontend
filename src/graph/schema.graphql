@@ -43,8 +43,18 @@ query Checks {
   }
 }
 
-mutation CreateCheck($name: String!, $source: String!, $config: String!) {
-  createCheck(name: $name, source: $source, config: $config) {
+mutation CreateCheck(
+  $name: String!
+  $source: String!
+  $config: String!
+  $editable_fields: [String!]!
+) {
+  createCheck(
+    name: $name
+    source: $source
+    config: $config
+    editable_fields: $editable_fields
+  ) {
     id
     name
     source {
