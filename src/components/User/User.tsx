@@ -8,13 +8,13 @@ type props = {
   jwt: JWT;
 };
 
-export default function Admin({ jwt }: props) {
+export default function User({ jwt }: props) {
   if (!jwt) {
     return <Error code={401} message='Unauthorized' />;
   }
 
-  if (jwt.role !== Role.Admin) {
-    return <Error code={403} message='Forbidden' />;
+  if (jwt.role !== Role.User) {
+    return <Error code={400} message='Competitor Page' />;
   }
 
   return <Outlet />;

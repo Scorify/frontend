@@ -17,7 +17,7 @@ import { SnackbarProvider } from "notistack";
 import { useCookies } from "react-cookie";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import { Admin, Error, Main } from "./components";
+import { Admin, Error, Main, User } from "./components";
 import { useJWT } from "./hooks";
 import {
   AdminPanel,
@@ -151,6 +151,15 @@ export default function App() {
                   }
                 />
               ),
+            },
+          ],
+        },
+        {
+          element: <LazyComponent element={<User jwt={jwt} />} />,
+          children: [
+            {
+              path: "checks",
+              element: <LazyComponent element={<div>Checks are here</div>} />,
             },
           ],
         },
