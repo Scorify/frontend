@@ -1,4 +1,11 @@
-import { Dispatch, KeyboardEvent, MouseEvent, SetStateAction } from "react";
+import {
+  Dispatch,
+  KeyboardEvent,
+  MouseEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router";
 
 import {
@@ -6,10 +13,10 @@ import {
   EditNote,
   Group,
   Home,
+  KeyboardReturn,
   Login,
   Logout,
   Password,
-  KeyboardReturn,
 } from "@mui/icons-material";
 import {
   Box,
@@ -21,8 +28,10 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 import { CookieSetOptions } from "universal-cookie";
 
+import { useAdminLoginMutation, Role } from "../../graph";
 import { JWT } from "../../models";
 
 type props = {
@@ -66,6 +75,40 @@ export default function DrawerComponent({
       setDrawerState(open);
     };
 
+  const [useAdminLogin] = useAdminLoginMutation({
+    onCompleted: (data) => {
+      setCookie("auth", data.adminLogin.token, {
+        path: data.adminLogin.path,
+        expires: new Date(data.adminLogin.expires * 1000),
+        httpOnly: data.adminLogin.httpOnly,
+        secure: data.adminLogin.secure,
+      });
+
+      navigate("/");
+
+      enqueueSnackbar("Reauthenticated successfully", { variant: "success" });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
+    },
+  });
+
+  const [reauthenticate, setReauthenticate] = useState(false);
+
+  useEffect(() => {
+    if (jwt?.role !== Role.Admin) return;
+    if (!reauthenticate) return;
+
+    useAdminLogin({
+      variables: {
+        id: jwt.id,
+      },
+    });
+
+    setReauthenticate(false);
+  }, [jwt]);
+
   return (
     <Drawer anchor={"left"} open={drawerState} onClose={toggleDrawer(false)}>
       <Box
@@ -96,8 +139,8 @@ export default function DrawerComponent({
                   disablePadding
                   onClick={() => {
                     setCookie("auth", cookies.admin);
+                    setReauthenticate(true);
                     removeCookie("admin");
-                    navigate("/");
                   }}
                 >
                   <ListItemButton>

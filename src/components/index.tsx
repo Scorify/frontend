@@ -14,6 +14,7 @@ import Main from "./Core/Main";
 import Multiselect from "./Core/Multiselect";
 import Navbar from "./Core/Navbar";
 import PasswordInput from "./Core/PasswordInput";
+import User from "./User/User";
 
 export {
   Admin,
@@ -32,4 +33,5 @@ export {
   Navbar,
   Notification,
   PasswordInput,
+  User,
 };
