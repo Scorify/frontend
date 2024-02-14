@@ -95,8 +95,12 @@ export default function EditCheck({
 
   const [adminLoginMutation] = useAdminLoginMutation({
     onCompleted: (data) => {
-      setCookie("admin", cookies.auth);
-      setCookie("auth", data.adminLogin.token);
+      setCookie("auth", data.adminLogin.token, {
+        path: data.adminLogin.path,
+        expires: new Date(data.adminLogin.expires * 1000),
+        httpOnly: data.adminLogin.httpOnly,
+        secure: data.adminLogin.secure,
+      });
       navigate("/");
     },
     onError: (error) => {
@@ -107,8 +111,18 @@ export default function EditCheck({
 
   const [adminViewAsMutation] = useAdminLoginMutation({
     onCompleted: (data) => {
-      setCookie("admin", cookies.auth);
-      setCookie("auth", data.adminLogin.token);
+      setCookie("admin", cookies.auth, {
+        path: data.adminLogin.path,
+        expires: new Date(data.adminLogin.expires * 1000),
+        httpOnly: data.adminLogin.httpOnly,
+        secure: data.adminLogin.secure,
+      });
+      setCookie("auth", data.adminLogin.token, {
+        path: data.adminLogin.path,
+        expires: new Date(data.adminLogin.expires * 1000),
+        httpOnly: data.adminLogin.httpOnly,
+        secure: data.adminLogin.secure,
+      });
       navigate("/");
     },
     onError: (error) => {
@@ -215,7 +229,7 @@ export default function EditCheck({
                         }}
                         color='primary'
                       >
-                        Login
+                        Become
                       </Button>
                     </Slide>
                     <Slide
@@ -237,7 +251,7 @@ export default function EditCheck({
                             },
                           });
                         }}
-                        color='success'
+                        color='secondary'
                       >
                         View As
                       </Button>
