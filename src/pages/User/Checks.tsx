@@ -12,9 +12,10 @@ import {
 import { Clear } from "@mui/icons-material";
 
 import { useConfigsQuery } from "../../graph";
+import { ConfigureCheck } from "../../components";
 
 export default function Checks() {
-  const { data, loading, error } = useConfigsQuery();
+  const { data, loading, error, refetch } = useConfigsQuery();
 
   const navigate = useNavigate();
 
@@ -85,9 +86,19 @@ export default function Checks() {
             </Typography>
           ) : (
             data.configs.map((config) => (
-              <Typography key={config.id} component='h1' variant='h5'>
-                {config.check.name}
-              </Typography>
+              <ConfigureCheck
+                key={config.id}
+                config={config}
+                handleRefetch={refetch}
+                visible={
+                  config.check.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  config.check.source.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                }
+              />
             ))
           ))}
       </Box>
