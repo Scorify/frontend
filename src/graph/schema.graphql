@@ -46,7 +46,7 @@ query Checks {
 mutation CreateCheck(
   $name: String!
   $source: String!
-  $config: String!
+  $config: JSON!
   $editable_fields: [String!]!
 ) {
   createCheck(
@@ -166,15 +166,18 @@ query Configs {
   configs {
     id
     check {
-      id
       name
       source {
         name
         schema
       }
     }
-    config {
-      config
-    }
+    config
+  }
+}
+
+mutation EditConfig($id: ID!, $config: JSON!) {
+  editConfig(id: $id, config: $config) {
+    id
   }
 }
