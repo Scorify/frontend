@@ -161,3 +161,20 @@ mutation AdminLogin($id: ID!) {
     httpOnly
   }
 }
+
+query Configs {
+  configs {
+    id
+    check {
+      id
+      name
+      source {
+        name
+        schema
+      }
+    }
+    config {
+      config
+    }
+  }
+}
