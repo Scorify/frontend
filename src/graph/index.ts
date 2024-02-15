@@ -749,6 +749,56 @@ export function useAdminLoginMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AdminLoginMutationHookResult = ReturnType<typeof useAdminLoginMutation>;
 export type AdminLoginMutationResult = Apollo.MutationResult<AdminLoginMutation>;
 export type AdminLoginMutationOptions = Apollo.BaseMutationOptions<AdminLoginMutation, AdminLoginMutationVariables>;
+export const ConfigsDocument = gql`
+    query Configs {
+  configs {
+    id
+    check {
+      id
+      name
+      source {
+        name
+        schema
+      }
+    }
+    config {
+      config
+    }
+  }
+}
+    `;
+
+/**
+ * __useConfigsQuery__
+ *
+ * To run a query within a React component, call `useConfigsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConfigsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConfigsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConfigsQuery(baseOptions?: Apollo.QueryHookOptions<ConfigsQuery, ConfigsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ConfigsQuery, ConfigsQueryVariables>(ConfigsDocument, options);
+      }
+export function useConfigsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ConfigsQuery, ConfigsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ConfigsQuery, ConfigsQueryVariables>(ConfigsDocument, options);
+        }
+export function useConfigsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConfigsQuery, ConfigsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ConfigsQuery, ConfigsQueryVariables>(ConfigsDocument, options);
+        }
+export type ConfigsQueryHookResult = ReturnType<typeof useConfigsQuery>;
+export type ConfigsLazyQueryHookResult = ReturnType<typeof useConfigsLazyQuery>;
+export type ConfigsSuspenseQueryHookResult = ReturnType<typeof useConfigsSuspenseQuery>;
+export type ConfigsQueryResult = Apollo.QueryResult<ConfigsQuery, ConfigsQueryVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -853,3 +903,8 @@ export type AdminLoginMutationVariables = Exact<{
 
 
 export type AdminLoginMutation = { __typename?: 'Mutation', adminLogin: { __typename?: 'LoginOutput', name: string, token: string, expires: number, path: string, domain: string, secure: boolean, httpOnly: boolean } };
+
+export type ConfigsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ConfigsQuery = { __typename?: 'Query', configs: Array<{ __typename?: 'Config', id: string, check: { __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } }, config: { __typename?: 'CheckConfiguration', config: any } }> };
