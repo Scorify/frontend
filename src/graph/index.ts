@@ -35,7 +35,7 @@ export type CheckConfiguration = {
 export type Config = {
   __typename?: 'Config';
   check: Check;
-  config: CheckConfiguration;
+  config: Scalars['JSON']['output'];
   id: Scalars['ID']['output'];
   user: User;
 };
@@ -79,7 +79,7 @@ export type MutationChangePasswordArgs = {
 
 
 export type MutationCreateCheckArgs = {
-  config: Scalars['String']['input'];
+  config: Scalars['JSON']['input'];
   editable_fields: Array<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   source: Scalars['String']['input'];
@@ -105,7 +105,7 @@ export type MutationDeleteUserArgs = {
 
 
 export type MutationEditConfigArgs = {
-  config: Scalars['String']['input'];
+  config: Scalars['JSON']['input'];
   id: Scalars['ID']['input'];
 };
 
@@ -371,7 +371,7 @@ export type ChecksLazyQueryHookResult = ReturnType<typeof useChecksLazyQuery>;
 export type ChecksSuspenseQueryHookResult = ReturnType<typeof useChecksSuspenseQuery>;
 export type ChecksQueryResult = Apollo.QueryResult<ChecksQuery, ChecksQueryVariables>;
 export const CreateCheckDocument = gql`
-    mutation CreateCheck($name: String!, $source: String!, $config: String!, $editable_fields: [String!]!) {
+    mutation CreateCheck($name: String!, $source: String!, $config: JSON!, $editable_fields: [String!]!) {
   createCheck(
     name: $name
     source: $source
@@ -754,16 +754,13 @@ export const ConfigsDocument = gql`
   configs {
     id
     check {
-      id
       name
       source {
         name
         schema
       }
     }
-    config {
-      config
-    }
+    config
   }
 }
     `;
@@ -799,6 +796,40 @@ export type ConfigsQueryHookResult = ReturnType<typeof useConfigsQuery>;
 export type ConfigsLazyQueryHookResult = ReturnType<typeof useConfigsLazyQuery>;
 export type ConfigsSuspenseQueryHookResult = ReturnType<typeof useConfigsSuspenseQuery>;
 export type ConfigsQueryResult = Apollo.QueryResult<ConfigsQuery, ConfigsQueryVariables>;
+export const EditConfigDocument = gql`
+    mutation EditConfig($id: ID!, $config: JSON!) {
+  editConfig(id: $id, config: $config) {
+    id
+  }
+}
+    `;
+export type EditConfigMutationFn = Apollo.MutationFunction<EditConfigMutation, EditConfigMutationVariables>;
+
+/**
+ * __useEditConfigMutation__
+ *
+ * To run a mutation, you first call `useEditConfigMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditConfigMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editConfigMutation, { data, loading, error }] = useEditConfigMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      config: // value for 'config'
+ *   },
+ * });
+ */
+export function useEditConfigMutation(baseOptions?: Apollo.MutationHookOptions<EditConfigMutation, EditConfigMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditConfigMutation, EditConfigMutationVariables>(EditConfigDocument, options);
+      }
+export type EditConfigMutationHookResult = ReturnType<typeof useEditConfigMutation>;
+export type EditConfigMutationResult = Apollo.MutationResult<EditConfigMutation>;
+export type EditConfigMutationOptions = Apollo.BaseMutationOptions<EditConfigMutation, EditConfigMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -828,7 +859,7 @@ export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: '
 export type CreateCheckMutationVariables = Exact<{
   name: Scalars['String']['input'];
   source: Scalars['String']['input'];
-  config: Scalars['String']['input'];
+  config: Scalars['JSON']['input'];
   editable_fields: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
@@ -907,4 +938,12 @@ export type AdminLoginMutation = { __typename?: 'Mutation', adminLogin: { __type
 export type ConfigsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ConfigsQuery = { __typename?: 'Query', configs: Array<{ __typename?: 'Config', id: string, check: { __typename?: 'Check', id: string, name: string, source: { __typename?: 'Source', name: string, schema: string } }, config: { __typename?: 'CheckConfiguration', config: any } }> };
+export type ConfigsQuery = { __typename?: 'Query', configs: Array<{ __typename?: 'Config', id: string, config: any, check: { __typename?: 'Check', name: string, source: { __typename?: 'Source', name: string, schema: string } } }> };
+
+export type EditConfigMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  config: Scalars['JSON']['input'];
+}>;
+
+
+export type EditConfigMutation = { __typename?: 'Mutation', editConfig: { __typename?: 'Config', id: string } };
