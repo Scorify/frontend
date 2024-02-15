@@ -22,7 +22,8 @@ import { useJWT } from "./hooks";
 import {
   AdminPanel,
   ChangePassword,
-  Checks,
+  AdminChecks,
+  UserChecks,
   Home,
   Login,
   Me,
@@ -140,7 +141,7 @@ export default function App() {
             },
             {
               path: "checks",
-              element: <LazyComponent element={<Checks />} />,
+              element: <LazyComponent element={<AdminChecks />} />,
             },
             {
               path: "users",
@@ -159,7 +160,7 @@ export default function App() {
           children: [
             {
               path: "checks",
-              element: <LazyComponent element={<div>Checks are here</div>} />,
+              element: <LazyComponent element={<UserChecks />} />,
             },
           ],
         },
