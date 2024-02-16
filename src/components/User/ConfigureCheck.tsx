@@ -140,7 +140,7 @@ export default function ConfigureCheck({
                 justifyContent: "center",
               }}
             >
-              {Object.entries(checkConfig).map(([key, _]) => (
+              {Object.entries(checkConfig).map(([key]) => (
                 <ConfigField
                   key={key}
                   index={key}
