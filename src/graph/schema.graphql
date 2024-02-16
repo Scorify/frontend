@@ -46,7 +46,7 @@ query Checks {
 mutation CreateCheck(
   $name: String!
   $source: String!
-  $config: String!
+  $config: JSON!
   $editable_fields: [String!]!
 ) {
   createCheck(
@@ -159,5 +159,25 @@ mutation AdminLogin($id: ID!) {
     domain
     secure
     httpOnly
+  }
+}
+
+query Configs {
+  configs {
+    id
+    check {
+      name
+      source {
+        name
+        schema
+      }
+    }
+    config
+  }
+}
+
+mutation EditConfig($id: ID!, $config: JSON!) {
+  editConfig(id: $id, config: $config) {
+    id
   }
 }
