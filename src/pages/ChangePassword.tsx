@@ -84,6 +84,12 @@ export default function ChangePassword({ removeCookies }: props) {
         <Button
           variant='contained'
           fullWidth
+          disabled={
+            !oldPassword ||
+            !newPassword ||
+            !confirmNewPassword ||
+            newPassword !== confirmNewPassword
+          }
           onClick={() => {
             if (
               newPassword &&
