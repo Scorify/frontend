@@ -113,6 +113,7 @@ export default function ConfigureCheck({
               >
                 <Button
                   variant='contained'
+                  color='success'
                   onClick={(e) => {
                     if (!expanded) {
                       e.stopPropagation();
