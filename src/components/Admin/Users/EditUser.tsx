@@ -290,6 +290,7 @@ export default function EditCheck({
                 >
                   <Button
                     variant='contained'
+                    color='success'
                     onClick={(e) => {
                       if (!expanded) {
                         e.stopPropagation();

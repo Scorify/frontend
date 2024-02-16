@@ -192,6 +192,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                 >
                   <Button
                     variant='contained'
+                    color='success'
                     onClick={(e) => {
                       if (!expanded) {
                         e.stopPropagation();
