@@ -141,20 +141,26 @@ export default function ConfigureCheck({
                 justifyContent: "center",
               }}
             >
-              {Object.entries(checkConfig).map(([key]) => (
-                <ConfigField
-                  key={key}
-                  index={key}
-                  handleInputChange={handleConfigChange}
-                  value={
-                    JSON.parse(config.check.source.schema)[key] as
-                      | "string"
-                      | "int"
-                      | "bool"
-                  }
-                  config={checkConfig}
-                />
-              ))}
+              {Object.keys(checkConfig).length ? (
+                <>
+                  {Object.entries(checkConfig).map(([key]) => (
+                    <ConfigField
+                      key={key}
+                      index={key}
+                      handleInputChange={handleConfigChange}
+                      value={
+                        JSON.parse(config.check.source.schema)[key] as
+                          | "string"
+                          | "int"
+                          | "bool"
+                      }
+                      config={checkConfig}
+                    />
+                  ))}
+                </>
+              ) : (
+                <Typography variant='h5'>No configuration required</Typography>
+              )}
             </Box>
           </CardContent>
         </Collapse>
