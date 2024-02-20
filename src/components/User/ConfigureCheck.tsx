@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Collapse,
   Divider,
   Grow,
@@ -83,7 +84,7 @@ export default function ConfigureCheck({
       >
         <CardHeader
           title={
-            <Box display='flex' flexDirection='row' alignItems='baseline'>
+            <Box display='flex' flexDirection='row' alignItems='center'>
               <Typography variant='h6' component='div' marginRight='24px'>
                 {config.check.name}
               </Typography>
@@ -91,9 +92,11 @@ export default function ConfigureCheck({
                 variant='subtitle1'
                 color='textSecondary'
                 component='div'
+                marginRight='24px'
               >
                 {config.check.source.name}
               </Typography>
+              <Chip size='small' label={`weight:${config.check.weight}`} />
             </Box>
           }
           action={
