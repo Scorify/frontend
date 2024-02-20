@@ -27,6 +27,7 @@ query Checks {
   checks {
     id
     name
+    weight
     config {
       config
       editable_fields
@@ -45,12 +46,14 @@ query Checks {
 
 mutation CreateCheck(
   $name: String!
+  $weight: Int!
   $source: String!
   $config: JSON!
   $editable_fields: [String!]!
 ) {
   createCheck(
     name: $name
+    weight: $weight
     source: $source
     config: $config
     editable_fields: $editable_fields
@@ -67,12 +70,14 @@ mutation CreateCheck(
 mutation UpdateCheck(
   $id: ID!
   $name: String
+  $weight: Int
   $config: JSON
   $editable_fields: [String!]
 ) {
   updateCheck(
     id: $id
     name: $name
+    weight: $weight
     config: $config
     editable_fields: $editable_fields
   ) {
@@ -167,6 +172,7 @@ query Configs {
     id
     check {
       name
+      weight
       source {
         name
         schema

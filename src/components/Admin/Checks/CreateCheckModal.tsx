@@ -44,6 +44,7 @@ export default function CreateCheckModal({
 
   const [source, setSource] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [weight, setWeight] = useState<number>(1);
 
   const [config, setConfig] = useState<{
     [key: string]: string | number | boolean;
@@ -148,6 +149,20 @@ export default function CreateCheckModal({
                 setName(event.target.value as string);
               }}
             />
+
+            <TextField
+              label='Weight'
+              variant='outlined'
+              sx={{
+                marginTop: "24px",
+              }}
+              type='number'
+              value={weight}
+              onChange={(event) => {
+                setWeight(parseInt(event.target.value));
+              }}
+            />
+
             <Box sx={{ justifyContent: "center" }}>
               <Typography
                 component='h1'
@@ -228,6 +243,7 @@ export default function CreateCheckModal({
                 variables: {
                   source: source,
                   name: name,
+                  weight: weight,
                   config: JSON.stringify(config),
                   editable_fields: editableFields,
                 },
