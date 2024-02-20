@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Collapse,
   Divider,
   Grow,
@@ -54,6 +55,12 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   const [name, setName] = useState<string>(check.name);
   const nameChanged = useMemo(() => name != check.name, [name, check.name]);
 
+  const [weight, setWeight] = useState<number>(check.weight);
+  const weightChanged = useMemo(
+    () => weight != check.weight,
+    [weight, check.weight]
+  );
+
   const [open, setOpen] = useState(false);
 
   const [updateCheckMutation] = useUpdateCheckMutation({
@@ -94,6 +101,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
       variables: {
         id: check.id,
         name: nameChanged ? name : undefined,
+        weight: weightChanged ? weight : undefined,
         config: configChanged ? JSON.stringify(config) : undefined,
         editable_fields: editableFieldsChanged ? editableFields : undefined,
       },
@@ -127,7 +135,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
         >
           <CardHeader
             title={
-              <Box display='flex' flexDirection='row' alignItems='baseline'>
+              <Box display='flex' flexDirection='row' alignItems='center'>
                 {expanded ? (
                   <TextField
                     label='Name'
@@ -150,9 +158,27 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   variant='subtitle1'
                   color='textSecondary'
                   component='div'
+                  marginRight='24px'
                 >
                   {check.source.name}
                 </Typography>
+                {expanded ? (
+                  <TextField
+                    label='Weight'
+                    type='number'
+                    value={weight}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    onChange={(e) => {
+                      setWeight(parseInt(e.target.value));
+                    }}
+                    sx={{ marginRight: "24px", width: "100px" }}
+                    size='small'
+                  />
+                ) : (
+                  <Chip size='small' label={`weight:${weight}`} />
+                )}
               </Box>
             }
             action={
@@ -181,7 +207,12 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   </Button>
                 </Slide>
                 <Slide
-                  in={configChanged || nameChanged || editableFieldsChanged}
+                  in={
+                    configChanged ||
+                    nameChanged ||
+                    editableFieldsChanged ||
+                    weightChanged
+                  }
                   timeout={300}
                   style={{
                     transformOrigin: "right",
