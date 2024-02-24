@@ -36,21 +36,21 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
 
   const [config, setConfig] = useState<{
     [key: string]: number | boolean | string;
-  }>(JSON.parse(check.config.config));
+  }>(JSON.parse(check.config));
   const configChanged = useMemo(
-    () => JSON.stringify(config) != check.config.config,
-    [config, check.config.config]
+    () => JSON.stringify(config) != check.config,
+    [config, check.config]
   );
 
   const [editableFields, setEditableFields] = useState<string[]>(
-    check.config.editable_fields
+    check.editable_fields
   );
   const editableFieldsChanged = useMemo(() => {
     return (
       [...editableFields].sort().join(",") !=
-      [...check.config.editable_fields].sort().join(",")
+      [...check.editable_fields].sort().join(",")
     );
-  }, [editableFields, check.config.editable_fields]);
+  }, [editableFields, check.editable_fields]);
 
   const [name, setName] = useState<string>(check.name);
   const nameChanged = useMemo(() => name != check.name, [name, check.name]);

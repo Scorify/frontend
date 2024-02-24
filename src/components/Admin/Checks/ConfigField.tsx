@@ -49,6 +49,7 @@ export default function ConfigField({
       <TextField
         label={index}
         type='text'
+        multiline
         value={config[index] || ""}
         onChange={(e) => handleInputChange(index, e.target.value)}
         variant='outlined'
