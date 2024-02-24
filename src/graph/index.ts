@@ -16,21 +16,33 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   JSON: { input: any; output: any; }
+  Time: { input: any; output: any; }
 };
 
 export type Check = {
   __typename?: 'Check';
-  config: CheckConfiguration;
+  config: Scalars['JSON']['output'];
+  configs: Array<CheckConfig>;
+  create_time: Scalars['Time']['output'];
+  editable_fields: Array<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   source: Source;
+  statuses: Array<Status>;
+  update_time: Scalars['Time']['output'];
   weight: Scalars['Int']['output'];
 };
 
-export type CheckConfiguration = {
-  __typename?: 'CheckConfiguration';
+export type CheckConfig = {
+  __typename?: 'CheckConfig';
+  check: Check;
+  check_id: Scalars['ID']['output'];
   config: Scalars['JSON']['output'];
-  editable_fields: Array<Scalars['String']['output']>;
+  create_time: Scalars['Time']['output'];
+  id: Scalars['ID']['output'];
+  update_time: Scalars['Time']['output'];
+  user: User;
+  user_id: Scalars['ID']['output'];
 };
 
 export type Config = {
@@ -187,11 +199,56 @@ export enum Role {
   User = 'user'
 }
 
+export type Round = {
+  __typename?: 'Round';
+  complete: Scalars['Boolean']['output'];
+  create_time: Scalars['Time']['output'];
+  id: Scalars['ID']['output'];
+  number: Scalars['Int']['output'];
+  score_caches: Array<ScoreCache>;
+  statuses: Array<Status>;
+  update_time: Scalars['Time']['output'];
+};
+
+export type ScoreCache = {
+  __typename?: 'ScoreCache';
+  create_time: Scalars['Time']['output'];
+  id: Scalars['ID']['output'];
+  points: Scalars['Int']['output'];
+  round: Round;
+  round_id: Scalars['ID']['output'];
+  update_time: Scalars['Time']['output'];
+  user: User;
+  user_id: Scalars['ID']['output'];
+};
+
 export type Source = {
   __typename?: 'Source';
   name: Scalars['String']['output'];
   schema: Scalars['String']['output'];
 };
+
+export type Status = {
+  __typename?: 'Status';
+  check: Check;
+  check_id: Scalars['ID']['output'];
+  create_time: Scalars['Time']['output'];
+  error?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  points: Scalars['Int']['output'];
+  round: Round;
+  round_id: Scalars['ID']['output'];
+  status: StatusEnum;
+  update_time: Scalars['Time']['output'];
+  user: User;
+  user_id: Scalars['ID']['output'];
+};
+
+export enum StatusEnum {
+  Down = 'down',
+  Unknown = 'unknown',
+  Up = 'up'
+}
 
 export type Subscription = {
   __typename?: 'Subscription';
@@ -200,9 +257,14 @@ export type Subscription = {
 
 export type User = {
   __typename?: 'User';
+  configs: Array<Config>;
+  create_time: Scalars['Time']['output'];
   id: Scalars['ID']['output'];
   number?: Maybe<Scalars['Int']['output']>;
   role: Role;
+  score_caches: Array<ScoreCache>;
+  statuses: Array<Status>;
+  update_time: Scalars['Time']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -327,10 +389,8 @@ export const ChecksDocument = gql`
     id
     name
     weight
-    config {
-      config
-      editable_fields
-    }
+    config
+    editable_fields
     source {
       name
       schema
@@ -863,7 +923,7 @@ export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: 
 export type ChecksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, weight: number, config: { __typename?: 'CheckConfiguration', config: any, editable_fields: Array<string> }, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
+export type ChecksQuery = { __typename?: 'Query', checks: Array<{ __typename?: 'Check', id: string, name: string, weight: number, config: any, editable_fields: Array<string>, source: { __typename?: 'Source', name: string, schema: string } }>, sources: Array<{ __typename?: 'Source', name: string, schema: string }> };
 
 export type CreateCheckMutationVariables = Exact<{
   name: Scalars['String']['input'];
