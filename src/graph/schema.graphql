@@ -28,10 +28,8 @@ query Checks {
     id
     name
     weight
-    config {
-      config
-      editable_fields
-    }
+    config
+    editable_fields
     source {
       name
       schema
