@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
 
-import { Notification } from "../../components";
 import { useNavigate } from "react-router-dom";
+import { EngineState, Notification } from "../../components";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function AdminPanel() {
 
   const components = {
     notification: <Notification />,
-    engine: <div>Engine</div>,
+    engine: <EngineState />,
   };
 
   return (
