@@ -53,6 +53,11 @@ export type Config = {
   user: User;
 };
 
+export enum EngineState {
+  Running = 'running',
+  Stopped = 'stopped'
+}
+
 export type LoginOutput = {
   __typename?: 'LoginOutput';
   domain: Scalars['String']['output'];
@@ -75,6 +80,8 @@ export type Mutation = {
   editConfig: Config;
   login: LoginOutput;
   sendGlobalNotification: Scalars['Boolean']['output'];
+  startEngine: Scalars['Boolean']['output'];
+  stopEngine: Scalars['Boolean']['output'];
   updateCheck: Check;
   updateUser: User;
 };
@@ -252,6 +259,7 @@ export enum StatusEnum {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  engineState: EngineState;
   globalNotification: Notification;
 };
 
@@ -746,6 +754,93 @@ export function useGlobalNotificationSubscription(baseOptions?: Apollo.Subscript
       }
 export type GlobalNotificationSubscriptionHookResult = ReturnType<typeof useGlobalNotificationSubscription>;
 export type GlobalNotificationSubscriptionResult = Apollo.SubscriptionResult<GlobalNotificationSubscription>;
+export const EngineStateDocument = gql`
+    subscription EngineState {
+  engineState
+}
+    `;
+
+/**
+ * __useEngineStateSubscription__
+ *
+ * To run a query within a React component, call `useEngineStateSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useEngineStateSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEngineStateSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEngineStateSubscription(baseOptions?: Apollo.SubscriptionHookOptions<EngineStateSubscription, EngineStateSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<EngineStateSubscription, EngineStateSubscriptionVariables>(EngineStateDocument, options);
+      }
+export type EngineStateSubscriptionHookResult = ReturnType<typeof useEngineStateSubscription>;
+export type EngineStateSubscriptionResult = Apollo.SubscriptionResult<EngineStateSubscription>;
+export const StartEngineDocument = gql`
+    mutation StartEngine {
+  startEngine
+}
+    `;
+export type StartEngineMutationFn = Apollo.MutationFunction<StartEngineMutation, StartEngineMutationVariables>;
+
+/**
+ * __useStartEngineMutation__
+ *
+ * To run a mutation, you first call `useStartEngineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStartEngineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [startEngineMutation, { data, loading, error }] = useStartEngineMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStartEngineMutation(baseOptions?: Apollo.MutationHookOptions<StartEngineMutation, StartEngineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StartEngineMutation, StartEngineMutationVariables>(StartEngineDocument, options);
+      }
+export type StartEngineMutationHookResult = ReturnType<typeof useStartEngineMutation>;
+export type StartEngineMutationResult = Apollo.MutationResult<StartEngineMutation>;
+export type StartEngineMutationOptions = Apollo.BaseMutationOptions<StartEngineMutation, StartEngineMutationVariables>;
+export const StopEngineDocument = gql`
+    mutation StopEngine {
+  stopEngine
+}
+    `;
+export type StopEngineMutationFn = Apollo.MutationFunction<StopEngineMutation, StopEngineMutationVariables>;
+
+/**
+ * __useStopEngineMutation__
+ *
+ * To run a mutation, you first call `useStopEngineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStopEngineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [stopEngineMutation, { data, loading, error }] = useStopEngineMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStopEngineMutation(baseOptions?: Apollo.MutationHookOptions<StopEngineMutation, StopEngineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StopEngineMutation, StopEngineMutationVariables>(StopEngineDocument, options);
+      }
+export type StopEngineMutationHookResult = ReturnType<typeof useStopEngineMutation>;
+export type StopEngineMutationResult = Apollo.MutationResult<StopEngineMutation>;
+export type StopEngineMutationOptions = Apollo.BaseMutationOptions<StopEngineMutation, StopEngineMutationVariables>;
 export const SendGlobalNotificationDocument = gql`
     mutation SendGlobalNotification($message: String!, $type: NotificationType!) {
   sendGlobalNotification(message: $message, type: $type)
@@ -990,6 +1085,21 @@ export type GlobalNotificationSubscriptionVariables = Exact<{ [key: string]: nev
 
 
 export type GlobalNotificationSubscription = { __typename?: 'Subscription', globalNotification: { __typename?: 'Notification', message: string, type: NotificationType } };
+
+export type EngineStateSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EngineStateSubscription = { __typename?: 'Subscription', engineState: EngineState };
+
+export type StartEngineMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StartEngineMutation = { __typename?: 'Mutation', startEngine: boolean };
+
+export type StopEngineMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StopEngineMutation = { __typename?: 'Mutation', stopEngine: boolean };
 
 export type SendGlobalNotificationMutationVariables = Exact<{
   message: Scalars['String']['input'];

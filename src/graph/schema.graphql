@@ -149,6 +149,18 @@ subscription GlobalNotification {
   }
 }
 
+subscription EngineState {
+  engineState
+}
+
+mutation StartEngine {
+  startEngine
+}
+
+mutation StopEngine {
+  stopEngine
+}
+
 mutation SendGlobalNotification($message: String!, $type: NotificationType!) {
   sendGlobalNotification(message: $message, type: $type)
 }
