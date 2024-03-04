@@ -11,7 +11,6 @@ import {
 export default function EngineStateComponent() {
   const { data } = useEngineStateSubscription({
     onError: (error) => {
-      enqueueSnackbar(error.message, { variant: "error" });
       console.error(error);
     },
   });
@@ -53,7 +52,9 @@ export default function EngineStateComponent() {
           variant='contained'
           color={statusColor(data?.engineState || EngineState.Stopped)}
         >
-          <Typography variant='h5'>{data?.engineState}</Typography>
+          <Typography variant='h5'>
+            {data?.engineState || "disconnected"}
+          </Typography>
         </Button>
 
         <Box sx={{ m: 2 }} />
@@ -62,7 +63,7 @@ export default function EngineStateComponent() {
             onClick={() => {
               StartEngine();
             }}
-            disabled={data?.engineState === EngineState.Running}
+            disabled={!data || data.engineState === EngineState.Running}
           >
             <Typography variant='h6'>Start</Typography>
           </Button>
@@ -70,7 +71,7 @@ export default function EngineStateComponent() {
             onClick={() => {
               StopEngine();
             }}
-            disabled={data?.engineState === EngineState.Stopped}
+            disabled={!data || data.engineState === EngineState.Stopped}
           >
             <Typography variant='h6'>Pause</Typography>
           </Button>
