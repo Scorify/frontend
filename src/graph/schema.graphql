@@ -153,6 +153,24 @@ subscription EngineState {
   engineState
 }
 
+subscription StatusStream {
+  statusStream {
+    id
+    error
+    status
+    update_time
+    check {
+      name
+    }
+    user {
+      username
+    }
+    round {
+      number
+    }
+  }
+}
+
 mutation StartEngine {
   startEngine
 }
