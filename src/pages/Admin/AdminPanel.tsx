@@ -3,31 +3,34 @@ import { useState } from "react";
 import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
-import { EngineState, Notification } from "../../components";
+import { EngineState, Notification, StatusStream } from "../../components";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(location.search);
 
   let param = urlParams.get("selected") || "notification";
-  if (!["notification", "engine"].includes(param)) {
+  if (!["notification", "engine", "status_stream"].includes(param)) {
     param = "notification";
   }
 
-  const [selected, setSelected] = useState<"notification" | "engine">(
-    param as "notification" | "engine"
-  );
+  const [selected, setSelected] = useState<
+    "notification" | "engine" | "status_stream"
+  >(param as "notification" | "engine" | "status_stream");
 
   const components = {
     notification: <Notification />,
     engine: <EngineState />,
+    status_stream: <StatusStream />,
   };
 
   return (
-    <Container component='main' maxWidth='sm'>
-      <Box
+    <Container component='main' maxWidth='xl'>
+      <Container
+        maxWidth='sm'
         sx={{
-          marginTop: 8,
+          mt: 8,
+          mb: 2,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -62,10 +65,21 @@ export default function AdminPanel() {
           >
             Engine State
           </Button>
+          <Button
+            disabled={selected === "status_stream"}
+            sx={{ flexGrow: 1 }}
+            onClick={() => {
+              setSelected("status_stream");
+
+              urlParams.set("selected", "status_stream");
+              navigate(`?${urlParams.toString()}`);
+            }}
+          >
+            Status Stream
+          </Button>
         </ButtonGroup>
-        <Box sx={{ m: 2 }} />
-        {components[selected]}
-      </Box>
+      </Container>
+      {components[selected]}
     </Container>
   );
 }

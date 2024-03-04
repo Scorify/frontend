@@ -261,6 +261,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   engineState: EngineState;
   globalNotification: Notification;
+  statusStream: Status;
 };
 
 export type User = {
@@ -781,6 +782,47 @@ export function useEngineStateSubscription(baseOptions?: Apollo.SubscriptionHook
       }
 export type EngineStateSubscriptionHookResult = ReturnType<typeof useEngineStateSubscription>;
 export type EngineStateSubscriptionResult = Apollo.SubscriptionResult<EngineStateSubscription>;
+export const StatusStreamDocument = gql`
+    subscription StatusStream {
+  statusStream {
+    id
+    error
+    status
+    update_time
+    check {
+      name
+    }
+    user {
+      username
+    }
+    round {
+      number
+    }
+  }
+}
+    `;
+
+/**
+ * __useStatusStreamSubscription__
+ *
+ * To run a query within a React component, call `useStatusStreamSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useStatusStreamSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatusStreamSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStatusStreamSubscription(baseOptions?: Apollo.SubscriptionHookOptions<StatusStreamSubscription, StatusStreamSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<StatusStreamSubscription, StatusStreamSubscriptionVariables>(StatusStreamDocument, options);
+      }
+export type StatusStreamSubscriptionHookResult = ReturnType<typeof useStatusStreamSubscription>;
+export type StatusStreamSubscriptionResult = Apollo.SubscriptionResult<StatusStreamSubscription>;
 export const StartEngineDocument = gql`
     mutation StartEngine {
   startEngine
@@ -1090,6 +1132,11 @@ export type EngineStateSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type EngineStateSubscription = { __typename?: 'Subscription', engineState: EngineState };
+
+export type StatusStreamSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StatusStreamSubscription = { __typename?: 'Subscription', statusStream: { __typename?: 'Status', id: string, error?: string | null, status: StatusEnum, update_time: any, check: { __typename?: 'Check', name: string }, user: { __typename?: 'User', username: string }, round: { __typename?: 'Round', number: number } } };
 
 export type StartEngineMutationVariables = Exact<{ [key: string]: never; }>;
 

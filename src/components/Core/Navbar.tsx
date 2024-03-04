@@ -11,7 +11,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
 import { CookieSetOptions } from "universal-cookie";
 
 import { StatusIndicator } from "..";
@@ -53,7 +52,7 @@ export default function Navbar({
       }
     },
     onError: (error) => {
-      enqueueSnackbar(error.message, { variant: "error" });
+      setEngineState(false);
       console.error(error);
     },
   });
