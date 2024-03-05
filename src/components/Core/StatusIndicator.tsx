@@ -1,20 +1,30 @@
 import { SxProps, Tooltip, Typography } from "@mui/material";
+import { EngineState } from "../../graph";
 
 type props = {
-  status: boolean;
+  status: EngineState | undefined;
   positiveTitle: string;
   negativeTitle: string;
   sx?: SxProps;
 };
 
-const StatusIndicator = ({
-  status,
-  positiveTitle,
-  negativeTitle,
-  sx,
-}: props) => {
+const StatusIndicator = ({ status, sx }: props) => {
+  console.log("StatusIndicator", status);
+  const lookup = {
+    [EngineState.Paused]: { title: "Engine is Paused", color: "red" },
+    [EngineState.Running]: {
+      title: "Engine is Scoring Current Round",
+      color: "green",
+    },
+    [EngineState.Waiting]: {
+      title: "Engine is Waiting Next to Start",
+      color: "yellow",
+    },
+    default: { title: "Engine is Unknown", color: "grey" },
+  };
+
   return (
-    <Tooltip title={status ? positiveTitle : negativeTitle}>
+    <Tooltip title={lookup[status || "default"].title}>
       <Typography
         variant='body2'
         sx={{
@@ -22,7 +32,7 @@ const StatusIndicator = ({
           width: 12,
           height: 12,
           borderRadius: "50%",
-          backgroundColor: status ? "green" : "red",
+          backgroundColor: lookup[status || "default"].color,
           ...sx,
         }}
       />

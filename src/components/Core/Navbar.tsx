@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router";
 
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
@@ -14,7 +14,7 @@ import {
 import { CookieSetOptions } from "universal-cookie";
 
 import { StatusIndicator } from "..";
-import { EngineState, useEngineStateSubscription } from "../../graph";
+import { useEngineStateSubscription } from "../../graph";
 import { JWT } from "../../models";
 
 type props = {
@@ -43,16 +43,8 @@ export default function Navbar({
 }: props) {
   const navigate = useNavigate();
 
-  const [engineState, setEngineState] = useState<boolean>();
-
-  useEngineStateSubscription({
-    onData: (data) => {
-      if (data && data.data) {
-        setEngineState(data.data.data?.engineState === EngineState.Running);
-      }
-    },
+  const { data } = useEngineStateSubscription({
     onError: (error) => {
-      setEngineState(false);
       console.error(error);
     },
   });
@@ -96,7 +88,7 @@ export default function Navbar({
             }}
           >
             <StatusIndicator
-              status={engineState || false}
+              status={data?.engineState}
               positiveTitle='Engine is Scoring'
               negativeTitle='Engine is Paused'
               sx={{ margin: "10px" }}
