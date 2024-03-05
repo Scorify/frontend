@@ -54,8 +54,9 @@ export type Config = {
 };
 
 export enum EngineState {
+  Paused = 'paused',
   Running = 'running',
-  Stopped = 'stopped'
+  Waiting = 'waiting'
 }
 
 export type LoginOutput = {
