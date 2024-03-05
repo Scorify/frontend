@@ -29,12 +29,11 @@ export default function EngineStateComponent() {
     },
   });
 
-  const statusColor = (state: EngineState) => {
-    if (state === EngineState.Running) {
-      return "success";
-    } else {
-      return "error";
-    }
+  const color = {
+    [EngineState.Paused]: "error",
+    [EngineState.Running]: "success",
+    [EngineState.Waiting]: "warning",
+    default: "info",
   };
 
   return (
@@ -50,7 +49,13 @@ export default function EngineStateComponent() {
       >
         <Button
           variant='contained'
-          color={statusColor(data?.engineState || EngineState.Stopped)}
+          color={
+            color[data?.engineState || "default"] as
+              | "error"
+              | "success"
+              | "warning"
+              | "info"
+          }
         >
           <Typography variant='h5'>
             {data?.engineState || "disconnected"}
@@ -71,7 +76,7 @@ export default function EngineStateComponent() {
             onClick={() => {
               StopEngine();
             }}
-            disabled={!data || data.engineState === EngineState.Stopped}
+            disabled={!data || data.engineState === EngineState.Paused}
           >
             <Typography variant='h6'>Pause</Typography>
           </Button>
