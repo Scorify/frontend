@@ -9,7 +9,6 @@ type props = {
 };
 
 const StatusIndicator = ({ status, sx }: props) => {
-  console.log("StatusIndicator", status);
   const lookup = {
     [EngineState.Paused]: { title: "Engine is Paused", color: "red" },
     [EngineState.Running]: {
@@ -17,10 +16,14 @@ const StatusIndicator = ({ status, sx }: props) => {
       color: "green",
     },
     [EngineState.Waiting]: {
-      title: "Engine is Waiting Next to Start",
+      title: "Engine is Waiting For Next Round to Start",
       color: "yellow",
     },
-    default: { title: "Engine is Unknown", color: "grey" },
+    [EngineState.Stopping]: {
+      title: "Engine is Stopping Scoring",
+      color: "orange",
+    },
+    default: { title: "Engine State is Unknown", color: "grey" },
   };
 
   return (

@@ -33,6 +33,7 @@ export default function EngineStateComponent() {
     [EngineState.Paused]: "error",
     [EngineState.Running]: "success",
     [EngineState.Waiting]: "warning",
+    [EngineState.Stopping]: "secondary",
     default: "info",
   };
 
@@ -68,7 +69,11 @@ export default function EngineStateComponent() {
             onClick={() => {
               StartEngine();
             }}
-            disabled={!data || data.engineState === EngineState.Running}
+            disabled={
+              !data ||
+              data.engineState === EngineState.Running ||
+              data.engineState === EngineState.Waiting
+            }
           >
             <Typography variant='h6'>Start</Typography>
           </Button>
@@ -78,7 +83,7 @@ export default function EngineStateComponent() {
             }}
             disabled={!data || data.engineState === EngineState.Paused}
           >
-            <Typography variant='h6'>Pause</Typography>
+            <Typography variant='h6'>Stop</Typography>
           </Button>
         </ButtonGroup>
       </Box>
