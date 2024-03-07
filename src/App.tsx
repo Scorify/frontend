@@ -89,7 +89,19 @@ export default function App() {
 
   const client = new ApolloClient({
     link: splitLink,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Subscription: {
+          fields: {
+            statusStream: {
+              merge(existing = [], incoming: any[]) {
+                return [...incoming, ...existing].splice(0, 500);
+              },
+            },
+          },
+        },
+      },
+    }),
   });
 
   const router = createBrowserRouter([
