@@ -263,7 +263,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   engineState: EngineState;
   globalNotification: Notification;
-  statusStream: Status;
+  statusStream: Array<Maybe<Status>>;
 };
 
 export type User = {
@@ -1138,7 +1138,7 @@ export type EngineStateSubscription = { __typename?: 'Subscription', engineState
 export type StatusStreamSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StatusStreamSubscription = { __typename?: 'Subscription', statusStream: { __typename?: 'Status', id: string, error?: string | null, status: StatusEnum, update_time: any, check: { __typename?: 'Check', name: string }, user: { __typename?: 'User', username: string }, round: { __typename?: 'Round', number: number } } };
+export type StatusStreamSubscription = { __typename?: 'Subscription', statusStream: Array<{ __typename?: 'Status', id: string, error?: string | null, status: StatusEnum, update_time: any, check: { __typename?: 'Check', name: string }, user: { __typename?: 'User', username: string }, round: { __typename?: 'Round', number: number } } | null> };
 
 export type StartEngineMutationVariables = Exact<{ [key: string]: never; }>;
 
