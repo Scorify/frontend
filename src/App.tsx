@@ -30,7 +30,10 @@ import {
   UserChecks,
   Users,
 } from "./pages";
-import { useGlobalNotificationSubscription } from "./graph";
+import {
+  useEngineStateSubscription,
+  useGlobalNotificationSubscription,
+} from "./graph";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<CircularProgress />}>{element}</Suspense>;
@@ -138,6 +141,12 @@ function Router({ theme, setTheme, apolloClient }: props) {
     },
   });
 
+  const { data } = useEngineStateSubscription({
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -152,6 +161,7 @@ function Router({ theme, setTheme, apolloClient }: props) {
               setCookie={setCookie}
               removeCookie={removeCookie}
               apolloClient={apolloClient}
+              engineState={data?.engineState}
             />
           }
         />
@@ -183,7 +193,11 @@ function Router({ theme, setTheme, apolloClient }: props) {
           children: [
             {
               index: true,
-              element: <LazyComponent element={<AdminPanel />} />,
+              element: (
+                <LazyComponent
+                  element={<AdminPanel engineState={data?.engineState} />}
+                />
+              ),
             },
             {
               path: "checks",

@@ -3,9 +3,18 @@ import { useState } from "react";
 import { Box, Button, ButtonGroup, Container, Typography } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
-import { EngineState, Notification, StatusStream } from "../../components";
+import {
+  EngineState as EngineStateComponent,
+  Notification,
+  StatusStream,
+} from "../../components";
+import { EngineState } from "../../graph";
 
-export default function AdminPanel() {
+type props = {
+  engineState: EngineState | undefined;
+};
+
+export default function AdminPanel({ engineState }: props) {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(location.search);
 
@@ -20,7 +29,7 @@ export default function AdminPanel() {
 
   const components = {
     notification: <Notification />,
-    engine: <EngineState />,
+    engine: <EngineStateComponent engineState={engineState} />,
     status_stream: <StatusStream />,
   };
 

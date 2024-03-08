@@ -7,6 +7,7 @@ import { Box, Container } from "@mui/material";
 
 import { Drawer, Navbar } from "..";
 import { JWT } from "../../models";
+import { EngineState } from "../../graph";
 
 type props = {
   theme: string;
@@ -26,6 +27,7 @@ type props = {
     options?: CookieSetOptions | undefined
   ) => void;
   apolloClient: ApolloClient<NormalizedCacheObject>;
+  engineState: EngineState | undefined;
 };
 
 export default function Main({
@@ -36,6 +38,7 @@ export default function Main({
   setCookie,
   removeCookie,
   apolloClient,
+  engineState,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
   return (
@@ -56,6 +59,7 @@ export default function Main({
         removeCookie={removeCookie}
         jwt={jwt}
         apolloClient={apolloClient}
+        engineState={engineState}
       />
       <Container component='main'>
         <Outlet />
