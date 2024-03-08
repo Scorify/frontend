@@ -14,7 +14,7 @@ import {
 import { CookieSetOptions } from "universal-cookie";
 
 import { StatusIndicator } from "..";
-import { useEngineStateSubscription } from "../../graph";
+import { EngineState } from "../../graph";
 import { JWT } from "../../models";
 
 type props = {
@@ -31,6 +31,7 @@ type props = {
   ) => void;
   jwt: JWT;
   apolloClient: ApolloClient<NormalizedCacheObject>;
+  engineState: EngineState | undefined;
 };
 
 export default function Navbar({
@@ -40,14 +41,9 @@ export default function Navbar({
   removeCookie,
   jwt,
   apolloClient,
+  engineState,
 }: props) {
   const navigate = useNavigate();
-
-  const { data } = useEngineStateSubscription({
-    onError: (error) => {
-      console.error(error);
-    },
-  });
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -88,7 +84,7 @@ export default function Navbar({
             }}
           >
             <StatusIndicator
-              status={data?.engineState}
+              status={engineState}
               positiveTitle='Engine is Scoring'
               negativeTitle='Engine is Paused'
               sx={{ margin: "10px" }}

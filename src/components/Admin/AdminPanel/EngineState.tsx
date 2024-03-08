@@ -3,18 +3,15 @@ import { enqueueSnackbar } from "notistack";
 
 import {
   EngineState,
-  useEngineStateSubscription,
   useStartEngineMutation,
   useStopEngineMutation,
 } from "../../../graph";
 
-export default function EngineStateComponent() {
-  const { data } = useEngineStateSubscription({
-    onError: (error) => {
-      console.error(error);
-    },
-  });
+type props = {
+  engineState: EngineState | undefined;
+};
 
+export default function EngineStateComponent({ engineState }: props) {
   const [StartEngine] = useStartEngineMutation({
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -51,16 +48,14 @@ export default function EngineStateComponent() {
         <Button
           variant='contained'
           color={
-            color[data?.engineState || "default"] as
+            color[engineState || "default"] as
               | "error"
               | "success"
               | "warning"
               | "info"
           }
         >
-          <Typography variant='h5'>
-            {data?.engineState || "disconnected"}
-          </Typography>
+          <Typography variant='h5'>{engineState || "disconnected"}</Typography>
         </Button>
 
         <Box sx={{ m: 2 }} />
@@ -70,9 +65,8 @@ export default function EngineStateComponent() {
               StartEngine();
             }}
             disabled={
-              !data ||
-              data.engineState === EngineState.Running ||
-              data.engineState === EngineState.Waiting
+              engineState === EngineState.Running ||
+              engineState === EngineState.Waiting
             }
           >
             <Typography variant='h6'>Start</Typography>
@@ -81,7 +75,7 @@ export default function EngineStateComponent() {
             onClick={() => {
               StopEngine();
             }}
-            disabled={!data || data.engineState === EngineState.Paused}
+            disabled={engineState === EngineState.Paused}
           >
             <Typography variant='h6'>Stop</Typography>
           </Button>

@@ -1,37 +1,42 @@
 import { ReactElement, ReactNode, Suspense, useMemo, useState } from "react";
+import { useCookies } from "react-cookie";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import {
   ApolloClient,
   ApolloProvider,
   HttpLink,
   InMemoryCache,
+  NormalizedCacheObject,
   split,
 } from "@apollo/client";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { ThemeProvider } from "@emotion/react";
-import { CssBaseline } from "@mui/material";
+import { CircularProgress, CssBaseline } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { createClient } from "graphql-ws";
-import { SnackbarProvider } from "notistack";
-import { useCookies } from "react-cookie";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { SnackbarProvider, enqueueSnackbar } from "notistack";
 
 import { Admin, Error, Main, User } from "./components";
 import { useJWT } from "./hooks";
 import {
+  AdminChecks,
   AdminPanel,
   ChangePassword,
-  AdminChecks,
-  UserChecks,
   Home,
   Login,
   Me,
+  UserChecks,
   Users,
 } from "./pages";
+import {
+  useEngineStateSubscription,
+  useGlobalNotificationSubscription,
+} from "./graph";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
-  return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
+  return <Suspense fallback={<CircularProgress />}>{element}</Suspense>;
 };
 
 const lightTheme = createTheme({
@@ -47,9 +52,6 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
-  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
-  const jwt = useJWT(cookies.auth);
-
   let savedTheme = localStorage.getItem("theme");
   if (!savedTheme) {
     savedTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -104,6 +106,47 @@ export default function App() {
     }),
   });
 
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <ApolloProvider client={client}>
+        <CssBaseline />
+        <SnackbarProvider maxSnack={3}>
+          <Router theme={theme} setTheme={setTheme} apolloClient={client} />
+        </SnackbarProvider>
+      </ApolloProvider>
+    </ThemeProvider>
+  );
+}
+
+type props = {
+  theme: string;
+  setTheme: React.Dispatch<React.SetStateAction<string>>;
+  apolloClient: ApolloClient<NormalizedCacheObject>;
+};
+
+function Router({ theme, setTheme, apolloClient }: props) {
+  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
+  const jwt = useJWT(cookies.auth);
+
+  useGlobalNotificationSubscription({
+    onData: (data) => {
+      if (data.data.data?.globalNotification) {
+        enqueueSnackbar(data.data.data.globalNotification.message, {
+          variant: data.data.data.globalNotification.type,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const { data } = useEngineStateSubscription({
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -117,7 +160,8 @@ export default function App() {
               cookies={cookies}
               setCookie={setCookie}
               removeCookie={removeCookie}
-              apolloClient={client}
+              apolloClient={apolloClient}
+              engineState={data?.engineState}
             />
           }
         />
@@ -149,7 +193,11 @@ export default function App() {
           children: [
             {
               index: true,
-              element: <LazyComponent element={<AdminPanel />} />,
+              element: (
+                <LazyComponent
+                  element={<AdminPanel engineState={data?.engineState} />}
+                />
+              ),
             },
             {
               path: "checks",
@@ -188,14 +236,5 @@ export default function App() {
     },
   ]);
 
-  return (
-    <ThemeProvider theme={muiTheme}>
-      <ApolloProvider client={client}>
-        <CssBaseline />
-        <SnackbarProvider maxSnack={3}>
-          <RouterProvider router={router} />
-        </SnackbarProvider>
-      </ApolloProvider>
-    </ThemeProvider>
-  );
+  return <RouterProvider router={router} />;
 }

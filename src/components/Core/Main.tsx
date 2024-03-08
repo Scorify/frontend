@@ -5,10 +5,9 @@ import { CookieSetOptions } from "universal-cookie";
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
 
-import { enqueueSnackbar } from "notistack";
 import { Drawer, Navbar } from "..";
-import { useGlobalNotificationSubscription } from "../../graph";
 import { JWT } from "../../models";
+import { EngineState } from "../../graph";
 
 type props = {
   theme: string;
@@ -28,6 +27,7 @@ type props = {
     options?: CookieSetOptions | undefined
   ) => void;
   apolloClient: ApolloClient<NormalizedCacheObject>;
+  engineState: EngineState | undefined;
 };
 
 export default function Main({
@@ -38,22 +38,9 @@ export default function Main({
   setCookie,
   removeCookie,
   apolloClient,
+  engineState,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
-
-  useGlobalNotificationSubscription({
-    onData: (data) => {
-      if (data.data.data?.globalNotification) {
-        enqueueSnackbar(data.data.data.globalNotification.message, {
-          variant: data.data.data.globalNotification.type,
-        });
-      }
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
       <Drawer
@@ -72,6 +59,7 @@ export default function Main({
         removeCookie={removeCookie}
         jwt={jwt}
         apolloClient={apolloClient}
+        engineState={engineState}
       />
       <Container component='main'>
         <Outlet />
