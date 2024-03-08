@@ -16,7 +16,7 @@ import { ThemeProvider } from "@emotion/react";
 import { CircularProgress, CssBaseline } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { createClient } from "graphql-ws";
-import { SnackbarProvider } from "notistack";
+import { SnackbarProvider, enqueueSnackbar } from "notistack";
 
 import { Admin, Error, Main, User } from "./components";
 import { useJWT } from "./hooks";
@@ -30,6 +30,7 @@ import {
   UserChecks,
   Users,
 } from "./pages";
+import { useGlobalNotificationSubscription } from "./graph";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<CircularProgress />}>{element}</Suspense>;
@@ -123,6 +124,19 @@ type props = {
 function Router({ theme, setTheme, apolloClient }: props) {
   const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
   const jwt = useJWT(cookies.auth);
+
+  useGlobalNotificationSubscription({
+    onData: (data) => {
+      if (data.data.data?.globalNotification) {
+        enqueueSnackbar(data.data.data.globalNotification.message, {
+          variant: data.data.data.globalNotification.type,
+        });
+      }
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   const router = createBrowserRouter([
     {
