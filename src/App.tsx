@@ -1,4 +1,6 @@
 import { ReactElement, ReactNode, Suspense, useMemo, useState } from "react";
+import { useCookies } from "react-cookie";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import {
   ApolloClient,
@@ -15,19 +17,17 @@ import { CircularProgress, CssBaseline } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { createClient } from "graphql-ws";
 import { SnackbarProvider } from "notistack";
-import { useCookies } from "react-cookie";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { Admin, Error, Main, User } from "./components";
 import { useJWT } from "./hooks";
 import {
+  AdminChecks,
   AdminPanel,
   ChangePassword,
-  AdminChecks,
-  UserChecks,
   Home,
   Login,
   Me,
+  UserChecks,
   Users,
 } from "./pages";
 
