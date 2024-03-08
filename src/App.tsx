@@ -5,12 +5,13 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
+  NormalizedCacheObject,
   split,
 } from "@apollo/client";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { ThemeProvider } from "@emotion/react";
-import { CssBaseline } from "@mui/material";
+import { CircularProgress, CssBaseline } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { createClient } from "graphql-ws";
 import { SnackbarProvider } from "notistack";
@@ -31,7 +32,7 @@ import {
 } from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
-  return <Suspense fallback={<>Loading...</>}>{element}</Suspense>;
+  return <Suspense fallback={<CircularProgress />}>{element}</Suspense>;
 };
 
 const lightTheme = createTheme({
@@ -47,9 +48,6 @@ const darkTheme = createTheme({
 });
 
 export default function App() {
-  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
-  const jwt = useJWT(cookies.auth);
-
   let savedTheme = localStorage.getItem("theme");
   if (!savedTheme) {
     savedTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -104,6 +102,28 @@ export default function App() {
     }),
   });
 
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <ApolloProvider client={client}>
+        <CssBaseline />
+        <SnackbarProvider maxSnack={3}>
+          <Router theme={theme} setTheme={setTheme} apolloClient={client} />
+        </SnackbarProvider>
+      </ApolloProvider>
+    </ThemeProvider>
+  );
+}
+
+type props = {
+  theme: string;
+  setTheme: React.Dispatch<React.SetStateAction<string>>;
+  apolloClient: ApolloClient<NormalizedCacheObject>;
+};
+
+function Router({ theme, setTheme, apolloClient }: props) {
+  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
+  const jwt = useJWT(cookies.auth);
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -117,7 +137,7 @@ export default function App() {
               cookies={cookies}
               setCookie={setCookie}
               removeCookie={removeCookie}
-              apolloClient={client}
+              apolloClient={apolloClient}
             />
           }
         />
@@ -188,14 +208,5 @@ export default function App() {
     },
   ]);
 
-  return (
-    <ThemeProvider theme={muiTheme}>
-      <ApolloProvider client={client}>
-        <CssBaseline />
-        <SnackbarProvider maxSnack={3}>
-          <RouterProvider router={router} />
-        </SnackbarProvider>
-      </ApolloProvider>
-    </ThemeProvider>
-  );
+  return <RouterProvider router={router} />;
 }
