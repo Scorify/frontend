@@ -11,27 +11,20 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { CookieSetOptions } from "universal-cookie";
 
 import { StatusIndicator } from "..";
-import { EngineState } from "../../graph";
-import { JWT } from "../../models";
+import { EngineState, MeQuery } from "../../graph";
+import { Cookies, RemoveCookie } from "../../models/cookies";
 
 type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
-  cookies: {
-    auth?: any;
-    admin?: any;
-  };
-  removeCookie: (
-    name: "auth" | "admin",
-    options?: CookieSetOptions | undefined
-  ) => void;
-  jwt: JWT;
+  cookies: Cookies;
+  removeCookie: RemoveCookie;
   apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
+  me: MeQuery | undefined;
 };
 
 export default function Navbar({
@@ -39,9 +32,9 @@ export default function Navbar({
   setTheme,
   setDrawerState,
   removeCookie,
-  jwt,
   apolloClient,
   engineState,
+  me,
 }: props) {
   const navigate = useNavigate();
 
@@ -61,7 +54,7 @@ export default function Navbar({
             </Tooltip>
           </Box>
           <Box sx={{ width: "34%", display: "flex", justifyContent: "center" }}>
-            {jwt && (
+            {me && (
               <Button
                 onClick={() => {
                   navigate("/");
@@ -71,7 +64,7 @@ export default function Navbar({
                   textTransform: "none",
                 }}
               >
-                <Typography variant='h6'>{jwt.username}</Typography>
+                <Typography variant='h6'>{me?.me.username}</Typography>
               </Button>
             )}
           </Box>
@@ -89,7 +82,7 @@ export default function Navbar({
               negativeTitle='Engine is Paused'
               sx={{ margin: "10px" }}
             />
-            {jwt ? (
+            {me ? (
               <Tooltip title='logout'>
                 <Button
                   onClick={() => {

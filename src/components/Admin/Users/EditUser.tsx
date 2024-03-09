@@ -17,40 +17,32 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
-import { CookieSetOptions } from "universal-cookie";
 
 import { DeleteUserModal, PasswordInput } from "../..";
 import {
+  MeQuery,
   UsersQuery,
+  useAdminBecomeMutation,
   useAdminLoginMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
 } from "../../../graph";
-import { JWT } from "../../../models";
+import { SetCookie } from "../../../models/cookies";
 
 type props = {
   user: UsersQuery["users"][0];
   handleRefetch: () => void;
   visible: boolean;
-  jwt: JWT;
-  setCookie: (
-    name: "auth" | "admin",
-    value: any,
-    options?: CookieSetOptions | undefined
-  ) => void;
-  cookies: {
-    auth?: any;
-    admin?: any;
-  };
+  setCookie: SetCookie;
+  me: MeQuery | undefined;
 };
 
 export default function EditCheck({
-  jwt,
+  me,
   user,
   visible,
   handleRefetch,
   setCookie,
-  cookies,
 }: props) {
   const navigate = useNavigate();
 
@@ -109,19 +101,21 @@ export default function EditCheck({
     },
   });
 
-  const [adminViewAsMutation] = useAdminLoginMutation({
+  const loginAs = () => {
+    adminLoginMutation({
+      variables: {
+        id: user.id,
+      },
+    });
+  };
+
+  const [adminBecomeMutation] = useAdminBecomeMutation({
     onCompleted: (data) => {
-      setCookie("admin", cookies.auth, {
-        path: data.adminLogin.path,
-        expires: new Date(data.adminLogin.expires * 1000),
-        httpOnly: data.adminLogin.httpOnly,
-        secure: data.adminLogin.secure,
-      });
-      setCookie("auth", data.adminLogin.token, {
-        path: data.adminLogin.path,
-        expires: new Date(data.adminLogin.expires * 1000),
-        httpOnly: data.adminLogin.httpOnly,
-        secure: data.adminLogin.secure,
+      setCookie("auth", data.adminBecome.token, {
+        path: data.adminBecome.path,
+        expires: new Date(data.adminBecome.expires * 1000),
+        httpOnly: data.adminBecome.httpOnly,
+        secure: data.adminBecome.secure,
       });
       navigate("/");
     },
@@ -130,6 +124,14 @@ export default function EditCheck({
       console.error(error);
     },
   });
+
+  const viewAs = () => {
+    adminBecomeMutation({
+      variables: {
+        id: user.id,
+      },
+    });
+  };
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -206,7 +208,7 @@ export default function EditCheck({
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                {jwt?.username !== user.username && (
+                {me?.me.username !== user.username && (
                   <>
                     <Slide
                       in={expanded}
@@ -220,13 +222,7 @@ export default function EditCheck({
                     >
                       <Button
                         variant='contained'
-                        onClick={() => {
-                          adminLoginMutation({
-                            variables: {
-                              id: user.id,
-                            },
-                          });
-                        }}
+                        onClick={loginAs}
                         color='primary'
                       >
                         Become
@@ -244,13 +240,7 @@ export default function EditCheck({
                     >
                       <Button
                         variant='contained'
-                        onClick={() => {
-                          adminViewAsMutation({
-                            variables: {
-                              id: user.id,
-                            },
-                          });
-                        }}
+                        onClick={viewAs}
                         color='secondary'
                       >
                         View As

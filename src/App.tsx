@@ -1,4 +1,11 @@
-import { ReactElement, ReactNode, Suspense, useMemo, useState } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  Suspense,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
 import { useCookies } from "react-cookie";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
@@ -33,6 +40,7 @@ import {
 import {
   useEngineStateSubscription,
   useGlobalNotificationSubscription,
+  useMeQuery,
 } from "./graph";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
@@ -125,7 +133,7 @@ type props = {
 };
 
 function Router({ theme, setTheme, apolloClient }: props) {
-  const [cookies, setCookie, removeCookie] = useCookies(["auth", "admin"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["auth"]);
   const jwt = useJWT(cookies.auth);
 
   useGlobalNotificationSubscription({
@@ -141,11 +149,21 @@ function Router({ theme, setTheme, apolloClient }: props) {
     },
   });
 
-  const { data } = useEngineStateSubscription({
+  const { data: engineState } = useEngineStateSubscription({
     onError: (error) => {
       console.error(error);
     },
   });
+
+  const { data: me, refetch } = useMeQuery({
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [cookies]);
 
   const router = createBrowserRouter([
     {
@@ -158,10 +176,11 @@ function Router({ theme, setTheme, apolloClient }: props) {
               setTheme={setTheme}
               jwt={jwt}
               cookies={cookies}
+              me={me}
               setCookie={setCookie}
               removeCookie={removeCookie}
               apolloClient={apolloClient}
-              engineState={data?.engineState}
+              engineState={engineState?.engineState}
             />
           }
         />
@@ -189,13 +208,15 @@ function Router({ theme, setTheme, apolloClient }: props) {
         },
         {
           path: "admin",
-          element: <LazyComponent element={<Admin jwt={jwt} />} />,
+          element: <LazyComponent element={<Admin me={me} />} />,
           children: [
             {
               index: true,
               element: (
                 <LazyComponent
-                  element={<AdminPanel engineState={data?.engineState} />}
+                  element={
+                    <AdminPanel engineState={engineState?.engineState} />
+                  }
                 />
               ),
             },
@@ -207,16 +228,14 @@ function Router({ theme, setTheme, apolloClient }: props) {
               path: "users",
               element: (
                 <LazyComponent
-                  element={
-                    <Users jwt={jwt} cookies={cookies} setCookie={setCookie} />
-                  }
+                  element={<Users me={me} setCookie={setCookie} />}
                 />
               ),
             },
           ],
         },
         {
-          element: <LazyComponent element={<User jwt={jwt} />} />,
+          element: <LazyComponent element={<User me={me} />} />,
           children: [
             {
               path: "checks",

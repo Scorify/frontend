@@ -11,26 +11,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CookieSetOptions } from "universal-cookie";
 
 import { CreateUserModal, EditUser } from "../../components";
-import { useUsersQuery } from "../../graph";
-import { JWT } from "../../models";
+import { useUsersQuery, MeQuery } from "../../graph";
+import { SetCookie } from "../../models/cookies";
 
 type props = {
-  jwt: JWT;
-  cookies: {
-    auth?: any;
-    admin?: any;
-  };
-  setCookie: (
-    name: "auth" | "admin",
-    value: any,
-    options?: CookieSetOptions | undefined
-  ) => void;
+  setCookie: SetCookie;
+  me: MeQuery | undefined;
 };
 
-export default function Checks({ jwt, cookies, setCookie }: props) {
+export default function Checks({ me, setCookie }: props) {
   const { data, loading, error, refetch } = useUsersQuery();
   const [open, setOpen] = useState(false);
 
@@ -133,9 +124,8 @@ export default function Checks({ jwt, cookies, setCookie }: props) {
                         .includes(search.toLowerCase()) ||
                       user.role.toLowerCase().includes(search.toLowerCase())
                     }
-                    jwt={jwt}
                     setCookie={setCookie}
-                    cookies={cookies}
+                    me={me}
                   />
                 ))}
               </>
