@@ -73,6 +73,7 @@ export type LoginOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  adminBecome: LoginOutput;
   adminLogin: LoginOutput;
   changePassword: Scalars['Boolean']['output'];
   createCheck: Check;
@@ -86,6 +87,11 @@ export type Mutation = {
   stopEngine: Scalars['Boolean']['output'];
   updateCheck: Check;
   updateUser: User;
+};
+
+
+export type MutationAdminBecomeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -956,6 +962,45 @@ export function useAdminLoginMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AdminLoginMutationHookResult = ReturnType<typeof useAdminLoginMutation>;
 export type AdminLoginMutationResult = Apollo.MutationResult<AdminLoginMutation>;
 export type AdminLoginMutationOptions = Apollo.BaseMutationOptions<AdminLoginMutation, AdminLoginMutationVariables>;
+export const AdminBecomeDocument = gql`
+    mutation AdminBecome($id: ID!) {
+  adminBecome(id: $id) {
+    name
+    token
+    expires
+    path
+    domain
+    secure
+    httpOnly
+  }
+}
+    `;
+export type AdminBecomeMutationFn = Apollo.MutationFunction<AdminBecomeMutation, AdminBecomeMutationVariables>;
+
+/**
+ * __useAdminBecomeMutation__
+ *
+ * To run a mutation, you first call `useAdminBecomeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminBecomeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminBecomeMutation, { data, loading, error }] = useAdminBecomeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAdminBecomeMutation(baseOptions?: Apollo.MutationHookOptions<AdminBecomeMutation, AdminBecomeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminBecomeMutation, AdminBecomeMutationVariables>(AdminBecomeDocument, options);
+      }
+export type AdminBecomeMutationHookResult = ReturnType<typeof useAdminBecomeMutation>;
+export type AdminBecomeMutationResult = Apollo.MutationResult<AdminBecomeMutation>;
+export type AdminBecomeMutationOptions = Apollo.BaseMutationOptions<AdminBecomeMutation, AdminBecomeMutationVariables>;
 export const ConfigsDocument = gql`
     query Configs {
   configs {
@@ -1164,6 +1209,13 @@ export type AdminLoginMutationVariables = Exact<{
 
 
 export type AdminLoginMutation = { __typename?: 'Mutation', adminLogin: { __typename?: 'LoginOutput', name: string, token: string, expires: number, path: string, domain: string, secure: boolean, httpOnly: boolean } };
+
+export type AdminBecomeMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type AdminBecomeMutation = { __typename?: 'Mutation', adminBecome: { __typename?: 'LoginOutput', name: string, token: string, expires: number, path: string, domain: string, secure: boolean, httpOnly: boolean } };
 
 export type ConfigsQueryVariables = Exact<{ [key: string]: never; }>;
 
