@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  KeyboardEvent,
-  MouseEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, KeyboardEvent, MouseEvent, SetStateAction } from "react";
 import { useNavigate } from "react-router";
 
 import {
@@ -29,35 +22,25 @@ import {
   ListItemText,
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { CookieSetOptions } from "universal-cookie";
 
-import { useAdminLoginMutation, Role } from "../../graph";
+import { MeQuery, useAdminLoginMutation } from "../../graph";
 import { JWT } from "../../models";
+import { RemoveCookie, SetCookie } from "../../models/cookies";
 
 type props = {
   drawerState: boolean;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
+  me: MeQuery | undefined;
   jwt: JWT;
-  cookies: {
-    auth?: any;
-    admin?: any;
-  };
-  setCookie: (
-    name: "auth" | "admin",
-    value: any,
-    options?: CookieSetOptions | undefined
-  ) => void;
-  removeCookie: (
-    name: "auth" | "admin",
-    options?: CookieSetOptions | undefined
-  ) => void;
+  setCookie: SetCookie;
+  removeCookie: RemoveCookie;
 };
 
 export default function DrawerComponent({
   drawerState,
   setDrawerState,
   jwt,
-  cookies,
+  me,
   setCookie,
   removeCookie,
 }: props) {
@@ -94,20 +77,15 @@ export default function DrawerComponent({
     },
   });
 
-  const [reauthenticate, setReauthenticate] = useState(false);
-
-  useEffect(() => {
-    if (jwt?.role !== Role.Admin) return;
-    if (!reauthenticate) return;
-
-    useAdminLogin({
-      variables: {
-        id: jwt.id,
-      },
-    });
-
-    setReauthenticate(false);
-  }, [jwt]);
+  const returnToAdmin = () => {
+    if (jwt) {
+      useAdminLogin({
+        variables: {
+          id: jwt.id,
+        },
+      });
+    }
+  };
 
   return (
     <Drawer anchor={"left"} open={drawerState} onClose={toggleDrawer(false)}>
@@ -131,18 +109,11 @@ export default function DrawerComponent({
           </ListItem>
         </List>
         <Divider />
-        {jwt ? (
+        {me ? (
           <>
             <List>
-              {cookies.admin && (
-                <ListItem
-                  disablePadding
-                  onClick={() => {
-                    setCookie("auth", cookies.admin);
-                    setReauthenticate(true);
-                    removeCookie("admin");
-                  }}
-                >
+              {jwt?.become && (
+                <ListItem disablePadding onClick={returnToAdmin}>
                   <ListItemButton>
                     <ListItemIcon>{<KeyboardReturn />}</ListItemIcon>
                     <ListItemText primary='Return to Admin User' />
@@ -174,7 +145,7 @@ export default function DrawerComponent({
               </ListItem>
             </List>
             <Divider />
-            {jwt.role === "user" && (
+            {me.me.role === "user" && (
               <List>
                 <ListItem
                   disablePadding
@@ -189,7 +160,7 @@ export default function DrawerComponent({
                 </ListItem>
               </List>
             )}
-            {jwt.role === "admin" && (
+            {me.me.role === "admin" && (
               <List>
                 <ListItem
                   disablePadding

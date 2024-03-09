@@ -2,17 +2,13 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { CookieSetOptions } from "universal-cookie";
 
 import { PasswordInput } from "../components";
 import { useLoginMutation } from "../graph";
+import { SetCookie } from "../models/cookies";
 
 type props = {
-  setCookie: (
-    name: "auth" | "admin",
-    value: any,
-    options?: CookieSetOptions | undefined
-  ) => void;
+  setCookie: SetCookie;
 };
 
 export default function Login({ setCookie }: props) {

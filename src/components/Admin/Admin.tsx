@@ -1,19 +1,18 @@
 import { Outlet } from "react-router-dom";
 
 import { Error } from "..";
-import { Role } from "../../graph";
-import { JWT } from "../../models";
+import { Role, MeQuery } from "../../graph";
 
 type props = {
-  jwt: JWT;
+  me: MeQuery | undefined;
 };
 
-export default function Admin({ jwt }: props) {
-  if (!jwt) {
+export default function Admin({ me }: props) {
+  if (!me) {
     return <Error code={401} message='Unauthorized' />;
   }
 
-  if (jwt.role !== Role.Admin) {
+  if (me.me.role !== Role.Admin) {
     return <Error code={403} message='Forbidden' />;
   }
 
