@@ -1,9 +1,6 @@
-import { Role } from "../graph";
-
 export type JWT =
   | {
-      username: string;
-      role: Role.Admin | Role.User;
+      become: string | undefined;
       id: string;
       exp: number;
     }
