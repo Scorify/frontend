@@ -195,6 +195,18 @@ mutation AdminLogin($id: ID!) {
   }
 }
 
+mutation AdminBecome($id: ID!) {
+  adminBecome(id: $id) {
+    name
+    token
+    expires
+    path
+    domain
+    secure
+    httpOnly
+  }
+}
+
 query Configs {
   configs {
     id
