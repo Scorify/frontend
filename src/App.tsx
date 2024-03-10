@@ -202,7 +202,7 @@ function Router({ theme, setTheme, apolloClient }: props) {
           path: "password",
           element: (
             <LazyComponent
-              element={<ChangePassword removeCookies={removeCookie} />}
+              element={<ChangePassword removeCookie={removeCookie} />}
             />
           ),
         },

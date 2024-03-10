@@ -14,7 +14,7 @@ import {
 
 import { StatusIndicator } from "..";
 import { EngineState, MeQuery } from "../../graph";
-import { Cookies, RemoveCookie } from "../../models/cookies";
+import { Cookies, RemoveCookie } from "../../models";
 
 type props = {
   theme: string;

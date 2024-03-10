@@ -6,8 +6,7 @@ import { Box, Container } from "@mui/material";
 
 import { Drawer, Navbar } from "..";
 import { EngineState, MeQuery } from "../../graph";
-import { JWT } from "../../models";
-import { Cookies, RemoveCookie, SetCookie } from "../../models/cookies";
+import { Cookies, JWT, RemoveCookie, SetCookie } from "../../models";
 
 type props = {
   theme: string;

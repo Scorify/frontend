@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
-import { CookieSetOptions } from "universal-cookie";
 
 import { PasswordInput } from "../components";
 import { useChangePasswordMutation } from "../graph";
+import { RemoveCookie } from "../models";
 
 type props = {
-  removeCookies: (name: "auth", options?: CookieSetOptions | undefined) => void;
+  removeCookie: RemoveCookie;
 };
 
-export default function ChangePassword({ removeCookies }: props) {
+export default function ChangePassword({ removeCookie }: props) {
   const navigate = useNavigate();
 
   const [oldPassword, setOldPassword] = useState<string>("");
@@ -21,7 +21,7 @@ export default function ChangePassword({ removeCookies }: props) {
 
   const [changePasswordMutation] = useChangePasswordMutation({
     onCompleted: () => {
-      removeCookies("auth");
+      removeCookie("auth");
 
       navigate("/login");
 
