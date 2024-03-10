@@ -1,4 +1,4 @@
 import { JWT } from "./JWT";
-import { Cookies, RemoveCookie, SetCookie } from "./cookies";
+import { Cookies, RemoveCookie, SetCookie, UpdateCookie } from "./cookies";
 
-export type { Cookies, JWT, RemoveCookie, SetCookie };
+export type { Cookies, JWT, RemoveCookie, SetCookie, UpdateCookie };

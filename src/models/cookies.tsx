@@ -15,4 +15,6 @@ type RemoveCookie = (
   options?: CookieSetOptions | undefined
 ) => void;
 
-export type { Cookies, SetCookie, RemoveCookie };
+type UpdateCookie = () => void;
+
+export type { Cookies, SetCookie, RemoveCookie, UpdateCookie };
