@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
+import { useContext } from "react";
 import { PasswordInput } from "../components";
+import { AuthContext } from "../components/Context";
 import { useLoginMutation } from "../graph";
-import { SetCookie } from "../models/cookies";
 
-type props = {
-  setCookie: SetCookie;
-};
+export default function Login() {
+  const { setCookie } = useContext(AuthContext);
 
-export default function Login({ setCookie }: props) {
   const [loginMutation] = useLoginMutation({
     onCompleted: (data) => {
       setCookie("auth", data.login.token, {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Clear } from "@mui/icons-material";
@@ -13,15 +13,11 @@ import {
 } from "@mui/material";
 
 import { CreateUserModal, EditUser } from "../../components";
-import { useUsersQuery, MeQuery } from "../../graph";
-import { SetCookie } from "../../models/cookies";
+import { AuthContext } from "../../components/Context";
+import { useUsersQuery } from "../../graph";
 
-type props = {
-  setCookie: SetCookie;
-  me: MeQuery | undefined;
-};
-
-export default function Checks({ me, setCookie }: props) {
+export default function Checks() {
+  const { me, setCookie } = useContext(AuthContext);
   const { data, loading, error, refetch } = useUsersQuery();
   const [open, setOpen] = useState(false);
 

@@ -42,6 +42,7 @@ import {
   useGlobalNotificationSubscription,
   useMeQuery,
 } from "./graph";
+import { AuthContext } from "./components/Context/AuthProvider";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<CircularProgress />}>{element}</Suspense>;
@@ -133,7 +134,7 @@ type props = {
 };
 
 function Router({ theme, setTheme, apolloClient }: props) {
-  const [cookies, setCookie, removeCookie] = useCookies(["auth"]);
+  const [cookies, setCookie, removeCookie, updateCookie] = useCookies(["auth"]);
   const jwt = useJWT(cookies.auth);
 
   useGlobalNotificationSubscription({
@@ -156,6 +157,9 @@ function Router({ theme, setTheme, apolloClient }: props) {
   });
 
   const { data: me, refetch } = useMeQuery({
+    onCompleted: (data) => {
+      console.log(data);
+    },
     onError: (error) => {
       console.error(error);
     },
@@ -163,7 +167,7 @@ function Router({ theme, setTheme, apolloClient }: props) {
 
   useEffect(() => {
     refetch();
-  }, [cookies]);
+  }, [cookies.auth]);
 
   const router = createBrowserRouter([
     {
@@ -174,11 +178,6 @@ function Router({ theme, setTheme, apolloClient }: props) {
             <Main
               theme={theme}
               setTheme={setTheme}
-              jwt={jwt}
-              cookies={cookies}
-              me={me}
-              setCookie={setCookie}
-              removeCookie={removeCookie}
               apolloClient={apolloClient}
               engineState={engineState?.engineState}
             />
@@ -192,7 +191,7 @@ function Router({ theme, setTheme, apolloClient }: props) {
         },
         {
           path: "login",
-          element: <LazyComponent element={<Login setCookie={setCookie} />} />,
+          element: <LazyComponent element={<Login />} />,
         },
         {
           path: "me",
@@ -200,15 +199,11 @@ function Router({ theme, setTheme, apolloClient }: props) {
         },
         {
           path: "password",
-          element: (
-            <LazyComponent
-              element={<ChangePassword removeCookie={removeCookie} />}
-            />
-          ),
+          element: <LazyComponent element={<ChangePassword />} />,
         },
         {
           path: "admin",
-          element: <LazyComponent element={<Admin me={me} />} />,
+          element: <LazyComponent element={<Admin />} />,
           children: [
             {
               index: true,
@@ -226,16 +221,12 @@ function Router({ theme, setTheme, apolloClient }: props) {
             },
             {
               path: "users",
-              element: (
-                <LazyComponent
-                  element={<Users me={me} setCookie={setCookie} />}
-                />
-              ),
+              element: <LazyComponent element={<Users />} />,
             },
           ],
         },
         {
-          element: <LazyComponent element={<User me={me} />} />,
+          element: <LazyComponent element={<User />} />,
           children: [
             {
               path: "checks",
@@ -255,5 +246,19 @@ function Router({ theme, setTheme, apolloClient }: props) {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <AuthContext.Provider
+      value={{
+        jwt,
+        cookies,
+        setCookie,
+        removeCookie,
+        updateCookie,
+        me,
+        refetchMe: refetch,
+      }}
+    >
+      <RouterProvider router={router} />
+    </AuthContext.Provider>
+  );
 }

@@ -1,21 +1,16 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
 
 import { Drawer, Navbar } from "..";
-import { EngineState, MeQuery } from "../../graph";
-import { Cookies, JWT, RemoveCookie, SetCookie } from "../../models";
+import { EngineState } from "../../graph";
+import { AuthContext } from "../Context";
 
 type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
-  jwt: JWT;
-  me: MeQuery | undefined;
-  cookies: Cookies;
-  setCookie: SetCookie;
-  removeCookie: RemoveCookie;
   apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
 };
@@ -23,15 +18,13 @@ type props = {
 export default function Main({
   theme,
   setTheme,
-  jwt,
-  cookies,
-  setCookie,
-  removeCookie,
   apolloClient,
   engineState,
-  me,
 }: props) {
   const [drawerState, setDrawerState] = useState(false);
+  const { cookies, setCookie, removeCookie, jwt, me, refetchMe } =
+    useContext(AuthContext);
+
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
       <Drawer
@@ -41,6 +34,7 @@ export default function Main({
         jwt={jwt}
         setCookie={setCookie}
         removeCookie={removeCookie}
+        refetchMe={refetchMe}
       />
       <Navbar
         theme={theme}
@@ -51,6 +45,7 @@ export default function Main({
         apolloClient={apolloClient}
         engineState={engineState}
         me={me}
+        refetchMe={refetchMe}
       />
       <Container component='main'>
         <Outlet />

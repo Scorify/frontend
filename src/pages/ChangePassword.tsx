@@ -1,18 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Container, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
 import { PasswordInput } from "../components";
+import { AuthContext } from "../components/Context";
 import { useChangePasswordMutation } from "../graph";
-import { RemoveCookie } from "../models";
 
-type props = {
-  removeCookie: RemoveCookie;
-};
-
-export default function ChangePassword({ removeCookie }: props) {
+export default function ChangePassword() {
+  const { removeCookie, updateCookie } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [oldPassword, setOldPassword] = useState<string>("");
@@ -31,6 +28,8 @@ export default function ChangePassword({ removeCookie }: props) {
           variant: "success",
         }
       );
+
+      updateCookie();
     },
     onError: (error) => {
       enqueueSnackbar("Encountered an error: " + error.message, {

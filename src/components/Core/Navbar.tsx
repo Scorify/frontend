@@ -25,6 +25,7 @@ type props = {
   apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
   me: MeQuery | undefined;
+  refetchMe: () => void;
 };
 
 export default function Navbar({
@@ -35,6 +36,7 @@ export default function Navbar({
   apolloClient,
   engineState,
   me,
+  refetchMe,
 }: props) {
   const navigate = useNavigate();
 
@@ -89,6 +91,7 @@ export default function Navbar({
                     removeCookie("auth");
                     apolloClient.clearStore();
                     navigate("/login");
+                    refetchMe();
                   }}
                   sx={{
                     color: "inherit",

@@ -1,13 +1,13 @@
+import { useContext } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Error } from "..";
-import { Role, MeQuery } from "../../graph";
+import { Role } from "../../graph";
+import { AuthContext } from "../Context";
 
-type props = {
-  me: MeQuery | undefined;
-};
+export default function Admin() {
+  const { me } = useContext(AuthContext);
 
-export default function Admin({ me }: props) {
   if (!me) {
     return <Error code={401} message='Unauthorized' />;
   }
