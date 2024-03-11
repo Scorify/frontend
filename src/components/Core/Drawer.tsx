@@ -21,19 +21,18 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
 
-import { MeQuery, useAdminLoginMutation } from "../../graph";
+import { MeQuery } from "../../graph";
 import { JWT } from "../../models";
-import { RemoveCookie, SetCookie } from "../../models/cookies";
+import { RemoveCookie } from "../../models/cookies";
 
 type props = {
   drawerState: boolean;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   me: MeQuery | undefined;
   jwt: JWT;
-  setCookie: SetCookie;
   removeCookie: RemoveCookie;
+  returnToAdmin: () => void;
 };
 
 export default function DrawerComponent({
@@ -41,8 +40,8 @@ export default function DrawerComponent({
   setDrawerState,
   jwt,
   me,
-  setCookie,
   removeCookie,
+  returnToAdmin,
 }: props) {
   const navigate = useNavigate();
   const toggleDrawer =
@@ -57,35 +56,6 @@ export default function DrawerComponent({
 
       setDrawerState(open);
     };
-
-  const [useAdminLogin] = useAdminLoginMutation({
-    onCompleted: (data) => {
-      setCookie("auth", data.adminLogin.token, {
-        path: data.adminLogin.path,
-        expires: new Date(data.adminLogin.expires * 1000),
-        httpOnly: data.adminLogin.httpOnly,
-        secure: data.adminLogin.secure,
-      });
-
-      navigate("/");
-
-      enqueueSnackbar("Reauthenticated successfully", { variant: "success" });
-    },
-    onError: (error) => {
-      enqueueSnackbar(error.message, { variant: "error" });
-      console.error(error);
-    },
-  });
-
-  const returnToAdmin = () => {
-    if (jwt) {
-      useAdminLogin({
-        variables: {
-          id: jwt.id,
-        },
-      });
-    }
-  };
 
   return (
     <Drawer anchor={"left"} open={drawerState} onClose={toggleDrawer(false)}>

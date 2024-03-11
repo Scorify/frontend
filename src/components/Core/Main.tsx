@@ -1,10 +1,11 @@
 import { Dispatch, SetStateAction, useContext, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { Box, Container } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 
 import { Drawer, Navbar } from "..";
-import { EngineState } from "../../graph";
+import { EngineState, useAdminLoginMutation } from "../../graph";
 import { AuthContext } from "../Context";
 
 type props = {
@@ -14,8 +15,38 @@ type props = {
 };
 
 export default function Main({ theme, setTheme, engineState }: props) {
+  const navigate = useNavigate();
   const [drawerState, setDrawerState] = useState(false);
   const { cookies, setCookie, removeCookie, jwt, me } = useContext(AuthContext);
+
+  const [useAdminLogin] = useAdminLoginMutation({
+    onCompleted: (data) => {
+      setCookie("auth", data.adminLogin.token, {
+        path: data.adminLogin.path,
+        expires: new Date(data.adminLogin.expires * 1000),
+        httpOnly: data.adminLogin.httpOnly,
+        secure: data.adminLogin.secure,
+      });
+
+      navigate("/");
+
+      enqueueSnackbar("Reauthenticated successfully", { variant: "success" });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
+    },
+  });
+
+  const returnToAdmin = () => {
+    if (jwt) {
+      useAdminLogin({
+        variables: {
+          id: jwt.id,
+        },
+      });
+    }
+  };
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
@@ -24,8 +55,8 @@ export default function Main({ theme, setTheme, engineState }: props) {
         setDrawerState={setDrawerState}
         me={me}
         jwt={jwt}
-        setCookie={setCookie}
         removeCookie={removeCookie}
+        returnToAdmin={returnToAdmin}
       />
       <Navbar
         theme={theme}
@@ -35,6 +66,8 @@ export default function Main({ theme, setTheme, engineState }: props) {
         removeCookie={removeCookie}
         engineState={engineState}
         me={me}
+        jwt={jwt}
+        returnToAdmin={returnToAdmin}
       />
       <Container component='main'>
         <Outlet />

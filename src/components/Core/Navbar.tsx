@@ -13,9 +13,11 @@ import {
 
 import { StatusIndicator } from "..";
 import { EngineState, MeQuery } from "../../graph";
-import { Cookies, RemoveCookie } from "../../models";
+import { Cookies, JWT, RemoveCookie } from "../../models";
 
 type props = {
+  jwt: JWT;
+  returnToAdmin: () => void;
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
@@ -26,6 +28,8 @@ type props = {
 };
 
 export default function Navbar({
+  jwt,
+  returnToAdmin,
   theme,
   setTheme,
   setDrawerState,
@@ -80,10 +84,14 @@ export default function Navbar({
               sx={{ margin: "10px" }}
             />
             {me ? (
-              <Tooltip title='logout'>
+              <Tooltip title={jwt?.become ? "Return to Admin" : "Logout"}>
                 <Button
                   onClick={() => {
-                    removeCookie("auth");
+                    if (jwt?.become) {
+                      returnToAdmin();
+                    } else {
+                      removeCookie("auth");
+                    }
                     navigate("/login");
                   }}
                   sx={{
