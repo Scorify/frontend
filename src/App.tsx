@@ -125,7 +125,7 @@ type props = {
 };
 
 function Router({ theme, setTheme, apolloClient }: props) {
-  const { jwt, me, refetchMe, cookies, setCookie, removeCookie, updateCookie } =
+  const { jwt, me, cookies, setCookie, removeCookie, updateCookie } =
     useAuth(apolloClient);
 
   useGlobalNotificationSubscription({
@@ -232,7 +232,6 @@ function Router({ theme, setTheme, apolloClient }: props) {
         removeCookie,
         updateCookie,
         me,
-        refetchMe,
       }}
     >
       <RouterProvider router={router} />

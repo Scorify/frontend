@@ -7,24 +7,27 @@ import { useCookies } from "react-cookie";
 import { MeQuery, useMeQuery } from "../graph";
 import { Cookies, JWT, RemoveCookie, SetCookie, UpdateCookie } from "../models";
 
-export function useAuth(apolloClient: ApolloClient<NormalizedCacheObject>): {
+type returns = {
   jwt: JWT | undefined;
   me: MeQuery | undefined;
-  refetchMe: () => void;
   cookies: Cookies;
   setCookie: SetCookie;
   removeCookie: RemoveCookie;
   updateCookie: UpdateCookie;
-} {
+};
+
+export function useAuth(
+  apolloClient: ApolloClient<NormalizedCacheObject>
+): returns {
   const [cookies, setCookie, removeCookie, updateCookie] = useCookies(["auth"]);
 
-  const { data: me, refetch: refetchMe } = useMeQuery({
+  const { data: me, refetch } = useMeQuery({
     onError: (error) => console.error(error),
   });
 
   useEffect(() => {
     apolloClient.clearStore().then(() => {
-      refetchMe();
+      refetch();
     });
   }, [cookies.auth]);
 
@@ -36,7 +39,6 @@ export function useAuth(apolloClient: ApolloClient<NormalizedCacheObject>): {
   return {
     jwt,
     me,
-    refetchMe,
     cookies,
     setCookie,
     removeCookie,

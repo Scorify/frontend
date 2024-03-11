@@ -16,7 +16,6 @@ interface AuthContextType {
   removeCookie: RemoveCookie;
   updateCookie: UpdateCookie;
   me: MeQuery | undefined;
-  refetchMe: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -26,5 +25,4 @@ export const AuthContext = createContext<AuthContextType>({
   removeCookie: () => {},
   updateCookie: () => {},
   me: undefined,
-  refetchMe: () => {},
 });
