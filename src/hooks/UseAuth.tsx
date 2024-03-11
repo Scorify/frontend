@@ -23,7 +23,6 @@ export function useAuth(apolloClient: ApolloClient<NormalizedCacheObject>): {
   });
 
   useEffect(() => {
-    // sleep(250);
     apolloClient.clearStore().then(() => {
       refetchMe();
     });
