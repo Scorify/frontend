@@ -1,38 +1,53 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 
 import { Drawer, Navbar } from "..";
-import { EngineState, MeQuery } from "../../graph";
-import { JWT } from "../../models";
-import { Cookies, RemoveCookie, SetCookie } from "../../models/cookies";
+import { EngineState, useAdminLoginMutation } from "../../graph";
+import { AuthContext } from "../Context";
 
 type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
-  jwt: JWT;
-  me: MeQuery | undefined;
-  cookies: Cookies;
-  setCookie: SetCookie;
-  removeCookie: RemoveCookie;
-  apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
 };
 
-export default function Main({
-  theme,
-  setTheme,
-  jwt,
-  cookies,
-  setCookie,
-  removeCookie,
-  apolloClient,
-  engineState,
-  me,
-}: props) {
+export default function Main({ theme, setTheme, engineState }: props) {
+  const navigate = useNavigate();
   const [drawerState, setDrawerState] = useState(false);
+  const { cookies, setCookie, removeCookie, jwt, me } = useContext(AuthContext);
+
+  const [useAdminLogin] = useAdminLoginMutation({
+    onCompleted: (data) => {
+      setCookie("auth", data.adminLogin.token, {
+        path: data.adminLogin.path,
+        expires: new Date(data.adminLogin.expires * 1000),
+        httpOnly: data.adminLogin.httpOnly,
+        secure: data.adminLogin.secure,
+      });
+
+      navigate("/");
+
+      enqueueSnackbar("Reauthenticated successfully", { variant: "success" });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
+    },
+  });
+
+  const returnToAdmin = () => {
+    if (jwt) {
+      useAdminLogin({
+        variables: {
+          id: jwt.id,
+        },
+      });
+    }
+  };
+
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
       <Drawer
@@ -40,8 +55,8 @@ export default function Main({
         setDrawerState={setDrawerState}
         me={me}
         jwt={jwt}
-        setCookie={setCookie}
         removeCookie={removeCookie}
+        returnToAdmin={returnToAdmin}
       />
       <Navbar
         theme={theme}
@@ -49,9 +64,10 @@ export default function Main({
         setDrawerState={setDrawerState}
         cookies={cookies}
         removeCookie={removeCookie}
-        apolloClient={apolloClient}
         engineState={engineState}
         me={me}
+        jwt={jwt}
+        returnToAdmin={returnToAdmin}
       />
       <Container component='main'>
         <Outlet />

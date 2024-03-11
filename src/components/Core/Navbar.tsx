@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router";
 
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { DarkMode, LightMode, Login, Logout, Menu } from "@mui/icons-material";
 import {
   AppBar,
@@ -14,25 +13,27 @@ import {
 
 import { StatusIndicator } from "..";
 import { EngineState, MeQuery } from "../../graph";
-import { Cookies, RemoveCookie } from "../../models/cookies";
+import { Cookies, JWT, RemoveCookie } from "../../models";
 
 type props = {
+  jwt: JWT;
+  returnToAdmin: () => void;
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   cookies: Cookies;
   removeCookie: RemoveCookie;
-  apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
   me: MeQuery | undefined;
 };
 
 export default function Navbar({
+  jwt,
+  returnToAdmin,
   theme,
   setTheme,
   setDrawerState,
   removeCookie,
-  apolloClient,
   engineState,
   me,
 }: props) {
@@ -83,11 +84,14 @@ export default function Navbar({
               sx={{ margin: "10px" }}
             />
             {me ? (
-              <Tooltip title='logout'>
+              <Tooltip title={jwt?.become ? "Return to Admin" : "Logout"}>
                 <Button
                   onClick={() => {
-                    removeCookie("auth");
-                    apolloClient.clearStore();
+                    if (jwt?.become) {
+                      returnToAdmin();
+                    } else {
+                      removeCookie("auth");
+                    }
                     navigate("/login");
                   }}
                   sx={{

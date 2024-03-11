@@ -1,3 +1,3 @@
-import { useJWT } from "./UseJWT";
+import { useAuth } from "./UseAuth";
 
-export { useJWT };
+export { useAuth };
