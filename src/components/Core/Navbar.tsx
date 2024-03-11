@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router";
 
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { DarkMode, LightMode, Login, Logout, Menu } from "@mui/icons-material";
 import {
   AppBar,
@@ -22,10 +21,8 @@ type props = {
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   cookies: Cookies;
   removeCookie: RemoveCookie;
-  apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
   me: MeQuery | undefined;
-  refetchMe: () => void;
 };
 
 export default function Navbar({
@@ -33,10 +30,8 @@ export default function Navbar({
   setTheme,
   setDrawerState,
   removeCookie,
-  apolloClient,
   engineState,
   me,
-  refetchMe,
 }: props) {
   const navigate = useNavigate();
 
@@ -89,9 +84,7 @@ export default function Navbar({
                 <Button
                   onClick={() => {
                     removeCookie("auth");
-                    apolloClient.clearStore();
                     navigate("/login");
-                    refetchMe();
                   }}
                   sx={{
                     color: "inherit",

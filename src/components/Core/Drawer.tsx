@@ -34,7 +34,6 @@ type props = {
   jwt: JWT;
   setCookie: SetCookie;
   removeCookie: RemoveCookie;
-  refetchMe: () => void;
 };
 
 export default function DrawerComponent({
@@ -44,7 +43,6 @@ export default function DrawerComponent({
   me,
   setCookie,
   removeCookie,
-  refetchMe,
 }: props) {
   const navigate = useNavigate();
   const toggleDrawer =
@@ -127,7 +125,6 @@ export default function DrawerComponent({
                 onClick={() => {
                   removeCookie("auth");
                   navigate("/");
-                  refetchMe();
                 }}
               >
                 <ListItemButton>

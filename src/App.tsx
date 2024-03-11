@@ -1,12 +1,4 @@
-import {
-  ReactElement,
-  ReactNode,
-  Suspense,
-  useMemo,
-  useState,
-  useEffect,
-} from "react";
-import { useCookies } from "react-cookie";
+import { ReactElement, ReactNode, Suspense, useMemo, useState } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import {
@@ -26,7 +18,12 @@ import { createClient } from "graphql-ws";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 
 import { Admin, Error, Main, User } from "./components";
-import { useJWT } from "./hooks";
+import { AuthContext } from "./components/Context/AuthProvider";
+import {
+  useEngineStateSubscription,
+  useGlobalNotificationSubscription,
+} from "./graph";
+import { useAuth } from "./hooks";
 import {
   AdminChecks,
   AdminPanel,
@@ -37,12 +34,6 @@ import {
   UserChecks,
   Users,
 } from "./pages";
-import {
-  useEngineStateSubscription,
-  useGlobalNotificationSubscription,
-  useMeQuery,
-} from "./graph";
-import { AuthContext } from "./components/Context/AuthProvider";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
   return <Suspense fallback={<CircularProgress />}>{element}</Suspense>;
@@ -134,8 +125,8 @@ type props = {
 };
 
 function Router({ theme, setTheme, apolloClient }: props) {
-  const [cookies, setCookie, removeCookie, updateCookie] = useCookies(["auth"]);
-  const jwt = useJWT(cookies.auth);
+  const { jwt, me, refetchMe, cookies, setCookie, removeCookie, updateCookie } =
+    useAuth(apolloClient);
 
   useGlobalNotificationSubscription({
     onData: (data) => {
@@ -156,19 +147,6 @@ function Router({ theme, setTheme, apolloClient }: props) {
     },
   });
 
-  const { data: me, refetch } = useMeQuery({
-    onCompleted: (data) => {
-      console.log(data);
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-
-  useEffect(() => {
-    refetch();
-  }, [cookies.auth]);
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -178,7 +156,6 @@ function Router({ theme, setTheme, apolloClient }: props) {
             <Main
               theme={theme}
               setTheme={setTheme}
-              apolloClient={apolloClient}
               engineState={engineState?.engineState}
             />
           }
@@ -255,7 +232,7 @@ function Router({ theme, setTheme, apolloClient }: props) {
         removeCookie,
         updateCookie,
         me,
-        refetchMe: refetch,
+        refetchMe,
       }}
     >
       <RouterProvider router={router} />

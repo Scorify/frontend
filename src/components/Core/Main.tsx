@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 import { Box, Container } from "@mui/material";
 
 import { Drawer, Navbar } from "..";
@@ -11,19 +10,12 @@ import { AuthContext } from "../Context";
 type props = {
   theme: string;
   setTheme: Dispatch<SetStateAction<string>>;
-  apolloClient: ApolloClient<NormalizedCacheObject>;
   engineState: EngineState | undefined;
 };
 
-export default function Main({
-  theme,
-  setTheme,
-  apolloClient,
-  engineState,
-}: props) {
+export default function Main({ theme, setTheme, engineState }: props) {
   const [drawerState, setDrawerState] = useState(false);
-  const { cookies, setCookie, removeCookie, jwt, me, refetchMe } =
-    useContext(AuthContext);
+  const { cookies, setCookie, removeCookie, jwt, me } = useContext(AuthContext);
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "default" }}>
@@ -34,7 +26,6 @@ export default function Main({
         jwt={jwt}
         setCookie={setCookie}
         removeCookie={removeCookie}
-        refetchMe={refetchMe}
       />
       <Navbar
         theme={theme}
@@ -42,10 +33,8 @@ export default function Main({
         setDrawerState={setDrawerState}
         cookies={cookies}
         removeCookie={removeCookie}
-        apolloClient={apolloClient}
         engineState={engineState}
         me={me}
-        refetchMe={refetchMe}
       />
       <Container component='main'>
         <Outlet />
