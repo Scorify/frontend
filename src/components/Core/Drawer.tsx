@@ -112,26 +112,27 @@ export default function DrawerComponent({
         {me ? (
           <>
             <List>
-              {jwt?.become && (
+              {jwt?.become ? (
                 <ListItem disablePadding onClick={returnToAdmin}>
                   <ListItemButton>
                     <ListItemIcon>{<KeyboardReturn />}</ListItemIcon>
                     <ListItemText primary='Return to Admin User' />
                   </ListItemButton>
                 </ListItem>
+              ) : (
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    removeCookie("auth");
+                    navigate("/");
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<Logout />}</ListItemIcon>
+                    <ListItemText primary='Logout' />
+                  </ListItemButton>
+                </ListItem>
               )}
-              <ListItem
-                disablePadding
-                onClick={() => {
-                  removeCookie("auth");
-                  navigate("/");
-                }}
-              >
-                <ListItemButton>
-                  <ListItemIcon>{<Logout />}</ListItemIcon>
-                  <ListItemText primary='Logout' />
-                </ListItemButton>
-              </ListItem>
               <ListItem
                 disablePadding
                 onClick={() => {
