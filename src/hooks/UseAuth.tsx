@@ -29,7 +29,7 @@ export function useAuth(
     apolloClient.clearStore().then(() => {
       refetch();
     });
-  }, [cookies.auth]);
+  }, [cookies?.auth]);
 
   const jwt = useMemo(
     () => (cookies?.auth ? (jwtDecode(cookies?.auth) as JWT) : undefined),
