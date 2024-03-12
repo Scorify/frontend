@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-import { Box, Container } from "@mui/material";
+import { Box, Container, Fade } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
 import { Drawer, Navbar } from "..";
@@ -69,9 +69,11 @@ export default function Main({ theme, setTheme, engineState }: props) {
         jwt={jwt}
         returnToAdmin={returnToAdmin}
       />
-      <Container component='main'>
-        <Outlet />
-      </Container>
+      <Fade in={true} timeout={1000}>
+        <Container component='main'>
+          <Outlet />
+        </Container>
+      </Fade>
     </Box>
   );
 }
