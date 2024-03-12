@@ -1,9 +1,9 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ReactElement, ReactNode, Suspense } from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
-import { enqueueSnackbar } from "notistack";
 import { CircularProgress } from "@mui/material";
+import { enqueueSnackbar } from "notistack";
 
 import { Admin, Error, Main, User } from "./components";
 import { AuthContext } from "./components/Context/AuthProvider";
