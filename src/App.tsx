@@ -16,6 +16,7 @@ import { createClient } from "graphql-ws";
 import { SnackbarProvider } from "notistack";
 
 import { Router } from "./Router";
+import { gql_endpoint, ws_endpoint } from "./config";
 
 const lightTheme = createTheme({
   palette: {
@@ -46,12 +47,12 @@ export default function App() {
 
   const wsLink = new GraphQLWsLink(
     createClient({
-      url: "ws://localhost:8080/query",
+      url: ws_endpoint,
     })
   );
 
   const httpLink = new HttpLink({
-    uri: "http://localhost:8080/query",
+    uri: gql_endpoint,
     credentials: "include",
   });
 
