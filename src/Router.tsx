@@ -93,7 +93,7 @@ export function Router({ theme, setTheme, apolloClient }: props) {
           children: [
             {
               index: true,
-              element: <LazyComponent element={<Scoreboard />} />,
+              element: <LazyComponent element={<Scoreboard theme={theme} />} />,
             },
           ],
         },
