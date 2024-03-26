@@ -19,6 +19,7 @@ import {
   Home,
   Login,
   Me,
+  Scoreboard,
   UserChecks,
   Users,
 } from "./pages";
@@ -86,6 +87,15 @@ export function Router({ theme, setTheme, apolloClient }: props) {
         {
           path: "password",
           element: <LazyComponent element={<ChangePassword />} />,
+        },
+        {
+          path: "scoreboard",
+          children: [
+            {
+              index: true,
+              element: <LazyComponent element={<Scoreboard />} />,
+            },
+          ],
         },
         {
           path: "admin",
