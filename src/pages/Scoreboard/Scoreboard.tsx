@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   Box,
   Container,
@@ -10,7 +12,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { red, green } from "@mui/material/colors";
+import { red, green, grey } from "@mui/material/colors";
 
 const scoreboard = {
   teams: [
@@ -111,7 +113,14 @@ const scoreboard = {
   ],
 };
 
-export default function Scoreboard() {
+type props = {
+  theme: string;
+};
+
+export default function Scoreboard({ theme }: props) {
+  const [highlightedTeam, setHighlightedTeam] = useState<number | null>(null);
+  const [highlightedCheck, setHighlightedCheck] = useState<number | null>(null);
+
   return (
     <Container component='main' maxWidth='xl'>
       <Box
@@ -132,13 +141,46 @@ export default function Scoreboard() {
           Scoreboard
         </Typography>
         <Box m={2} />
-        <TableContainer component={Paper}>
+        <TableContainer
+          component={Paper}
+          onMouseLeave={() => {
+            setHighlightedTeam(null);
+            setHighlightedCheck(null);
+          }}
+        >
           <Table sx={{ width: "100%" }}>
             <TableHead>
               <TableRow>
-                <TableCell size='small' />
+                <TableCell
+                  onMouseEnter={() => {
+                    setHighlightedTeam(0);
+                    setHighlightedCheck(0);
+                  }}
+                  sx={{
+                    backgroundColor:
+                      highlightedTeam == 0 || highlightedCheck == 0
+                        ? theme === "dark"
+                          ? grey[800]
+                          : grey[400]
+                        : "transparent",
+                  }}
+                />
                 {scoreboard.checks.map((check) => (
-                  <TableCell key={check.number} size='small'>
+                  <TableCell
+                    key={check.number}
+                    onMouseEnter={() => {
+                      setHighlightedCheck(check.number);
+                      setHighlightedTeam(null);
+                    }}
+                    sx={{
+                      backgroundColor:
+                        highlightedTeam == 0 || highlightedCheck == check.number
+                          ? theme === "dark"
+                            ? grey[800]
+                            : grey[400]
+                          : "transparent",
+                    }}
+                  >
                     <Typography>{check.name}</Typography>
                   </TableCell>
                 ))}
@@ -147,7 +189,20 @@ export default function Scoreboard() {
             <TableBody>
               {scoreboard.teams.map((team, rowIndex) => (
                 <TableRow key={team.number}>
-                  <TableCell size='small'>
+                  <TableCell
+                    onMouseEnter={() => {
+                      setHighlightedTeam(team.number);
+                      setHighlightedCheck(null);
+                    }}
+                    sx={{
+                      backgroundColor:
+                        highlightedTeam == team.number || highlightedCheck == 0
+                          ? theme === "dark"
+                            ? grey[800]
+                            : grey[400]
+                          : "transparent",
+                    }}
+                  >
                     <Typography>{team.name}</Typography>
                   </TableCell>
                   {scoreboard.checks.map((check, colIndex) => (
@@ -156,10 +211,19 @@ export default function Scoreboard() {
                       sx={{
                         aspectRatio: 1,
                         backgroundColor: scoreboard.statuses[rowIndex][colIndex]
-                          ? green[500]
+                          ? highlightedTeam == rowIndex + 1 ||
+                            highlightedCheck == colIndex + 1
+                            ? green[300]
+                            : green[500]
+                          : highlightedTeam == rowIndex + 1 ||
+                            highlightedCheck == colIndex + 1
+                          ? red[300]
                           : red[500],
                       }}
-                      size='small'
+                      onMouseEnter={() => {
+                        setHighlightedTeam(team.number);
+                        setHighlightedCheck(check.number);
+                      }}
                     />
                   ))}
                 </TableRow>
