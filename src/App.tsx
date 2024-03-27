@@ -38,7 +38,9 @@ export default function App() {
       : "light";
   }
 
-  const [theme, setTheme] = useState(savedTheme);
+  const [theme, setTheme] = useState<"dark" | "light">(
+    savedTheme as "dark" | "light"
+  );
   const muiTheme = useMemo(() => {
     localStorage.setItem("theme", theme);
 

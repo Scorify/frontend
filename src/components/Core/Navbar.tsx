@@ -19,7 +19,7 @@ type props = {
   jwt: JWT;
   returnToAdmin: () => void;
   theme: string;
-  setTheme: Dispatch<SetStateAction<string>>;
+  setTheme: Dispatch<SetStateAction<"dark" | "light">>;
   setDrawerState: Dispatch<SetStateAction<boolean>>;
   cookies: Cookies;
   removeCookie: RemoveCookie;

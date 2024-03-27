@@ -29,8 +29,8 @@ const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
 };
 
 type props = {
-  theme: string;
-  setTheme: React.Dispatch<React.SetStateAction<string>>;
+  theme: "dark" | "light";
+  setTheme: React.Dispatch<React.SetStateAction<"dark" | "light">>;
   apolloClient: ApolloClient<NormalizedCacheObject>;
 };
 
