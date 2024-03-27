@@ -10,7 +10,7 @@ import { AuthContext } from "../Context";
 
 type props = {
   theme: string;
-  setTheme: Dispatch<SetStateAction<string>>;
+  setTheme: Dispatch<SetStateAction<"dark" | "light">>;
   engineState: EngineState | undefined;
 };
 

@@ -5,6 +5,7 @@ import ChangePassword from "./ChangePassword";
 import Home from "./Home";
 import Login from "./Login";
 import Me from "./Me";
+import Scoreboard from "./Scoreboard/Scoreboard";
 import UserChecks from "./User/Checks";
 
 export {
@@ -14,6 +15,7 @@ export {
   Home,
   Login,
   Me,
+  Scoreboard,
   UserChecks,
   Users,
 };

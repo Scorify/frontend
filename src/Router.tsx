@@ -19,6 +19,7 @@ import {
   Home,
   Login,
   Me,
+  Scoreboard,
   UserChecks,
   Users,
 } from "./pages";
@@ -28,8 +29,8 @@ const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
 };
 
 type props = {
-  theme: string;
-  setTheme: React.Dispatch<React.SetStateAction<string>>;
+  theme: "dark" | "light";
+  setTheme: React.Dispatch<React.SetStateAction<"dark" | "light">>;
   apolloClient: ApolloClient<NormalizedCacheObject>;
 };
 
@@ -86,6 +87,15 @@ export function Router({ theme, setTheme, apolloClient }: props) {
         {
           path: "password",
           element: <LazyComponent element={<ChangePassword />} />,
+        },
+        {
+          path: "scoreboard",
+          children: [
+            {
+              index: true,
+              element: <LazyComponent element={<Scoreboard theme={theme} />} />,
+            },
+          ],
         },
         {
           path: "admin",
