@@ -8,11 +8,11 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  Typography,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
-import { red, green, grey } from "@mui/material/colors";
+import { green, grey, red } from "@mui/material/colors";
 
 const scoreboard = {
   teams: [
@@ -114,7 +114,42 @@ const scoreboard = {
 };
 
 type props = {
-  theme: string;
+  theme: "dark" | "light";
+};
+
+const colors = {
+  heading: {
+    dark: {
+      highlighted: grey[800],
+      plain: "transparent",
+    },
+    light: {
+      highlighted: grey[300],
+      plain: "transparent",
+    },
+  },
+  cell: {
+    dark: {
+      highlighted: {
+        1: green[400],
+        0: red[400],
+      },
+      plain: {
+        1: green[600],
+        0: red[600],
+      },
+    },
+    light: {
+      highlighted: {
+        1: green[600],
+        0: red[600],
+      },
+      plain: {
+        1: green[400],
+        0: red[400],
+      },
+    },
+  },
 };
 
 export default function Scoreboard({ theme }: props) {
@@ -158,11 +193,11 @@ export default function Scoreboard({ theme }: props) {
                   }}
                   sx={{
                     backgroundColor:
-                      highlightedTeam == 0 || highlightedCheck == 0
-                        ? theme === "dark"
-                          ? grey[800]
-                          : grey[400]
-                        : "transparent",
+                      colors.heading[theme][
+                        highlightedTeam == 0 || highlightedCheck == 0
+                          ? "highlighted"
+                          : "plain"
+                      ],
                   }}
                 />
                 {scoreboard.checks.map((check) => (
@@ -174,11 +209,12 @@ export default function Scoreboard({ theme }: props) {
                     }}
                     sx={{
                       backgroundColor:
-                        highlightedTeam == 0 || highlightedCheck == check.number
-                          ? theme === "dark"
-                            ? grey[800]
-                            : grey[400]
-                          : "transparent",
+                        colors.heading[theme][
+                          highlightedCheck == check.number ||
+                          highlightedTeam == 0
+                            ? "highlighted"
+                            : "plain"
+                        ],
                     }}
                   >
                     <Typography>{check.name}</Typography>
@@ -196,11 +232,12 @@ export default function Scoreboard({ theme }: props) {
                     }}
                     sx={{
                       backgroundColor:
-                        highlightedTeam == team.number || highlightedCheck == 0
-                          ? theme === "dark"
-                            ? grey[800]
-                            : grey[400]
-                          : "transparent",
+                        colors.heading[theme][
+                          highlightedTeam == team.number ||
+                          highlightedCheck == 0
+                            ? "highlighted"
+                            : "plain"
+                        ],
                     }}
                   >
                     <Typography>{team.name}</Typography>
@@ -210,15 +247,13 @@ export default function Scoreboard({ theme }: props) {
                       key={`${team}-${check}`}
                       sx={{
                         aspectRatio: 1,
-                        backgroundColor: scoreboard.statuses[rowIndex][colIndex]
-                          ? highlightedTeam == rowIndex + 1 ||
-                            highlightedCheck == colIndex + 1
-                            ? green[300]
-                            : green[500]
-                          : highlightedTeam == rowIndex + 1 ||
-                            highlightedCheck == colIndex + 1
-                          ? red[300]
-                          : red[500],
+                        backgroundColor:
+                          colors.cell[theme][
+                            highlightedTeam == team.number ||
+                            highlightedCheck == check.number
+                              ? "highlighted"
+                              : "plain"
+                          ][scoreboard.statuses[rowIndex][colIndex] ? 1 : 0],
                       }}
                       onMouseEnter={() => {
                         setHighlightedTeam(team.number);
