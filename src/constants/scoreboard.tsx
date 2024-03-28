@@ -4,11 +4,11 @@ export const NormalScoreboardTheme = {
   heading: {
     dark: {
       highlighted: grey[800],
-      plain: "transparent",
+      plain: grey[900],
     },
     light: {
       highlighted: grey[300],
-      plain: "transparent",
+      plain: grey[50],
     },
   },
   cell: {
