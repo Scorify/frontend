@@ -4,101 +4,58 @@ import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
 
 const scoreboardData = {
-  teams: [
-    {
-      number: 1,
-      name: "Team 1",
-    },
-    {
-      number: 2,
-      name: "Team 2",
-    },
-    {
-      number: 3,
-      name: "Team 3",
-    },
-    {
-      number: 4,
-      name: "Team 4",
-    },
-    {
-      number: 5,
-      name: "Team 5",
-    },
-    {
-      number: 6,
-      name: "Team 6",
-    },
-    {
-      number: 7,
-      name: "Team 7",
-    },
-    {
-      number: 8,
-      name: "Team 8",
-    },
-    {
-      number: 9,
-      name: "Team 9",
-    },
-    {
-      number: 10,
-      name: "Team 10",
-    },
+  top: [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
   ],
-  checks: [
-    {
-      number: 1,
-      name: "Check 1",
-    },
-    {
-      number: 2,
-      name: "Check 2",
-    },
-    {
-      number: 3,
-      name: "Check 3",
-    },
-    {
-      number: 4,
-      name: "Check 4",
-    },
-    {
-      number: 5,
-      name: "Check 5",
-    },
-    {
-      number: 6,
-      name: "Check 6",
-    },
-    {
-      number: 7,
-      name: "Check 7",
-    },
-    {
-      number: 8,
-      name: "Check 8",
-    },
-    {
-      number: 9,
-      name: "Check 9",
-    },
-    {
-      number: 10,
-      name: "Check 10",
-    },
+  left: [
+    "Check 1",
+    "Check 2",
+    "Check 3",
+    "Check 4",
+    "Check 5",
+    "Check 6",
+    "Check 7",
+    "Check 8",
+    "Check 9",
+    "Check 10",
+    "Check 11",
+    "Check 12",
+    "Check 13",
+    "Check 14",
+    "Check 15",
   ],
-  statuses: [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  values: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
 };
 
@@ -131,6 +88,7 @@ export default function ScoreboardPage({ theme }: props) {
           theme={theme}
           scoreboardData={scoreboardData}
           scoreboardTheme={NormalScoreboardTheme}
+          cornerLabel='Team'
         />
       </Box>
     </Container>

@@ -17,97 +17,123 @@ type props = {
   theme: "dark" | "light";
   scoreboardData: ScoreboardData;
   scoreboardTheme: ScoreboardTheme;
+  cornerLabel?: string;
 };
 
 export default function Scoreboard({
   theme,
   scoreboardData,
   scoreboardTheme,
+  cornerLabel,
 }: props) {
-  const [highlightedTeam, setHighlightedTeam] = useState<number | null>(null);
-  const [highlightedCheck, setHighlightedCheck] = useState<number | null>(null);
+  const [highlightedRow, setHighlightedRow] = useState<number | null>(null);
+  const [highlightedColumn, setHighlightedColumn] = useState<number | null>(
+    null
+  );
 
   return (
     <TableContainer
       component={Paper}
       onMouseLeave={() => {
-        setHighlightedTeam(null);
-        setHighlightedCheck(null);
+        setHighlightedRow(null);
+        setHighlightedColumn(null);
+      }}
+      sx={{
+        position: "relative",
       }}
     >
       <Table sx={{ width: "100%" }}>
         <TableHead>
           <TableRow>
             <TableCell
+              size='small'
               onMouseEnter={() => {
-                setHighlightedTeam(0);
-                setHighlightedCheck(0);
+                setHighlightedRow(0);
+                setHighlightedColumn(0);
               }}
               sx={{
+                position: "sticky",
+                left: 0,
                 backgroundColor:
                   scoreboardTheme.heading[theme][
-                    highlightedTeam == 0 || highlightedCheck == 0
+                    highlightedRow === 0 || highlightedColumn === 0
                       ? "highlighted"
                       : "plain"
                   ],
               }}
-            />
-            {scoreboardData.checks.map((check) => (
+            >
+              {cornerLabel && (
+                <Typography variant='body2' align='center'>
+                  {cornerLabel}
+                </Typography>
+              )}
+            </TableCell>
+            {scoreboardData.top.map((heading, column) => (
               <TableCell
-                key={check.number}
+                size='small'
+                key={`top-${column}`}
                 onMouseEnter={() => {
-                  setHighlightedCheck(check.number);
-                  setHighlightedTeam(null);
+                  setHighlightedColumn(column + 1);
+                  setHighlightedRow(null);
                 }}
                 sx={{
                   backgroundColor:
                     scoreboardTheme.heading[theme][
-                      highlightedCheck == check.number || highlightedTeam == 0
+                      highlightedColumn === column + 1 || highlightedRow === 0
                         ? "highlighted"
                         : "plain"
                     ],
                 }}
               >
-                <Typography>{check.name}</Typography>
+                <Typography variant='body2' align='center'>
+                  {heading}
+                </Typography>
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {scoreboardData.teams.map((team, rowIndex) => (
-            <TableRow key={team.number}>
+          {scoreboardData.left.map((heading, row) => (
+            <TableRow key={`row-${row}`}>
               <TableCell
+                size='small'
                 onMouseEnter={() => {
-                  setHighlightedTeam(team.number);
-                  setHighlightedCheck(null);
+                  setHighlightedColumn(null);
+                  setHighlightedRow(row + 1);
                 }}
                 sx={{
+                  whiteSpace: "nowrap",
+                  position: "sticky",
+                  left: 0,
                   backgroundColor:
                     scoreboardTheme.heading[theme][
-                      highlightedTeam == team.number || highlightedCheck == 0
+                      highlightedColumn === 0 || highlightedRow === row + 1
                         ? "highlighted"
                         : "plain"
                     ],
                 }}
               >
-                <Typography>{team.name}</Typography>
+                <Typography variant='body2' align='center'>
+                  {heading}
+                </Typography>
               </TableCell>
-              {scoreboardData.checks.map((check, colIndex) => (
+              {scoreboardData.values[row].map((value, column) => (
                 <TableCell
-                  key={`${team}-${check}`}
+                  size='small'
+                  key={`cell-${row}-${column}`}
                   sx={{
                     aspectRatio: 1,
                     backgroundColor:
                       scoreboardTheme.cell[theme][
-                        highlightedTeam == team.number ||
-                        highlightedCheck == check.number
+                        highlightedRow === row + 1 ||
+                        highlightedColumn === column + 1
                           ? "highlighted"
                           : "plain"
-                      ][scoreboardData.statuses[rowIndex][colIndex] ? 1 : 0],
+                      ][value ? 1 : 0],
                   }}
                   onMouseEnter={() => {
-                    setHighlightedTeam(team.number);
-                    setHighlightedCheck(check.number);
+                    setHighlightedRow(row + 1);
+                    setHighlightedColumn(column + 1);
                   }}
                 />
               ))}
