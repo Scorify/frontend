@@ -1,15 +1,9 @@
 import { Property } from "csstype";
 
 export type ScoreboardData = {
-  teams: {
-    number: number;
-    name: string;
-  }[];
-  checks: {
-    number: number;
-    name: string;
-  }[];
-  statuses: number[][];
+  top: string[];
+  left: string[];
+  values: number[][];
 };
 
 export type ScoreboardTheme = {
