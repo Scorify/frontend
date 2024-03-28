@@ -16,6 +16,7 @@ import Main from "./Core/Main";
 import Multiselect from "./Core/Multiselect";
 import Navbar from "./Core/Navbar";
 import PasswordInput from "./Core/PasswordInput";
+import Scoreboard from "./Core/Scoreboard";
 import StatusIndicator from "./Core/StatusIndicator";
 import ConfigureCheck from "./User/ConfigureCheck";
 import User from "./User/User";
@@ -39,6 +40,7 @@ export {
   Navbar,
   Notification,
   PasswordInput,
+  Scoreboard,
   StatusIndicator,
   StatusStream,
   User,
