@@ -227,3 +227,23 @@ mutation EditConfig($id: ID!, $config: JSON!) {
     id
   }
 }
+
+query Scoreboard {
+  scoreboard {
+    round {
+      number
+    }
+    teams {
+      username
+      number
+    }
+    checks {
+      name
+    }
+    statuses {
+      error
+      status
+      update_time
+    }
+  }
+}
