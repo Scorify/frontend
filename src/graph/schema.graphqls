@@ -124,15 +124,47 @@ type Round {
   score_caches: [ScoreCache!]!
 }
 
+type StatusUpdate_Scoreboard {
+  team: Int!
+  round: Int!
+  check: String!
+  status: StatusEnum!
+}
+
+type RoundUpdate_Scoreboard {
+  round: Int!
+  complete: Boolean!
+}
+
+type ScoreUpdate_Scoreboard {
+  team: Int!
+  round: Int!
+  points: Int!
+}
+
+type ScoreboardUpdate {
+  statusUpdate: [StatusUpdate_Scoreboard!]
+  roundUpdate: [RoundUpdate_Scoreboard!]
+  scoreUpdate: [ScoreUpdate_Scoreboard!]
+}
+
 type Notification {
   message: String!
   type: NotificationType!
+}
+
+type Scoreboard {
+  teams: [User!]!
+  checks: [Check!]!
+  round: Round!
+  statuses: [[Status!]!]!
 }
 
 type Subscription {
   globalNotification: Notification!
   engineState: EngineState!
   statusStream: [Status]!
+  scoreboardUpdate: ScoreboardUpdate!
 }
 
 type Query {
@@ -147,6 +179,8 @@ type Query {
 
   configs: [Config!]! @isAuthenticated
   config(id: ID!): Config! @isAuthenticated
+
+  scoreboard: Scoreboard!
 }
 
 type Mutation {
