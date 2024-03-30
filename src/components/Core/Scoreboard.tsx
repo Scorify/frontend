@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import { ScoreboardData, ScoreboardTheme } from "../../models";
+import { StatusEnum } from "../../graph";
 
 type props = {
   theme: "dark" | "light";
@@ -129,7 +130,7 @@ export default function Scoreboard({
                         highlightedColumn === column + 1
                           ? "highlighted"
                           : "plain"
-                      ][value ? 1 : 0],
+                      ][value?.status ?? StatusEnum.Unknown],
                   }}
                   onMouseEnter={() => {
                     setHighlightedRow(row + 1);
