@@ -188,6 +188,7 @@ export type Query = {
   config: Config;
   configs: Array<Config>;
   me: User;
+  scoreboard: Scoreboard;
   source: Source;
   sources: Array<Source>;
   users: Array<User>;
@@ -225,6 +226,12 @@ export type Round = {
   update_time: Scalars['Time']['output'];
 };
 
+export type RoundUpdate_Scoreboard = {
+  __typename?: 'RoundUpdate_Scoreboard';
+  complete: Scalars['Boolean']['output'];
+  round: Scalars['Int']['output'];
+};
+
 export type ScoreCache = {
   __typename?: 'ScoreCache';
   create_time: Scalars['Time']['output'];
@@ -235,6 +242,28 @@ export type ScoreCache = {
   update_time: Scalars['Time']['output'];
   user: User;
   user_id: Scalars['ID']['output'];
+};
+
+export type ScoreUpdate_Scoreboard = {
+  __typename?: 'ScoreUpdate_Scoreboard';
+  points: Scalars['Int']['output'];
+  round: Scalars['Int']['output'];
+  team: Scalars['Int']['output'];
+};
+
+export type Scoreboard = {
+  __typename?: 'Scoreboard';
+  checks: Array<Check>;
+  round: Round;
+  statuses: Array<Array<Status>>;
+  teams: Array<User>;
+};
+
+export type ScoreboardUpdate = {
+  __typename?: 'ScoreboardUpdate';
+  roundUpdate?: Maybe<Array<RoundUpdate_Scoreboard>>;
+  scoreUpdate?: Maybe<Array<ScoreUpdate_Scoreboard>>;
+  statusUpdate?: Maybe<Array<StatusUpdate_Scoreboard>>;
 };
 
 export type Source = {
@@ -265,10 +294,19 @@ export enum StatusEnum {
   Up = 'up'
 }
 
+export type StatusUpdate_Scoreboard = {
+  __typename?: 'StatusUpdate_Scoreboard';
+  check: Scalars['String']['output'];
+  round: Scalars['Int']['output'];
+  status: StatusEnum;
+  team: Scalars['Int']['output'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   engineState: EngineState;
   globalNotification: Notification;
+  scoreboardUpdate: ScoreboardUpdate;
   statusStream: Array<Maybe<Status>>;
 };
 
@@ -1083,6 +1121,59 @@ export function useEditConfigMutation(baseOptions?: Apollo.MutationHookOptions<E
 export type EditConfigMutationHookResult = ReturnType<typeof useEditConfigMutation>;
 export type EditConfigMutationResult = Apollo.MutationResult<EditConfigMutation>;
 export type EditConfigMutationOptions = Apollo.BaseMutationOptions<EditConfigMutation, EditConfigMutationVariables>;
+export const ScoreboardDocument = gql`
+    query Scoreboard {
+  scoreboard {
+    round {
+      number
+    }
+    teams {
+      username
+      number
+    }
+    checks {
+      name
+    }
+    statuses {
+      error
+      status
+      update_time
+    }
+  }
+}
+    `;
+
+/**
+ * __useScoreboardQuery__
+ *
+ * To run a query within a React component, call `useScoreboardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useScoreboardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useScoreboardQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useScoreboardQuery(baseOptions?: Apollo.QueryHookOptions<ScoreboardQuery, ScoreboardQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ScoreboardQuery, ScoreboardQueryVariables>(ScoreboardDocument, options);
+      }
+export function useScoreboardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ScoreboardQuery, ScoreboardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ScoreboardQuery, ScoreboardQueryVariables>(ScoreboardDocument, options);
+        }
+export function useScoreboardSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ScoreboardQuery, ScoreboardQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ScoreboardQuery, ScoreboardQueryVariables>(ScoreboardDocument, options);
+        }
+export type ScoreboardQueryHookResult = ReturnType<typeof useScoreboardQuery>;
+export type ScoreboardLazyQueryHookResult = ReturnType<typeof useScoreboardLazyQuery>;
+export type ScoreboardSuspenseQueryHookResult = ReturnType<typeof useScoreboardSuspenseQuery>;
+export type ScoreboardQueryResult = Apollo.QueryResult<ScoreboardQuery, ScoreboardQueryVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1229,3 +1320,8 @@ export type EditConfigMutationVariables = Exact<{
 
 
 export type EditConfigMutation = { __typename?: 'Mutation', editConfig: { __typename?: 'Config', id: string } };
+
+export type ScoreboardQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any }>> } };
