@@ -1,8 +1,8 @@
 import { Property } from "csstype";
 
 export type ScoreboardData = {
-  top: string[];
-  left: string[];
+  top: any[];
+  left: any[];
   values: number[][];
 };
 
