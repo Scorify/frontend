@@ -1,9 +1,11 @@
 import { Property } from "csstype";
 
+import { ScoreboardQuery, StatusEnum } from "../graph";
+
 export type ScoreboardData = {
   top: any[];
   left: any[];
-  values: number[][];
+  values: ScoreboardQuery["scoreboard"]["statuses"];
 };
 
 export type ScoreboardTheme = {
@@ -20,22 +22,26 @@ export type ScoreboardTheme = {
   cell: {
     dark: {
       highlighted: {
-        1: Property.BackgroundColor;
-        0: Property.BackgroundColor;
+        [StatusEnum.Down]: Property.BackgroundColor;
+        [StatusEnum.Up]: Property.BackgroundColor;
+        [StatusEnum.Unknown]: Property.BackgroundColor;
       };
       plain: {
-        1: Property.BackgroundColor;
-        0: Property.BackgroundColor;
+        [StatusEnum.Down]: Property.BackgroundColor;
+        [StatusEnum.Up]: Property.BackgroundColor;
+        [StatusEnum.Unknown]: Property.BackgroundColor;
       };
     };
     light: {
       highlighted: {
-        1: Property.BackgroundColor;
-        0: Property.BackgroundColor;
+        [StatusEnum.Down]: Property.BackgroundColor;
+        [StatusEnum.Up]: Property.BackgroundColor;
+        [StatusEnum.Unknown]: Property.BackgroundColor;
       };
       plain: {
-        1: Property.BackgroundColor;
-        0: Property.BackgroundColor;
+        [StatusEnum.Down]: Property.BackgroundColor;
+        [StatusEnum.Up]: Property.BackgroundColor;
+        [StatusEnum.Unknown]: Property.BackgroundColor;
       };
     };
   };

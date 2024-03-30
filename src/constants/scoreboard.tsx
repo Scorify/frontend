@@ -1,4 +1,5 @@
-import { green, grey, red } from "@mui/material/colors";
+import { green, grey, red, yellow } from "@mui/material/colors";
+import { StatusEnum } from "../graph";
 
 export const NormalScoreboardTheme = {
   heading: {
@@ -14,22 +15,26 @@ export const NormalScoreboardTheme = {
   cell: {
     dark: {
       highlighted: {
-        1: green[400],
-        0: red[400],
+        [StatusEnum.Down]: red[400],
+        [StatusEnum.Up]: green[400],
+        [StatusEnum.Unknown]: yellow[400],
       },
       plain: {
-        1: green[600],
-        0: red[600],
+        [StatusEnum.Down]: red[600],
+        [StatusEnum.Up]: green[600],
+        [StatusEnum.Unknown]: yellow[600],
       },
     },
     light: {
       highlighted: {
-        1: green[600],
-        0: red[600],
+        [StatusEnum.Down]: red[600],
+        [StatusEnum.Up]: green[600],
+        [StatusEnum.Unknown]: yellow[600],
       },
       plain: {
-        1: green[400],
-        0: red[400],
+        [StatusEnum.Down]: red[400],
+        [StatusEnum.Up]: green[400],
+        [StatusEnum.Unknown]: yellow[400],
       },
     },
   },
