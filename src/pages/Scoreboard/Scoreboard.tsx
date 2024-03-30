@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { useEffect, useMemo } from "react";
 import { StatusEnum, useScoreboardQuery } from "../../graph";
@@ -55,7 +49,6 @@ export default function ScoreboardPage({ theme }: props) {
         >
           Scoreboard
         </Typography>
-        <Button onClick={() => refetch()}>dfsdfsd</Button>
         <Box m={2} />
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
         {loading && !data && <CircularProgress />}
