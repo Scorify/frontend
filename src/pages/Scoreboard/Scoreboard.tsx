@@ -45,6 +45,16 @@ export default function ScoreboardPage({ theme }: props) {
         >
           Scoreboard
         </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Typography component='h1' variant='h5'>
+            Round {data?.scoreboard.round.number}
+          </Typography>
+        </Box>
         <Box m={2} />
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
         {loading && !data && <CircularProgress />}
