@@ -8,11 +8,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
-import { ScoreboardData, ScoreboardTheme } from "../../models";
 import { StatusEnum } from "../../graph";
+import { ScoreboardData, ScoreboardTheme } from "../../models";
 
 type props = {
   theme: "dark" | "light";
@@ -119,24 +120,46 @@ export default function Scoreboard({
                 </Typography>
               </TableCell>
               {scoreboardData.values[row].map((value, column) => (
-                <TableCell
-                  size='small'
-                  key={`cell-${row}-${column}`}
-                  sx={{
-                    aspectRatio: 1,
-                    backgroundColor:
-                      scoreboardTheme.cell[theme][
-                        highlightedRow === row + 1 ||
-                        highlightedColumn === column + 1
-                          ? "highlighted"
-                          : "plain"
-                      ][value?.status ?? StatusEnum.Unknown],
-                  }}
-                  onMouseEnter={() => {
-                    setHighlightedRow(row + 1);
-                    setHighlightedColumn(column + 1);
-                  }}
-                />
+                <Tooltip
+                  arrow={true}
+                  title={
+                    value?.__typename ? (
+                      <>
+                        <Typography variant='caption'>
+                          Updated: {value?.update_time}
+                        </Typography>{" "}
+                        {value?.error && (
+                          <Typography variant='caption'>
+                            Error: {value?.error}
+                          </Typography>
+                        )}
+                      </>
+                    ) : (
+                      <Typography variant='caption'>
+                        Status either did not report yet or does not exist
+                      </Typography>
+                    )
+                  }
+                >
+                  <TableCell
+                    size='small'
+                    key={`cell-${row}-${column}`}
+                    sx={{
+                      aspectRatio: 1,
+                      backgroundColor:
+                        scoreboardTheme.cell[theme][
+                          highlightedRow === row + 1 ||
+                          highlightedColumn === column + 1
+                            ? "highlighted"
+                            : "plain"
+                        ][value?.status ?? StatusEnum.Unknown],
+                    }}
+                    onMouseEnter={() => {
+                      setHighlightedRow(row + 1);
+                      setHighlightedColumn(column + 1);
+                    }}
+                  />
+                </Tooltip>
               ))}
             </TableRow>
           ))}
