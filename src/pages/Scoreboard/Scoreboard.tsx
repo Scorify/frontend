@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { useEffect, useMemo } from "react";
-import { StatusEnum, useScoreboardQuery } from "../../graph";
+import { useScoreboardQuery } from "../../graph";
 
 import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
@@ -22,11 +22,7 @@ export default function ScoreboardPage({ theme }: props) {
     return {
       top: data?.scoreboard.teams.map((team) => team.number) ?? [],
       left: data?.scoreboard.checks.map((check) => check.name) ?? [],
-      values: data?.scoreboard.statuses.map((check_statuses) =>
-        check_statuses.map((statuses) =>
-          statuses.status == StatusEnum.Up ? 1 : 0 ?? 0
-        )
-      ) ?? [[]],
+      values: data?.scoreboard.statuses ?? [[]],
     };
   }, [data]);
 
@@ -49,6 +45,16 @@ export default function ScoreboardPage({ theme }: props) {
         >
           Scoreboard
         </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Typography component='h1' variant='h5'>
+            Round {data?.scoreboard.round.number}
+          </Typography>
+        </Box>
         <Box m={2} />
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
         {loading && !data && <CircularProgress />}

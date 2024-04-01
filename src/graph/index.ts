@@ -255,7 +255,7 @@ export type Scoreboard = {
   __typename?: 'Scoreboard';
   checks: Array<Check>;
   round: Round;
-  statuses: Array<Array<Status>>;
+  statuses: Array<Array<Maybe<Status>>>;
   teams: Array<User>;
 };
 
@@ -1324,4 +1324,4 @@ export type EditConfigMutation = { __typename?: 'Mutation', editConfig: { __type
 export type ScoreboardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any }>> } };
+export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>> } };
