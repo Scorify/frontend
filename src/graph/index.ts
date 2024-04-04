@@ -1174,6 +1174,49 @@ export type ScoreboardQueryHookResult = ReturnType<typeof useScoreboardQuery>;
 export type ScoreboardLazyQueryHookResult = ReturnType<typeof useScoreboardLazyQuery>;
 export type ScoreboardSuspenseQueryHookResult = ReturnType<typeof useScoreboardSuspenseQuery>;
 export type ScoreboardQueryResult = Apollo.QueryResult<ScoreboardQuery, ScoreboardQueryVariables>;
+export const ScoreboardUpdatesDocument = gql`
+    subscription ScoreboardUpdates {
+  scoreboardUpdate {
+    statusUpdate {
+      team
+      round
+      check
+      status
+    }
+    roundUpdate {
+      round
+      complete
+    }
+    scoreUpdate {
+      team
+      round
+      points
+    }
+  }
+}
+    `;
+
+/**
+ * __useScoreboardUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useScoreboardUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useScoreboardUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useScoreboardUpdatesSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useScoreboardUpdatesSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ScoreboardUpdatesSubscription, ScoreboardUpdatesSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ScoreboardUpdatesSubscription, ScoreboardUpdatesSubscriptionVariables>(ScoreboardUpdatesDocument, options);
+      }
+export type ScoreboardUpdatesSubscriptionHookResult = ReturnType<typeof useScoreboardUpdatesSubscription>;
+export type ScoreboardUpdatesSubscriptionResult = Apollo.SubscriptionResult<ScoreboardUpdatesSubscription>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1325,3 +1368,8 @@ export type ScoreboardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>> } };
+
+export type ScoreboardUpdatesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ScoreboardUpdatesSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'ScoreboardUpdate', statusUpdate?: Array<{ __typename?: 'StatusUpdate_Scoreboard', team: number, round: number, check: string, status: StatusEnum }> | null, roundUpdate?: Array<{ __typename?: 'RoundUpdate_Scoreboard', round: number, complete: boolean }> | null, scoreUpdate?: Array<{ __typename?: 'ScoreUpdate_Scoreboard', team: number, round: number, points: number }> | null } };
