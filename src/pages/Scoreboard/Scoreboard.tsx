@@ -1,7 +1,10 @@
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { useEffect, useMemo } from "react";
-import { useScoreboardQuery } from "../../graph";
+import {
+  useScoreboardQuery,
+  useScoreboardUpdatesSubscription,
+} from "../../graph";
 
 import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
@@ -17,6 +20,15 @@ export default function ScoreboardPage({ theme }: props) {
     refetch();
     refetch();
   }, []);
+
+  useScoreboardUpdatesSubscription({
+    onData: (data) => {
+      console.log(data.data.data?.scoreboardUpdate);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   const scoreboardData = useMemo(() => {
     return {
