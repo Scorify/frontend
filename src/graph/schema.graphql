@@ -247,3 +247,23 @@ query Scoreboard {
     }
   }
 }
+
+subscription ScoreboardUpdates {
+  scoreboardUpdate {
+    statusUpdate {
+      team
+      round
+      check
+      status
+    }
+    roundUpdate {
+      round
+      complete
+    }
+    scoreUpdate {
+      team
+      round
+      points
+    }
+  }
+}
