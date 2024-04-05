@@ -298,7 +298,7 @@ export type StatusUpdate_Scoreboard = {
   __typename?: 'StatusUpdate_Scoreboard';
   check: Scalars['String']['output'];
   round: Scalars['Int']['output'];
-  status: StatusEnum;
+  status: Status;
   team: Scalars['Int']['output'];
 };
 
@@ -1181,7 +1181,11 @@ export const ScoreboardUpdatesDocument = gql`
       team
       round
       check
-      status
+      status {
+        error
+        status
+        update_time
+      }
     }
     roundUpdate {
       round
@@ -1372,4 +1376,4 @@ export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?:
 export type ScoreboardUpdatesSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ScoreboardUpdatesSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'ScoreboardUpdate', statusUpdate?: Array<{ __typename?: 'StatusUpdate_Scoreboard', team: number, round: number, check: string, status: StatusEnum }> | null, roundUpdate?: Array<{ __typename?: 'RoundUpdate_Scoreboard', round: number, complete: boolean }> | null, scoreUpdate?: Array<{ __typename?: 'ScoreUpdate_Scoreboard', team: number, round: number, points: number }> | null } };
+export type ScoreboardUpdatesSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'ScoreboardUpdate', statusUpdate?: Array<{ __typename?: 'StatusUpdate_Scoreboard', team: number, round: number, check: string, status: { __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } }> | null, roundUpdate?: Array<{ __typename?: 'RoundUpdate_Scoreboard', round: number, complete: boolean }> | null, scoreUpdate?: Array<{ __typename?: 'ScoreUpdate_Scoreboard', team: number, round: number, points: number }> | null } };
