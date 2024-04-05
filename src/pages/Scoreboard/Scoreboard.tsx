@@ -1,29 +1,56 @@
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 
-import { useEffect, useMemo } from "react";
-import {
-  useScoreboardQuery,
-  useScoreboardUpdatesSubscription,
-} from "../../graph";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
+import {
+  ScoreboardQuery,
+  useScoreboardQuery,
+  useScoreboardUpdatesSubscription,
+} from "../../graph";
 
 type props = {
   theme: "dark" | "light";
 };
 
 export default function ScoreboardPage({ theme }: props) {
-  const { data, error, loading, refetch } = useScoreboardQuery();
+  const { data: rawData, error, loading, refetch } = useScoreboardQuery();
+  const [data, setData] = useState(rawData);
 
   useEffect(() => {
     refetch();
     refetch();
   }, []);
 
+  useEffect(() => {
+    setData(rawData);
+    console.log({ rawData });
+  }, [rawData]);
+
+  // const checkLookup = useMemo(() => {
+  //   const lookup = new Map<number, string>();
+
+  //   data?.scoreboard.checks.forEach((check) => {
+  //     lookup.set(
+  //       rawData?.scoreboard.checks.indexOf((c: any) => c.name === check.name) ||
+  //         0,
+  //       check.name
+  //     );
+  //   });
+
+  //   return lookup;
+  // }, [data]);
+
   useScoreboardUpdatesSubscription({
     onData: (data) => {
-      console.log(data.data.data?.scoreboardUpdate);
+      if (data.data.data?.scoreboardUpdate.roundUpdate) {
+        for (let roundUpdate of data.data.data.scoreboardUpdate.roundUpdate) {
+          if (roundUpdate.complete) {
+            refetch();
+          }
+        }
+      }
     },
     onError: (error) => {
       console.error(error);
