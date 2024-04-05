@@ -254,7 +254,11 @@ subscription ScoreboardUpdates {
       team
       round
       check
-      status
+      status {
+        error
+        status
+        update_time
+      }
     }
     roundUpdate {
       round
