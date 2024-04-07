@@ -121,6 +121,7 @@ export default function Scoreboard({
               </TableCell>
               {scoreboardData.values[row].map((value, column) => (
                 <Tooltip
+                  key={`cell-${row}-${column}-tooltip`}
                   arrow={true}
                   title={
                     value?.__typename ? (
