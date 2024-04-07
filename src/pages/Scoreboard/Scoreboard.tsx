@@ -5,6 +5,7 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
 import {
+  ScoreboardQuery,
   useScoreboardQuery,
   useScoreboardUpdateSubscription,
 } from "../../graph";
@@ -15,7 +16,9 @@ type props = {
 
 export default function ScoreboardPage({ theme }: props) {
   const { data: rawData, error, loading, refetch } = useScoreboardQuery();
-  const [data, setData] = useState(rawData);
+  const [data, setData] = useState<ScoreboardQuery["scoreboard"] | undefined>(
+    rawData?.scoreboard
+  );
 
   useEffect(() => {
     refetch();
@@ -23,27 +26,14 @@ export default function ScoreboardPage({ theme }: props) {
   }, []);
 
   useEffect(() => {
-    setData(rawData);
+    setData(rawData?.scoreboard);
     console.log({ rawData });
   }, [rawData]);
-
-  // const checkLookup = useMemo(() => {
-  //   const lookup = new Map<number, string>();
-
-  //   data?.scoreboard.checks.forEach((check) => {
-  //     lookup.set(
-  //       rawData?.scoreboard.checks.indexOf((c: any) => c.name === check.name) ||
-  //         0,
-  //       check.name
-  //     );
-  //   });
-
-  //   return lookup;
-  // }, [data]);
 
   useScoreboardUpdateSubscription({
     onData: (data) => {
       if (data.data.data?.scoreboardUpdate) {
+        setData(data.data.data.scoreboardUpdate);
       }
     },
     onError: (error) => {
@@ -53,9 +43,9 @@ export default function ScoreboardPage({ theme }: props) {
 
   const scoreboardData = useMemo(() => {
     return {
-      top: data?.scoreboard.teams.map((team) => team.number) ?? [],
-      left: data?.scoreboard.checks.map((check) => check.name) ?? [],
-      values: data?.scoreboard.statuses ?? [[]],
+      top: data?.teams.map((team) => team.number) ?? [],
+      left: data?.checks.map((check) => check.name) ?? [],
+      values: data?.statuses ?? [[]],
     };
   }, [data]);
 
@@ -85,7 +75,7 @@ export default function ScoreboardPage({ theme }: props) {
           }}
         >
           <Typography component='h1' variant='h5'>
-            Round {data?.scoreboard.round.number}
+            Round {data?.round.number}
           </Typography>
         </Box>
         <Box m={2} />
