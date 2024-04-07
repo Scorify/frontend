@@ -1,28 +1,51 @@
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 
-import { useEffect, useMemo } from "react";
-import { useScoreboardQuery } from "../../graph";
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
+import {
+  ScoreboardQuery,
+  useScoreboardQuery,
+  useScoreboardUpdateSubscription,
+} from "../../graph";
 
 type props = {
   theme: "dark" | "light";
 };
 
 export default function ScoreboardPage({ theme }: props) {
-  const { data, error, loading, refetch } = useScoreboardQuery();
+  const { data: rawData, error, loading, refetch } = useScoreboardQuery();
+  const [data, setData] = useState<ScoreboardQuery["scoreboard"] | undefined>(
+    rawData?.scoreboard
+  );
 
   useEffect(() => {
     refetch();
     refetch();
   }, []);
 
+  useEffect(() => {
+    setData(rawData?.scoreboard);
+    console.log({ rawData });
+  }, [rawData]);
+
+  useScoreboardUpdateSubscription({
+    onData: (data) => {
+      if (data.data.data?.scoreboardUpdate) {
+        setData(data.data.data.scoreboardUpdate);
+      }
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const scoreboardData = useMemo(() => {
     return {
-      top: data?.scoreboard.teams.map((team) => team.number) ?? [],
-      left: data?.scoreboard.checks.map((check) => check.name) ?? [],
-      values: data?.scoreboard.statuses ?? [[]],
+      top: data?.teams.map((team) => team.number) ?? [],
+      left: data?.checks.map((check) => check.name) ?? [],
+      values: data?.statuses ?? [[]],
     };
   }, [data]);
 
@@ -52,7 +75,7 @@ export default function ScoreboardPage({ theme }: props) {
           }}
         >
           <Typography component='h1' variant='h5'>
-            Round {data?.scoreboard.round.number}
+            Round {data?.round.number}
           </Typography>
         </Box>
         <Box m={2} />

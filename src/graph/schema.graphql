@@ -153,24 +153,6 @@ subscription EngineState {
   engineState
 }
 
-subscription StatusStream {
-  statusStream {
-    id
-    error
-    status
-    update_time
-    check {
-      name
-    }
-    user {
-      username
-    }
-    round {
-      number
-    }
-  }
-}
-
 mutation StartEngine {
   startEngine
 }
@@ -230,6 +212,26 @@ mutation EditConfig($id: ID!, $config: JSON!) {
 
 query Scoreboard {
   scoreboard {
+    round {
+      number
+    }
+    teams {
+      username
+      number
+    }
+    checks {
+      name
+    }
+    statuses {
+      error
+      status
+      update_time
+    }
+  }
+}
+
+subscription ScoreboardUpdate {
+  scoreboardUpdate {
     round {
       number
     }

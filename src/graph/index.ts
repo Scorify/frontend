@@ -226,12 +226,6 @@ export type Round = {
   update_time: Scalars['Time']['output'];
 };
 
-export type RoundUpdate_Scoreboard = {
-  __typename?: 'RoundUpdate_Scoreboard';
-  complete: Scalars['Boolean']['output'];
-  round: Scalars['Int']['output'];
-};
-
 export type ScoreCache = {
   __typename?: 'ScoreCache';
   create_time: Scalars['Time']['output'];
@@ -244,26 +238,13 @@ export type ScoreCache = {
   user_id: Scalars['ID']['output'];
 };
 
-export type ScoreUpdate_Scoreboard = {
-  __typename?: 'ScoreUpdate_Scoreboard';
-  points: Scalars['Int']['output'];
-  round: Scalars['Int']['output'];
-  team: Scalars['Int']['output'];
-};
-
 export type Scoreboard = {
   __typename?: 'Scoreboard';
   checks: Array<Check>;
   round: Round;
+  scores: Array<Scalars['Int']['output']>;
   statuses: Array<Array<Maybe<Status>>>;
   teams: Array<User>;
-};
-
-export type ScoreboardUpdate = {
-  __typename?: 'ScoreboardUpdate';
-  roundUpdate?: Maybe<Array<RoundUpdate_Scoreboard>>;
-  scoreUpdate?: Maybe<Array<ScoreUpdate_Scoreboard>>;
-  statusUpdate?: Maybe<Array<StatusUpdate_Scoreboard>>;
 };
 
 export type Source = {
@@ -294,20 +275,11 @@ export enum StatusEnum {
   Up = 'up'
 }
 
-export type StatusUpdate_Scoreboard = {
-  __typename?: 'StatusUpdate_Scoreboard';
-  check: Scalars['String']['output'];
-  round: Scalars['Int']['output'];
-  status: StatusEnum;
-  team: Scalars['Int']['output'];
-};
-
 export type Subscription = {
   __typename?: 'Subscription';
   engineState: EngineState;
   globalNotification: Notification;
-  scoreboardUpdate: ScoreboardUpdate;
-  statusStream: Array<Maybe<Status>>;
+  scoreboardUpdate: Scoreboard;
 };
 
 export type User = {
@@ -828,47 +800,6 @@ export function useEngineStateSubscription(baseOptions?: Apollo.SubscriptionHook
       }
 export type EngineStateSubscriptionHookResult = ReturnType<typeof useEngineStateSubscription>;
 export type EngineStateSubscriptionResult = Apollo.SubscriptionResult<EngineStateSubscription>;
-export const StatusStreamDocument = gql`
-    subscription StatusStream {
-  statusStream {
-    id
-    error
-    status
-    update_time
-    check {
-      name
-    }
-    user {
-      username
-    }
-    round {
-      number
-    }
-  }
-}
-    `;
-
-/**
- * __useStatusStreamSubscription__
- *
- * To run a query within a React component, call `useStatusStreamSubscription` and pass it any options that fit your needs.
- * When your component renders, `useStatusStreamSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useStatusStreamSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useStatusStreamSubscription(baseOptions?: Apollo.SubscriptionHookOptions<StatusStreamSubscription, StatusStreamSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<StatusStreamSubscription, StatusStreamSubscriptionVariables>(StatusStreamDocument, options);
-      }
-export type StatusStreamSubscriptionHookResult = ReturnType<typeof useStatusStreamSubscription>;
-export type StatusStreamSubscriptionResult = Apollo.SubscriptionResult<StatusStreamSubscription>;
 export const StartEngineDocument = gql`
     mutation StartEngine {
   startEngine
@@ -1174,6 +1105,49 @@ export type ScoreboardQueryHookResult = ReturnType<typeof useScoreboardQuery>;
 export type ScoreboardLazyQueryHookResult = ReturnType<typeof useScoreboardLazyQuery>;
 export type ScoreboardSuspenseQueryHookResult = ReturnType<typeof useScoreboardSuspenseQuery>;
 export type ScoreboardQueryResult = Apollo.QueryResult<ScoreboardQuery, ScoreboardQueryVariables>;
+export const ScoreboardUpdateDocument = gql`
+    subscription ScoreboardUpdate {
+  scoreboardUpdate {
+    round {
+      number
+    }
+    teams {
+      username
+      number
+    }
+    checks {
+      name
+    }
+    statuses {
+      error
+      status
+      update_time
+    }
+  }
+}
+    `;
+
+/**
+ * __useScoreboardUpdateSubscription__
+ *
+ * To run a query within a React component, call `useScoreboardUpdateSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useScoreboardUpdateSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useScoreboardUpdateSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useScoreboardUpdateSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ScoreboardUpdateSubscription, ScoreboardUpdateSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ScoreboardUpdateSubscription, ScoreboardUpdateSubscriptionVariables>(ScoreboardUpdateDocument, options);
+      }
+export type ScoreboardUpdateSubscriptionHookResult = ReturnType<typeof useScoreboardUpdateSubscription>;
+export type ScoreboardUpdateSubscriptionResult = Apollo.SubscriptionResult<ScoreboardUpdateSubscription>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1271,11 +1245,6 @@ export type EngineStateSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 export type EngineStateSubscription = { __typename?: 'Subscription', engineState: EngineState };
 
-export type StatusStreamSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type StatusStreamSubscription = { __typename?: 'Subscription', statusStream: Array<{ __typename?: 'Status', id: string, error?: string | null, status: StatusEnum, update_time: any, check: { __typename?: 'Check', name: string }, user: { __typename?: 'User', username: string }, round: { __typename?: 'Round', number: number } } | null> };
-
 export type StartEngineMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1325,3 +1294,8 @@ export type ScoreboardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>> } };
+
+export type ScoreboardUpdateSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ScoreboardUpdateSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>> } };
