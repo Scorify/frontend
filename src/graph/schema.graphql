@@ -153,24 +153,6 @@ subscription EngineState {
   engineState
 }
 
-subscription StatusStream {
-  statusStream {
-    id
-    error
-    status
-    update_time
-    check {
-      name
-    }
-    user {
-      username
-    }
-    round {
-      number
-    }
-  }
-}
-
 mutation StartEngine {
   startEngine
 }
@@ -248,26 +230,22 @@ query Scoreboard {
   }
 }
 
-subscription ScoreboardUpdates {
+subscription ScoreboardUpdate {
   scoreboardUpdate {
-    statusUpdate {
-      team
-      round
-      check
-      status {
-        error
-        status
-        update_time
-      }
+    round {
+      number
     }
-    roundUpdate {
-      round
-      complete
+    teams {
+      username
+      number
     }
-    scoreUpdate {
-      team
-      round
-      points
+    checks {
+      name
+    }
+    statuses {
+      error
+      status
+      update_time
     }
   }
 }
