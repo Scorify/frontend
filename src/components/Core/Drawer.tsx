@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import {
   AdminPanelSettings,
   EditNote,
+  Scoreboard,
   Group,
   Home,
   KeyboardReturn,
@@ -75,6 +76,17 @@ export default function DrawerComponent({
             <ListItemButton>
               <ListItemIcon>{<Home />}</ListItemIcon>
               <ListItemText primary='Home' />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            onClick={() => {
+              navigate("/scoreboard");
+            }}
+          >
+            <ListItemButton>
+              <ListItemIcon>{<Scoreboard />}</ListItemIcon>
+              <ListItemText primary='Scoreboard' />
             </ListItemButton>
           </ListItem>
         </List>
