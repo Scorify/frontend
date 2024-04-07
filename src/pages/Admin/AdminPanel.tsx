@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import {
   EngineState as EngineStateComponent,
   Notification,
-  StatusStream,
 } from "../../components";
 import { EngineState } from "../../graph";
 
@@ -19,18 +18,17 @@ export default function AdminPanel({ engineState }: props) {
   const urlParams = new URLSearchParams(location.search);
 
   let param = urlParams.get("selected") || "notification";
-  if (!["notification", "engine", "status_stream"].includes(param)) {
+  if (!["notification", "engine"].includes(param)) {
     param = "notification";
   }
 
-  const [selected, setSelected] = useState<
-    "notification" | "engine" | "status_stream"
-  >(param as "notification" | "engine" | "status_stream");
+  const [selected, setSelected] = useState<"notification" | "engine">(
+    param as "notification" | "engine"
+  );
 
   const components = {
     notification: <Notification />,
     engine: <EngineStateComponent engineState={engineState} />,
-    status_stream: <StatusStream />,
   };
 
   return (
@@ -73,18 +71,6 @@ export default function AdminPanel({ engineState }: props) {
             }}
           >
             Engine State
-          </Button>
-          <Button
-            disabled={selected === "status_stream"}
-            sx={{ flexGrow: 1 }}
-            onClick={() => {
-              setSelected("status_stream");
-
-              urlParams.set("selected", "status_stream");
-              navigate(`?${urlParams.toString()}`);
-            }}
-          >
-            Status Stream
           </Button>
         </ButtonGroup>
       </Container>

@@ -5,9 +5,8 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
 import {
-  ScoreboardQuery,
   useScoreboardQuery,
-  useScoreboardUpdatesSubscription,
+  useScoreboardUpdateSubscription,
 } from "../../graph";
 
 type props = {
@@ -42,14 +41,9 @@ export default function ScoreboardPage({ theme }: props) {
   //   return lookup;
   // }, [data]);
 
-  useScoreboardUpdatesSubscription({
+  useScoreboardUpdateSubscription({
     onData: (data) => {
-      if (data.data.data?.scoreboardUpdate.roundUpdate) {
-        for (let roundUpdate of data.data.data.scoreboardUpdate.roundUpdate) {
-          if (roundUpdate.complete) {
-            refetch();
-          }
-        }
+      if (data.data.data?.scoreboardUpdate) {
       }
     },
     onError: (error) => {
