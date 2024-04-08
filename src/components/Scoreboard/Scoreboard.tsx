@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 
 import {
   Paper,
@@ -20,6 +20,10 @@ type props = {
   scoreboardData: ScoreboardData;
   scoreboardTheme: ScoreboardTheme;
   cornerLabel?: string;
+  highlightedRow: number | null;
+  highlightedColumn: number | null;
+  setHighlightedRow: React.Dispatch<React.SetStateAction<number | null>>;
+  setHighlightedColumn: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export default function Scoreboard({
@@ -27,12 +31,11 @@ export default function Scoreboard({
   scoreboardData,
   scoreboardTheme,
   cornerLabel,
+  highlightedRow,
+  highlightedColumn,
+  setHighlightedRow,
+  setHighlightedColumn,
 }: props) {
-  const [highlightedRow, setHighlightedRow] = useState<number | null>(null);
-  const [highlightedColumn, setHighlightedColumn] = useState<number | null>(
-    null
-  );
-
   return (
     <TableContainer
       component={Paper}
