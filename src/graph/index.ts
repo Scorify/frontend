@@ -226,6 +226,12 @@ export type Round = {
   update_time: Scalars['Time']['output'];
 };
 
+export type Score = {
+  __typename?: 'Score';
+  score: Scalars['Int']['output'];
+  user: User;
+};
+
 export type ScoreCache = {
   __typename?: 'ScoreCache';
   create_time: Scalars['Time']['output'];
@@ -242,7 +248,7 @@ export type Scoreboard = {
   __typename?: 'Scoreboard';
   checks: Array<Check>;
   round: Round;
-  scores: Array<Scalars['Int']['output']>;
+  scores: Array<Score>;
   statuses: Array<Array<Maybe<Status>>>;
   teams: Array<User>;
 };
@@ -1070,6 +1076,13 @@ export const ScoreboardDocument = gql`
       status
       update_time
     }
+    scores {
+      user {
+        username
+        number
+      }
+      score
+    }
   }
 }
     `;
@@ -1122,6 +1135,13 @@ export const ScoreboardUpdateDocument = gql`
       error
       status
       update_time
+    }
+    scores {
+      user {
+        username
+        number
+      }
+      score
     }
   }
 }
@@ -1293,9 +1313,9 @@ export type EditConfigMutation = { __typename?: 'Mutation', editConfig: { __type
 export type ScoreboardQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>> } };
+export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>>, scores: Array<{ __typename?: 'Score', score: number, user: { __typename?: 'User', username: string, number?: number | null } }> } };
 
 export type ScoreboardUpdateSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ScoreboardUpdateSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>> } };
+export type ScoreboardUpdateSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>>, scores: Array<{ __typename?: 'Score', score: number, user: { __typename?: 'User', username: string, number?: number | null } }> } };

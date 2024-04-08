@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
-import { Scoreboard } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
 import {
   ScoreboardQuery,
   useScoreboardQuery,
   useScoreboardUpdateSubscription,
 } from "../../graph";
+import { ScoreboardWrapper } from "../../components";
 
 type props = {
   theme: "dark" | "light";
@@ -27,7 +27,6 @@ export default function ScoreboardPage({ theme }: props) {
 
   useEffect(() => {
     setData(rawData?.scoreboard);
-    console.log({ rawData });
   }, [rawData]);
 
   useScoreboardUpdateSubscription({
@@ -40,14 +39,6 @@ export default function ScoreboardPage({ theme }: props) {
       console.error(error);
     },
   });
-
-  const scoreboardData = useMemo(() => {
-    return {
-      top: data?.teams.map((team) => team.number) ?? [],
-      left: data?.checks.map((check) => check.name) ?? [],
-      values: data?.statuses ?? [[]],
-    };
-  }, [data]);
 
   return (
     <Container component='main' maxWidth='xl'>
@@ -82,9 +73,9 @@ export default function ScoreboardPage({ theme }: props) {
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
         {loading && !data && <CircularProgress />}
         {data && (
-          <Scoreboard
+          <ScoreboardWrapper
             theme={theme}
-            scoreboardData={scoreboardData}
+            data={data}
             scoreboardTheme={NormalScoreboardTheme}
             cornerLabel='Team'
           />

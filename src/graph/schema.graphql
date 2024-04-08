@@ -227,6 +227,13 @@ query Scoreboard {
       status
       update_time
     }
+    scores {
+      user {
+        username
+        number
+      }
+      score
+    }
   }
 }
 
@@ -246,6 +253,13 @@ subscription ScoreboardUpdate {
       error
       status
       update_time
+    }
+    scores {
+      user {
+        username
+        number
+      }
+      score
     }
   }
 }
