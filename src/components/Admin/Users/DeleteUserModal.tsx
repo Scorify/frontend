@@ -27,6 +27,7 @@ export default function DeleteUserModal({
       open={open}
       setOpen={setOpen}
       onConfirm={handleDelete}
+      label='User Name'
     />
   );
 }
