@@ -27,6 +27,7 @@ export default function DeleteCheckModal({
       open={open}
       setOpen={setOpen}
       onConfirm={handleDelete}
+      label='Check Name'
     />
   );
 }
