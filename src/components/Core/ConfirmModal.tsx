@@ -10,6 +10,7 @@ type props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   onConfirm: () => void;
+  label?: string;
 };
 
 export default function ConfirmModal({
@@ -20,6 +21,7 @@ export default function ConfirmModal({
   open,
   setOpen,
   onConfirm,
+  label,
 }: props) {
   const [confirm, setConfirm] = useState<string>("");
   const match = useMemo(() => confirm === value, [confirm, value]);
@@ -60,7 +62,7 @@ export default function ConfirmModal({
             {subtitle}
           </Typography>
           <TextField
-            label='User Name'
+            label={label}
             variant='outlined'
             sx={{
               marginTop: "24px",
