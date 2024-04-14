@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { Paper, Typography } from "@mui/material";
 
 import { ScoreboardQuery } from "../../graph";
@@ -13,6 +15,10 @@ export default function Scores({
   highlightedTeam,
   setHighlightedTeam,
 }: props) {
+  const scoresFiltered = useMemo(() => {
+    return scores.filter((score) => score !== null);
+  }, [scores]);
+
   return (
     <Paper
       sx={{
@@ -25,7 +31,7 @@ export default function Scores({
         flexWrap: "wrap",
       }}
     >
-      {scores.map((score) => (
+      {scoresFiltered.map((score) => (
         <Paper
           key={score.user.number}
           sx={{
