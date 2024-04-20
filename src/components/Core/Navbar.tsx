@@ -83,7 +83,7 @@ export default function Navbar({
               negativeTitle='Engine is Paused'
               sx={{ margin: "10px" }}
             />
-            {me ? (
+            {me?.me ? (
               <Tooltip title={jwt?.become ? "Return to Admin" : "Logout"}>
                 <Button
                   onClick={() => {
