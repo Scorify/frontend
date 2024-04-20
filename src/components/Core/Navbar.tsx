@@ -65,7 +65,7 @@ export default function Navbar({
                   textTransform: "none",
                 }}
               >
-                <Typography variant='h6'>{me?.me.username}</Typography>
+                <Typography variant='h6'>{me?.me?.username}</Typography>
               </Button>
             )}
           </Box>
@@ -83,7 +83,7 @@ export default function Navbar({
               negativeTitle='Engine is Paused'
               sx={{ margin: "10px" }}
             />
-            {me ? (
+            {me?.me ? (
               <Tooltip title={jwt?.become ? "Return to Admin" : "Logout"}>
                 <Button
                   onClick={() => {

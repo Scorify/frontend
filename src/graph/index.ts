@@ -187,7 +187,7 @@ export type Query = {
   checks: Array<Check>;
   config: Config;
   configs: Array<Config>;
-  me: User;
+  me?: Maybe<User>;
   scoreboard: Scoreboard;
   source: Source;
   sources: Array<Source>;
@@ -1171,7 +1171,7 @@ export type ScoreboardUpdateSubscriptionResult = Apollo.SubscriptionResult<Score
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, role: Role, number?: number | null } };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, username: string, role: Role, number?: number | null } | null };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String']['input'];
