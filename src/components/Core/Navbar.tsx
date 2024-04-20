@@ -65,7 +65,7 @@ export default function Navbar({
                   textTransform: "none",
                 }}
               >
-                <Typography variant='h6'>{me?.me.username}</Typography>
+                <Typography variant='h6'>{me?.me?.username}</Typography>
               </Button>
             )}
           </Box>
