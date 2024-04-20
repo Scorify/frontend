@@ -91,7 +91,7 @@ export default function DrawerComponent({
           </ListItem>
         </List>
         <Divider />
-        {me ? (
+        {me?.me ? (
           <>
             <List>
               {jwt?.become ? (
