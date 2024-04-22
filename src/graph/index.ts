@@ -206,6 +206,11 @@ export type QueryConfigArgs = {
 };
 
 
+export type QueryScoreboardArgs = {
+  round?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QuerySourceArgs = {
   name: Scalars['String']['input'];
 };
@@ -1059,8 +1064,8 @@ export type EditConfigMutationHookResult = ReturnType<typeof useEditConfigMutati
 export type EditConfigMutationResult = Apollo.MutationResult<EditConfigMutation>;
 export type EditConfigMutationOptions = Apollo.BaseMutationOptions<EditConfigMutation, EditConfigMutationVariables>;
 export const ScoreboardDocument = gql`
-    query Scoreboard {
-  scoreboard {
+    query Scoreboard($round: Int) {
+  scoreboard(round: $round) {
     round {
       number
     }
@@ -1099,6 +1104,7 @@ export const ScoreboardDocument = gql`
  * @example
  * const { data, loading, error } = useScoreboardQuery({
  *   variables: {
+ *      round: // value for 'round'
  *   },
  * });
  */
@@ -1310,7 +1316,9 @@ export type EditConfigMutationVariables = Exact<{
 
 export type EditConfigMutation = { __typename?: 'Mutation', editConfig: { __typename?: 'Config', id: string } };
 
-export type ScoreboardQueryVariables = Exact<{ [key: string]: never; }>;
+export type ScoreboardQueryVariables = Exact<{
+  round?: InputMaybe<Scalars['Int']['input']>;
+}>;
 
 
 export type ScoreboardQuery = { __typename?: 'Query', scoreboard: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>>, scores: Array<{ __typename?: 'Score', score: number, user: { __typename?: 'User', username: string, number?: number | null } } | null> } };
