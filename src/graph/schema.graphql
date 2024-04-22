@@ -210,8 +210,8 @@ mutation EditConfig($id: ID!, $config: JSON!) {
   }
 }
 
-query Scoreboard {
-  scoreboard {
+query Scoreboard($round: Int) {
+  scoreboard(round: $round) {
     round {
       number
     }
