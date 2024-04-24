@@ -263,3 +263,9 @@ subscription ScoreboardUpdate {
     }
   }
 }
+
+query LatestRound {
+  latestRound {
+    number
+  }
+}
