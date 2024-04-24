@@ -1,20 +1,27 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import {
+  KeyboardDoubleArrowLeft,
+  KeyboardArrowLeft,
+} from "@mui/icons-material";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
+import { ScoreboardWrapper } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
 import {
   ScoreboardQuery,
   useScoreboardQuery,
   useScoreboardUpdateSubscription,
 } from "../../graph";
-import { ScoreboardWrapper } from "../../components";
 
 type props = {
   theme: "dark" | "light";
 };
 
 export default function ScoreboardPage({ theme }: props) {
+  const navigate = useNavigate();
+
   const { data: rawData, error, loading, refetch } = useScoreboardQuery();
   const [data, setData] = useState<ScoreboardQuery["scoreboard"] | undefined>(
     rawData?.scoreboard
@@ -65,9 +72,33 @@ export default function ScoreboardPage({ theme }: props) {
             alignItems: "center",
           }}
         >
-          <Typography component='h1' variant='h5'>
-            Round {data?.round.number}
-          </Typography>
+          {data?.round.number && data.round.number >= 10 ? (
+            <KeyboardDoubleArrowLeft
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate(`/scoreboard/${data?.round.number - 10}`);
+              }}
+            />
+          ) : (
+            <KeyboardDoubleArrowLeft sx={{ visibility: "hidden" }} />
+          )}
+          {data?.round.number && data.round.number >= 1 ? (
+            <KeyboardArrowLeft
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate(`/scoreboard/${data?.round.number - 1}`);
+              }}
+            />
+          ) : (
+            <KeyboardArrowLeft sx={{ visibility: "hidden" }} />
+          )}
+          <Box marginLeft={0.5} marginRight={0.5}>
+            <Typography component='h1' variant='h5'>
+              Round {data?.round.number}
+            </Typography>
+          </Box>
+          <KeyboardArrowLeft sx={{ visibility: "hidden" }} />
+          <KeyboardDoubleArrowLeft sx={{ visibility: "hidden" }} />
         </Box>
         <Box m={2} />
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
