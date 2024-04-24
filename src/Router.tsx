@@ -20,6 +20,7 @@ import {
   Login,
   Me,
   Scoreboard,
+  ScoreboardRound,
   UserChecks,
   Users,
 } from "./pages";
@@ -94,6 +95,12 @@ export function Router({ theme, setTheme, apolloClient }: props) {
             {
               index: true,
               element: <LazyComponent element={<Scoreboard theme={theme} />} />,
+            },
+            {
+              path: ":round",
+              element: (
+                <LazyComponent element={<ScoreboardRound theme={theme} />} />
+              ),
             },
           ],
         },
