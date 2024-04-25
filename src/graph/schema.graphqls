@@ -161,7 +161,8 @@ type Query {
   configs: [Config!]! @isAuthenticated
   config(id: ID!): Config! @isAuthenticated
 
-  scoreboard: Scoreboard!
+  scoreboard(round: Int): Scoreboard!
+  latestRound: Round!
 }
 
 type Mutation {

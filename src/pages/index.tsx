@@ -6,6 +6,7 @@ import Home from "./Home";
 import Login from "./Login";
 import Me from "./Me";
 import Scoreboard from "./Scoreboard/Scoreboard";
+import ScoreboardRound from "./Scoreboard/Round";
 import UserChecks from "./User/Checks";
 
 export {
@@ -16,6 +17,7 @@ export {
   Login,
   Me,
   Scoreboard,
+  ScoreboardRound,
   UserChecks,
   Users,
 };

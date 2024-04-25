@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
-  KeyboardDoubleArrowLeft,
   KeyboardArrowLeft,
+  KeyboardArrowRight,
+  KeyboardDoubleArrowLeft,
+  KeyboardDoubleArrowRight,
 } from "@mui/icons-material";
 import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
@@ -11,18 +13,32 @@ import { ScoreboardWrapper } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
 import {
   ScoreboardQuery,
+  useLatestRoundQuery,
   useScoreboardQuery,
   useScoreboardUpdateSubscription,
 } from "../../graph";
+
+type params = {
+  round: string;
+};
 
 type props = {
   theme: "dark" | "light";
 };
 
-export default function ScoreboardPage({ theme }: props) {
+export default function ScoreboardRoundPage({ theme }: props) {
+  const { round } = useParams<params>();
   const navigate = useNavigate();
 
-  const { data: rawData, error, loading, refetch } = useScoreboardQuery();
+  const {
+    data: rawData,
+    error,
+    loading,
+    refetch,
+  } = useScoreboardQuery({
+    variables: { round: round ? parseInt(round) : undefined },
+  });
+
   const [data, setData] = useState<ScoreboardQuery["scoreboard"] | undefined>(
     rawData?.scoreboard
   );
@@ -46,6 +62,12 @@ export default function ScoreboardPage({ theme }: props) {
       console.error(error);
     },
   });
+
+  const {
+    data: latestRoundData,
+    error: latestRoundError,
+    loading: latestRoundLoading,
+  } = useLatestRoundQuery();
 
   return (
     <Container component='main' maxWidth='xl'>
@@ -93,16 +115,52 @@ export default function ScoreboardPage({ theme }: props) {
             <KeyboardArrowLeft sx={{ visibility: "hidden" }} />
           )}
           <Box marginLeft={0.5} marginRight={0.5}>
-            <Typography component='h1' variant='h5'>
+            <Typography
+              component='h1'
+              variant='h5'
+              onClick={() => {
+                navigate("/scoreboard");
+              }}
+              sx={{ cursor: "pointer" }}
+            >
               Round {data?.round.number}
             </Typography>
           </Box>
-          <KeyboardArrowLeft sx={{ visibility: "hidden" }} />
-          <KeyboardDoubleArrowLeft sx={{ visibility: "hidden" }} />
+          {latestRoundData?.latestRound.number &&
+          data?.round.number &&
+          latestRoundData.latestRound.number >= data?.round.number + 1 ? (
+            <KeyboardArrowRight
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate(`/scoreboard/${data?.round.number + 1}`);
+              }}
+            />
+          ) : (
+            <KeyboardArrowRight sx={{ visibility: "hidden" }} />
+          )}
+          {latestRoundData?.latestRound.number &&
+          data?.round.number &&
+          latestRoundData.latestRound.number >= data?.round.number + 10 ? (
+            <KeyboardDoubleArrowRight
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate(`/scoreboard/${data?.round.number + 10}`);
+              }}
+            />
+          ) : (
+            <KeyboardDoubleArrowRight sx={{ visibility: "hidden" }} />
+          )}
         </Box>
         <Box m={2} />
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
-        {loading && !data && <CircularProgress />}
+        {latestRoundError && (
+          <Typography variant='h6'>
+            Error: {latestRoundError.message}
+          </Typography>
+        )}
+        {loading && latestRoundLoading && !data && !latestRoundData && (
+          <CircularProgress />
+        )}
         {data && (
           <ScoreboardWrapper
             theme={theme}
