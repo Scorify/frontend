@@ -72,7 +72,7 @@ export default function ScoreboardPage({ theme }: props) {
             alignItems: "center",
           }}
         >
-          {data?.round.number && data.round.number >= 10 ? (
+          {data?.round.number && data.round.number > 10 ? (
             <KeyboardDoubleArrowLeft
               sx={{ cursor: "pointer" }}
               onClick={() => {
@@ -82,7 +82,7 @@ export default function ScoreboardPage({ theme }: props) {
           ) : (
             <KeyboardDoubleArrowLeft sx={{ visibility: "hidden" }} />
           )}
-          {data?.round.number && data.round.number >= 1 ? (
+          {data?.round.number && data.round.number > 1 ? (
             <KeyboardArrowLeft
               sx={{ cursor: "pointer" }}
               onClick={() => {
