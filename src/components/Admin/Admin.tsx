@@ -12,7 +12,7 @@ export default function Admin() {
     return <Error code={401} message='Unauthorized' />;
   }
 
-  if (me.me.role !== Role.Admin) {
+  if (me.me?.role !== Role.Admin) {
     return <Error code={403} message='Forbidden' />;
   }
 
