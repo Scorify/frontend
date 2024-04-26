@@ -12,7 +12,7 @@ export default function User() {
     return <Error code={401} message='Unauthorized' />;
   }
 
-  if (me.me.role !== Role.User) {
+  if (me.me?.role !== Role.User) {
     return <Error code={400} message='Competitor Page' />;
   }
 
