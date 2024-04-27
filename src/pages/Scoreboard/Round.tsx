@@ -25,14 +25,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
   const { round } = useParams<params>();
   const navigate = useNavigate();
 
-  const { data, error, loading, refetch } = useScoreboardQuery({
+  const { data, error, loading } = useScoreboardQuery({
     variables: { round: round ? parseInt(round) : undefined },
   });
-
-  useEffect(() => {
-    refetch();
-    refetch();
-  }, []);
 
   const {
     data: latestRoundData,
