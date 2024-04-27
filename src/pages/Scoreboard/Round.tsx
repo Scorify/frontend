@@ -25,9 +25,14 @@ export default function ScoreboardRoundPage({ theme }: props) {
   const { round } = useParams<params>();
   const navigate = useNavigate();
 
-  const { data, error, loading } = useScoreboardQuery({
+  const { data, error, loading, refetch } = useScoreboardQuery({
     variables: { round: round ? parseInt(round) : undefined },
   });
+
+  useEffect(() => {
+    refetch();
+    refetch();
+  }, []);
 
   const {
     data: latestRoundData,
@@ -38,30 +43,22 @@ export default function ScoreboardRoundPage({ theme }: props) {
     onError: (error) => {
       console.error(error);
     },
-    onCompleted: (data) => {
-      if (
-        data?.latestRound.number &&
-        round !== undefined &&
-        parseInt(round) === data.latestRound.number
-      ) {
-        console.log({
-          latestRoundData: latestRoundData?.latestRound.number,
-          round,
-        });
-        navigate("/scoreboard");
-      }
-    },
   });
 
   useEffect(() => {
+    latestRoundRefetch();
+    latestRoundRefetch();
+  }, []);
+
+  useEffect(() => {
     if (
-      latestRoundData?.latestRound.number &&
-      round !== undefined &&
+      round &&
+      latestRoundData &&
       parseInt(round) === latestRoundData.latestRound.number
     ) {
-      latestRoundRefetch();
+      navigate("/scoreboard");
     }
-  }, [latestRoundData, round]);
+  }, [round, latestRoundData]);
 
   return (
     <Container component='main' maxWidth='xl'>
