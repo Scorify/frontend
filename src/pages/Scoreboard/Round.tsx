@@ -29,18 +29,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
   const { round } = useParams<params>();
   const navigate = useNavigate();
 
-  const {
-    data: rawData,
-    error,
-    loading,
-    refetch,
-  } = useScoreboardQuery({
+  const { data, error, loading, refetch } = useScoreboardQuery({
     variables: { round: round ? parseInt(round) : undefined },
   });
-
-  const [data, setData] = useState<ScoreboardQuery["scoreboard"] | undefined>(
-    rawData?.scoreboard
-  );
 
   useEffect(() => {
     refetch();
@@ -106,11 +97,12 @@ export default function ScoreboardRoundPage({ theme }: props) {
             alignItems: "center",
           }}
         >
-          {data?.round.number && data.round.number > 10 ? (
+          {data?.scoreboard.round.number &&
+          data.scoreboard.round.number > 10 ? (
             <KeyboardDoubleArrowLeft
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number - 10}`);
+                navigate(`/scoreboard/${data?.scoreboard.round.number - 10}`);
               }}
             />
           ) : (
