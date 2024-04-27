@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -11,11 +11,7 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { ScoreboardWrapper } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
-import {
-  ScoreboardQuery,
-  useLatestRoundQuery,
-  useScoreboardQuery,
-} from "../../graph";
+import { useLatestRoundQuery, useScoreboardQuery } from "../../graph";
 
 type params = {
   round: string;
