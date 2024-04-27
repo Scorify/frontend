@@ -15,7 +15,6 @@ import {
   ScoreboardQuery,
   useLatestRoundQuery,
   useScoreboardQuery,
-  useScoreboardUpdateSubscription,
 } from "../../graph";
 
 type params = {
