@@ -52,7 +52,12 @@ export default function ScoreboardRoundPage({ theme }: props) {
     data: latestRoundData,
     error: latestRoundError,
     loading: latestRoundLoading,
-  } = useLatestRoundQuery();
+    refetch: latestRoundRefetch,
+  } = useLatestRoundQuery({
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   return (
     <Container component='main' maxWidth='xl'>
