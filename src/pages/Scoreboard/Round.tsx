@@ -72,6 +72,16 @@ export default function ScoreboardRoundPage({ theme }: props) {
     },
   });
 
+  useEffect(() => {
+    if (
+      latestRoundData?.latestRound.number &&
+      round !== undefined &&
+      parseInt(round) === latestRoundData.latestRound.number
+    ) {
+      latestRoundRefetch();
+    }
+  }, [latestRoundData, round]);
+
   return (
     <Container component='main' maxWidth='xl'>
       <Box
