@@ -48,21 +48,6 @@ export default function ScoreboardRoundPage({ theme }: props) {
     refetch();
   }, []);
 
-  useEffect(() => {
-    setData(rawData?.scoreboard);
-  }, [rawData]);
-
-  useScoreboardUpdateSubscription({
-    onData: (data) => {
-      if (data.data.data?.scoreboardUpdate) {
-        setData(data.data.data.scoreboardUpdate);
-      }
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-
   const {
     data: latestRoundData,
     error: latestRoundError,
