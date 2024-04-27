@@ -57,6 +57,19 @@ export default function ScoreboardRoundPage({ theme }: props) {
     onError: (error) => {
       console.error(error);
     },
+    onCompleted: (data) => {
+      if (
+        data?.latestRound.number &&
+        round !== undefined &&
+        parseInt(round) === data.latestRound.number
+      ) {
+        console.log({
+          latestRoundData: latestRoundData?.latestRound.number,
+          round,
+        });
+        navigate("/scoreboard");
+      }
+    },
   });
 
   return (
