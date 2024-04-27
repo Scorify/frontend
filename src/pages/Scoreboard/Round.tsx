@@ -108,11 +108,11 @@ export default function ScoreboardRoundPage({ theme }: props) {
           ) : (
             <KeyboardDoubleArrowLeft sx={{ visibility: "hidden" }} />
           )}
-          {data?.round.number && data.round.number > 1 ? (
+          {data?.scoreboard.round.number && data.scoreboard.round.number > 1 ? (
             <KeyboardArrowLeft
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number - 1}`);
+                navigate(`/scoreboard/${data.scoreboard.round.number - 1}`);
               }}
             />
           ) : (
@@ -127,28 +127,30 @@ export default function ScoreboardRoundPage({ theme }: props) {
               }}
               sx={{ cursor: "pointer" }}
             >
-              Round {data?.round.number}
+              Round {data?.scoreboard.round.number}
             </Typography>
           </Box>
           {latestRoundData?.latestRound.number &&
-          data?.round.number &&
-          latestRoundData.latestRound.number >= data?.round.number + 1 ? (
+          data?.scoreboard.round.number &&
+          latestRoundData.latestRound.number >=
+            data?.scoreboard.round.number + 1 ? (
             <KeyboardArrowRight
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number + 1}`);
+                navigate(`/scoreboard/${data?.scoreboard.round.number + 1}`);
               }}
             />
           ) : (
             <KeyboardArrowRight sx={{ visibility: "hidden" }} />
           )}
           {latestRoundData?.latestRound.number &&
-          data?.round.number &&
-          latestRoundData.latestRound.number >= data?.round.number + 10 ? (
+          data?.scoreboard.round.number &&
+          latestRoundData.latestRound.number >=
+            data?.scoreboard.round.number + 10 ? (
             <KeyboardDoubleArrowRight
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number + 10}`);
+                navigate(`/scoreboard/${data?.scoreboard.round.number + 10}`);
               }}
             />
           ) : (
@@ -168,7 +170,7 @@ export default function ScoreboardRoundPage({ theme }: props) {
         {data && (
           <ScoreboardWrapper
             theme={theme}
-            data={data}
+            data={data.scoreboard}
             scoreboardTheme={NormalScoreboardTheme}
             cornerLabel='Team'
           />
