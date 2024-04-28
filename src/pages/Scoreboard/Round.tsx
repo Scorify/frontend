@@ -43,6 +43,11 @@ export default function ScoreboardRoundPage({ theme }: props) {
     onError: (error) => {
       console.error(error);
     },
+    onCompleted: (data) => {
+      if (round && data && parseInt(round) === data.latestRound.number) {
+        navigate("/scoreboard");
+      }
+    },
   });
 
   useEffect(() => {
