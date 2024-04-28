@@ -54,9 +54,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
     if (
       round &&
       latestRoundData &&
-      parseInt(round) === latestRoundData.latestRound.number
+      parseInt(round) == latestRoundData.latestRound.number
     ) {
-      navigate("/scoreboard");
+      latestRoundRefetch();
     }
   }, [round, latestRoundData]);
 
