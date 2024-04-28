@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -11,11 +11,7 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { ScoreboardWrapper } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
-import {
-  ScoreboardQuery,
-  useLatestRoundQuery,
-  useScoreboardQuery,
-} from "../../graph";
+import { useLatestRoundQuery, useScoreboardQuery } from "../../graph";
 
 type params = {
   round: string;
@@ -29,18 +25,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
   const { round } = useParams<params>();
   const navigate = useNavigate();
 
-  const {
-    data: rawData,
-    error,
-    loading,
-    refetch,
-  } = useScoreboardQuery({
+  const { data, error, loading, refetch } = useScoreboardQuery({
     variables: { round: round ? parseInt(round) : undefined },
   });
-
-  const [data, setData] = useState<ScoreboardQuery["scoreboard"] | undefined>(
-    rawData?.scoreboard
-  );
 
   useEffect(() => {
     refetch();
@@ -57,29 +44,26 @@ export default function ScoreboardRoundPage({ theme }: props) {
       console.error(error);
     },
     onCompleted: (data) => {
-      if (
-        data?.latestRound.number &&
-        round !== undefined &&
-        parseInt(round) === data.latestRound.number
-      ) {
-        console.log({
-          latestRoundData: latestRoundData?.latestRound.number,
-          round,
-        });
+      if (round && data && parseInt(round) === data.latestRound.number) {
         navigate("/scoreboard");
       }
     },
   });
 
   useEffect(() => {
+    latestRoundRefetch();
+    latestRoundRefetch();
+  }, []);
+
+  useEffect(() => {
     if (
-      latestRoundData?.latestRound.number &&
-      round !== undefined &&
-      parseInt(round) === latestRoundData.latestRound.number
+      round &&
+      latestRoundData &&
+      parseInt(round) == latestRoundData.latestRound.number
     ) {
       latestRoundRefetch();
     }
-  }, [latestRoundData, round]);
+  }, [round, latestRoundData]);
 
   return (
     <Container component='main' maxWidth='xl'>
@@ -106,21 +90,22 @@ export default function ScoreboardRoundPage({ theme }: props) {
             alignItems: "center",
           }}
         >
-          {data?.round.number && data.round.number > 10 ? (
+          {data?.scoreboard.round.number &&
+          data.scoreboard.round.number > 10 ? (
             <KeyboardDoubleArrowLeft
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number - 10}`);
+                navigate(`/scoreboard/${data?.scoreboard.round.number - 10}`);
               }}
             />
           ) : (
             <KeyboardDoubleArrowLeft sx={{ visibility: "hidden" }} />
           )}
-          {data?.round.number && data.round.number > 1 ? (
+          {data?.scoreboard.round.number && data.scoreboard.round.number > 1 ? (
             <KeyboardArrowLeft
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number - 1}`);
+                navigate(`/scoreboard/${data.scoreboard.round.number - 1}`);
               }}
             />
           ) : (
@@ -135,28 +120,30 @@ export default function ScoreboardRoundPage({ theme }: props) {
               }}
               sx={{ cursor: "pointer" }}
             >
-              Round {data?.round.number}
+              Round {data?.scoreboard.round.number}
             </Typography>
           </Box>
           {latestRoundData?.latestRound.number &&
-          data?.round.number &&
-          latestRoundData.latestRound.number >= data?.round.number + 1 ? (
+          data?.scoreboard.round.number &&
+          latestRoundData.latestRound.number >=
+            data?.scoreboard.round.number + 1 ? (
             <KeyboardArrowRight
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number + 1}`);
+                navigate(`/scoreboard/${data?.scoreboard.round.number + 1}`);
               }}
             />
           ) : (
             <KeyboardArrowRight sx={{ visibility: "hidden" }} />
           )}
           {latestRoundData?.latestRound.number &&
-          data?.round.number &&
-          latestRoundData.latestRound.number >= data?.round.number + 10 ? (
+          data?.scoreboard.round.number &&
+          latestRoundData.latestRound.number >=
+            data?.scoreboard.round.number + 10 ? (
             <KeyboardDoubleArrowRight
               sx={{ cursor: "pointer" }}
               onClick={() => {
-                navigate(`/scoreboard/${data?.round.number + 10}`);
+                navigate(`/scoreboard/${data?.scoreboard.round.number + 10}`);
               }}
             />
           ) : (
@@ -176,7 +163,7 @@ export default function ScoreboardRoundPage({ theme }: props) {
         {data && (
           <ScoreboardWrapper
             theme={theme}
-            data={data}
+            data={data.scoreboard}
             scoreboardTheme={NormalScoreboardTheme}
             cornerLabel='Team'
           />
