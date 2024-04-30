@@ -187,7 +187,6 @@ export type Query = {
   checks: Array<Check>;
   config: Config;
   configs: Array<Config>;
-  latestRound: Round;
   me?: Maybe<User>;
   scoreboard: Scoreboard;
   source: Source;
@@ -291,6 +290,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   engineState: EngineState;
   globalNotification: Notification;
+  latestRound: Round;
   scoreboardUpdate: Scoreboard;
 };
 
@@ -1176,7 +1176,7 @@ export function useScoreboardUpdateSubscription(baseOptions?: Apollo.Subscriptio
 export type ScoreboardUpdateSubscriptionHookResult = ReturnType<typeof useScoreboardUpdateSubscription>;
 export type ScoreboardUpdateSubscriptionResult = Apollo.SubscriptionResult<ScoreboardUpdateSubscription>;
 export const LatestRoundDocument = gql`
-    query LatestRound {
+    subscription LatestRound {
   latestRound {
     number
   }
@@ -1184,36 +1184,26 @@ export const LatestRoundDocument = gql`
     `;
 
 /**
- * __useLatestRoundQuery__
+ * __useLatestRoundSubscription__
  *
- * To run a query within a React component, call `useLatestRoundQuery` and pass it any options that fit your needs.
- * When your component renders, `useLatestRoundQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useLatestRoundSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useLatestRoundSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLatestRoundQuery({
+ * const { data, loading, error } = useLatestRoundSubscription({
  *   variables: {
  *   },
  * });
  */
-export function useLatestRoundQuery(baseOptions?: Apollo.QueryHookOptions<LatestRoundQuery, LatestRoundQueryVariables>) {
+export function useLatestRoundSubscription(baseOptions?: Apollo.SubscriptionHookOptions<LatestRoundSubscription, LatestRoundSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LatestRoundQuery, LatestRoundQueryVariables>(LatestRoundDocument, options);
+        return Apollo.useSubscription<LatestRoundSubscription, LatestRoundSubscriptionVariables>(LatestRoundDocument, options);
       }
-export function useLatestRoundLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestRoundQuery, LatestRoundQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LatestRoundQuery, LatestRoundQueryVariables>(LatestRoundDocument, options);
-        }
-export function useLatestRoundSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LatestRoundQuery, LatestRoundQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<LatestRoundQuery, LatestRoundQueryVariables>(LatestRoundDocument, options);
-        }
-export type LatestRoundQueryHookResult = ReturnType<typeof useLatestRoundQuery>;
-export type LatestRoundLazyQueryHookResult = ReturnType<typeof useLatestRoundLazyQuery>;
-export type LatestRoundSuspenseQueryHookResult = ReturnType<typeof useLatestRoundSuspenseQuery>;
-export type LatestRoundQueryResult = Apollo.QueryResult<LatestRoundQuery, LatestRoundQueryVariables>;
+export type LatestRoundSubscriptionHookResult = ReturnType<typeof useLatestRoundSubscription>;
+export type LatestRoundSubscriptionResult = Apollo.SubscriptionResult<LatestRoundSubscription>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1368,7 +1358,7 @@ export type ScoreboardUpdateSubscriptionVariables = Exact<{ [key: string]: never
 
 export type ScoreboardUpdateSubscription = { __typename?: 'Subscription', scoreboardUpdate: { __typename?: 'Scoreboard', round: { __typename?: 'Round', number: number }, teams: Array<{ __typename?: 'User', username: string, number?: number | null }>, checks: Array<{ __typename?: 'Check', name: string }>, statuses: Array<Array<{ __typename?: 'Status', error?: string | null, status: StatusEnum, update_time: any } | null>>, scores: Array<{ __typename?: 'Score', score: number, user: { __typename?: 'User', username: string, number?: number | null } } | null> } };
 
-export type LatestRoundQueryVariables = Exact<{ [key: string]: never; }>;
+export type LatestRoundSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LatestRoundQuery = { __typename?: 'Query', latestRound: { __typename?: 'Round', number: number } };
+export type LatestRoundSubscription = { __typename?: 'Subscription', latestRound: { __typename?: 'Round', number: number } };
