@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -11,7 +11,11 @@ import { Box, CircularProgress, Container, Typography } from "@mui/material";
 
 import { ScoreboardWrapper } from "../../components";
 import { NormalScoreboardTheme } from "../../constants";
-import { useLatestRoundQuery, useScoreboardQuery } from "../../graph";
+import {
+  LatestRoundSubscription,
+  useLatestRoundSubscription,
+  useScoreboardQuery,
+} from "../../graph";
 
 type params = {
   round: string;
@@ -25,6 +29,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
   const { round } = useParams<params>();
   const navigate = useNavigate();
 
+  const [latestRound, setLatestRound] =
+    useState<LatestRoundSubscription["latestRound"]["number"]>();
+
   const { data, error, loading, refetch } = useScoreboardQuery({
     variables: { round: round ? parseInt(round) : undefined },
   });
@@ -34,36 +41,22 @@ export default function ScoreboardRoundPage({ theme }: props) {
     refetch();
   }, []);
 
-  const {
-    data: latestRoundData,
-    error: latestRoundError,
-    loading: latestRoundLoading,
-    refetch: latestRoundRefetch,
-  } = useLatestRoundQuery({
+  useLatestRoundSubscription({
     onError: (error) => {
       console.error(error);
     },
-    onCompleted: (data) => {
-      if (round && data && parseInt(round) === data.latestRound.number) {
+    onData: (data) => {
+      if (
+        data.data?.data?.latestRound.number &&
+        round &&
+        parseInt(round) === data.data?.data?.latestRound.number
+      ) {
         navigate("/scoreboard");
       }
+
+      setLatestRound(data.data?.data?.latestRound.number);
     },
   });
-
-  useEffect(() => {
-    latestRoundRefetch();
-    latestRoundRefetch();
-  }, []);
-
-  useEffect(() => {
-    if (
-      round &&
-      latestRoundData &&
-      parseInt(round) == latestRoundData.latestRound.number
-    ) {
-      latestRoundRefetch();
-    }
-  }, [round, latestRoundData]);
 
   return (
     <Container component='main' maxWidth='xl'>
@@ -123,10 +116,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
               Round {data?.scoreboard.round.number}
             </Typography>
           </Box>
-          {latestRoundData?.latestRound.number &&
+          {latestRound &&
           data?.scoreboard.round.number &&
-          latestRoundData.latestRound.number >=
-            data?.scoreboard.round.number + 1 ? (
+          latestRound >= data?.scoreboard.round.number + 1 ? (
             <KeyboardArrowRight
               sx={{ cursor: "pointer" }}
               onClick={() => {
@@ -136,10 +128,9 @@ export default function ScoreboardRoundPage({ theme }: props) {
           ) : (
             <KeyboardArrowRight sx={{ visibility: "hidden" }} />
           )}
-          {latestRoundData?.latestRound.number &&
+          {latestRound &&
           data?.scoreboard.round.number &&
-          latestRoundData.latestRound.number >=
-            data?.scoreboard.round.number + 10 ? (
+          latestRound >= data?.scoreboard.round.number + 10 ? (
             <KeyboardDoubleArrowRight
               sx={{ cursor: "pointer" }}
               onClick={() => {
@@ -152,14 +143,7 @@ export default function ScoreboardRoundPage({ theme }: props) {
         </Box>
         <Box m={2} />
         {error && <Typography variant='h6'>Error: {error.message}</Typography>}
-        {latestRoundError && (
-          <Typography variant='h6'>
-            Error: {latestRoundError.message}
-          </Typography>
-        )}
-        {loading && latestRoundLoading && !data && !latestRoundData && (
-          <CircularProgress />
-        )}
+        {loading && !data && <CircularProgress />}
         {data && (
           <ScoreboardWrapper
             theme={theme}
