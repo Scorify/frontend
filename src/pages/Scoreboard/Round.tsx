@@ -58,6 +58,14 @@ export default function ScoreboardRoundPage({ theme }: props) {
     },
   });
 
+  useEffect(() => {
+    if (latestRound && round) {
+      if (latestRound <= parseInt(round)) {
+        navigate("/scoreboard");
+      }
+    }
+  }, [latestRound, round]);
+
   return (
     <Container component='main' maxWidth='xl'>
       <Box
