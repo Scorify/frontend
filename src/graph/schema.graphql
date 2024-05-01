@@ -264,7 +264,7 @@ subscription ScoreboardUpdate {
   }
 }
 
-query LatestRound {
+subscription LatestRound {
   latestRound {
     number
   }
