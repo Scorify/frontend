@@ -11,6 +11,7 @@ import {
   Login,
   Logout,
   Password,
+  Vaccines,
 } from "@mui/icons-material";
 import {
   Box,
@@ -154,6 +155,17 @@ export default function DrawerComponent({
                   <ListItemButton>
                     <ListItemIcon>{<AdminPanelSettings />}</ListItemIcon>
                     <ListItemText primary='Admin' />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    navigate("/injects");
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<Vaccines />}</ListItemIcon>
+                    <ListItemText primary='Injects' />
                   </ListItemButton>
                 </ListItem>
                 <ListItem
