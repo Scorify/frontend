@@ -17,6 +17,7 @@ export type Scalars = {
   Float: { input: number; output: number; }
   JSON: { input: any; output: any; }
   Time: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type Check = {
@@ -60,6 +61,37 @@ export enum EngineState {
   Waiting = 'waiting'
 }
 
+export type File = {
+  __typename?: 'File';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type Inject = {
+  __typename?: 'Inject';
+  create_time: Scalars['Time']['output'];
+  end_time: Scalars['Time']['output'];
+  files: Array<File>;
+  id: Scalars['ID']['output'];
+  start_time: Scalars['Time']['output'];
+  submissions: Array<InjectSubmission>;
+  title: Scalars['String']['output'];
+  update_time: Scalars['Time']['output'];
+};
+
+export type InjectSubmission = {
+  __typename?: 'InjectSubmission';
+  create_time: Scalars['Time']['output'];
+  files: Array<File>;
+  id: Scalars['ID']['output'];
+  inject: Inject;
+  inject_id: Scalars['ID']['output'];
+  update_time: Scalars['Time']['output'];
+  user: User;
+  user_id: Scalars['ID']['output'];
+};
+
 export type LoginOutput = {
   __typename?: 'LoginOutput';
   domain: Scalars['String']['output'];
@@ -73,20 +105,32 @@ export type LoginOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addInjectFiles: Inject;
   adminBecome: LoginOutput;
   adminLogin: LoginOutput;
   changePassword: Scalars['Boolean']['output'];
   createCheck: Check;
+  createInject: Inject;
   createUser: User;
   deleteCheck: Scalars['Boolean']['output'];
+  deleteInject: Scalars['Boolean']['output'];
+  deleteInjectFile: Inject;
   deleteUser: Scalars['Boolean']['output'];
   editConfig: Config;
   login: LoginOutput;
   sendGlobalNotification: Scalars['Boolean']['output'];
   startEngine: Scalars['Boolean']['output'];
   stopEngine: Scalars['Boolean']['output'];
+  submitInject: InjectSubmission;
   updateCheck: Check;
+  updateInject: Inject;
   updateUser: User;
+};
+
+
+export type MutationAddInjectFilesArgs = {
+  files: Array<Scalars['Upload']['input']>;
+  id: Scalars['ID']['input'];
 };
 
 
@@ -115,6 +159,14 @@ export type MutationCreateCheckArgs = {
 };
 
 
+export type MutationCreateInjectArgs = {
+  end_time: Scalars['Time']['input'];
+  files: Array<Scalars['Upload']['input']>;
+  start_time: Scalars['Time']['input'];
+  title: Scalars['String']['input'];
+};
+
+
 export type MutationCreateUserArgs = {
   number?: InputMaybe<Scalars['Int']['input']>;
   password: Scalars['String']['input'];
@@ -124,6 +176,17 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationDeleteCheckArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteInjectArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteInjectFileArgs = {
+  file: Scalars['String']['input'];
   id: Scalars['ID']['input'];
 };
 
@@ -151,12 +214,26 @@ export type MutationSendGlobalNotificationArgs = {
 };
 
 
+export type MutationSubmitInjectArgs = {
+  files: Array<Scalars['Upload']['input']>;
+  injectID: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdateCheckArgs = {
   config?: InputMaybe<Scalars['JSON']['input']>;
   editable_fields?: InputMaybe<Array<Scalars['String']['input']>>;
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   weight?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type MutationUpdateInjectArgs = {
+  end_time?: InputMaybe<Scalars['Time']['input']>;
+  id: Scalars['ID']['input'];
+  start_time?: InputMaybe<Scalars['Time']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -187,6 +264,10 @@ export type Query = {
   checks: Array<Check>;
   config: Config;
   configs: Array<Config>;
+  inject: Inject;
+  injectSubmission: InjectSubmission;
+  injectSubmissions: Array<InjectSubmission>;
+  injects: Array<Inject>;
   me?: Maybe<User>;
   scoreboard: Scoreboard;
   source: Source;
@@ -202,6 +283,16 @@ export type QueryCheckArgs = {
 
 
 export type QueryConfigArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryInjectArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryInjectSubmissionArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -299,6 +390,7 @@ export type User = {
   configs: Array<Config>;
   create_time: Scalars['Time']['output'];
   id: Scalars['ID']['output'];
+  inject_submissions: Array<InjectSubmission>;
   number?: Maybe<Scalars['Int']['output']>;
   role: Role;
   score_caches: Array<ScoreCache>;
