@@ -23,6 +23,7 @@ import {
   ScoreboardRound,
   UserChecks,
   Users,
+  Injects,
 } from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
@@ -125,6 +126,10 @@ export function Router({ theme, setTheme, apolloClient }: props) {
             {
               path: "users",
               element: <LazyComponent element={<Users />} />,
+            },
+            {
+              path: "injects",
+              element: <LazyComponent element={<Injects />} />,
             },
           ],
         },

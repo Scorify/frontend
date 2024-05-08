@@ -160,7 +160,7 @@ export default function DrawerComponent({
                 <ListItem
                   disablePadding
                   onClick={() => {
-                    navigate("/injects");
+                    navigate("/admin/injects");
                   }}
                 >
                   <ListItemButton>
