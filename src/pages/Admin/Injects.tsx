@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Clear } from "@mui/icons-material";
+import { CreateInjectModal } from "../../components";
 
 export default function Injects() {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,11 @@ export default function Injects() {
 
   return (
     <Box>
+      <CreateInjectModal
+        open={open}
+        setOpen={setOpen}
+        handleRefetch={() => {}}
+      />
       <Container component='main' maxWidth='md'>
         <Box
           sx={{
