@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { CloudUpload, Close } from "@mui/icons-material";
+import { Close, CloudUpload } from "@mui/icons-material";
 import {
   Box,
   Button,
   FormControl,
+  IconButton,
   Modal,
   Paper,
   TextField,
   Typography,
-  IconButton,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
+import { enqueueSnackbar } from "notistack";
+
+import { useCreateInjectMutation } from "../../../graph";
 
 type props = {
   open: boolean;
@@ -27,6 +30,17 @@ export default function CreateCheckModal({
   setOpen,
   handleRefetch,
 }: props) {
+  const [createInjectMutation] = useCreateInjectMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Inject created successfully", { variant: "success" });
+      setOpen(false);
+      handleRefetch();
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
   const [name, setName] = useState<string>("");
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
@@ -51,6 +65,22 @@ export default function CreateCheckModal({
       } else {
         return null;
       }
+    });
+  };
+
+  const handleCreateInject = () => {
+    if (name === "" || !startTime || !endTime || !files) {
+      enqueueSnackbar("Please fill out all fields", { variant: "error" });
+      return;
+    }
+
+    createInjectMutation({
+      variables: {
+        title: name,
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        files,
+      },
     });
   };
 
@@ -195,10 +225,7 @@ export default function CreateCheckModal({
             variant='contained'
             sx={{ marginTop: "24px" }}
             disabled={name === ""}
-            onClick={() => {
-              console.log({ name, startTime, endTime, files });
-              handleRefetch();
-            }}
+            onClick={handleCreateInject}
           >
             Create Inject
           </Button>
