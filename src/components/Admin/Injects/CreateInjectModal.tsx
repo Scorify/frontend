@@ -44,6 +44,16 @@ export default function CreateCheckModal({
     },
   });
 
+  const removeFile = (index: number) => {
+    setFiles((prev) => {
+      if (prev) {
+        return prev.filter((_, i) => i !== index);
+      } else {
+        return null;
+      }
+    });
+  };
+
   return (
     <Modal
       open={open}
@@ -145,21 +155,27 @@ export default function CreateCheckModal({
               </Paper>
               {files && files.length > 0 && (
                 <Box sx={{ display: "flex", flexWrap: "wrap", mt: "8px" }}>
-                  {files.map((file) => (
+                  {files.map((file, i) => (
                     <Paper
                       key={file.name}
                       sx={{
-                        padding: "8px 12px",
+                        padding: "0px 12px",
                         borderRadius: "16px",
-                        margin: "4px",
+                        margin: "2px",
                         display: "flex",
                         alignItems: "center",
                       }}
                     >
-                      <Typography variant='body2'>{file.name}</Typography>
+                      <Typography variant='body2'>
+                        {file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name}
+                      </Typography>
                       <IconButton
                         sx={{ ml: "auto" }}
-                        onClick={() => console.log(file)}
+                        onClick={() => removeFile(i)}
                       >
                         <Close />
                       </IconButton>
