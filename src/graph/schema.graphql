@@ -269,3 +269,19 @@ subscription LatestRound {
     number
   }
 }
+
+mutation CreateInject(
+  $title: String!
+  $start_time: Time!
+  $end_time: Time!
+  $files: [Upload!]!
+) {
+  createInject(
+    title: $title
+    start_time: $start_time
+    end_time: $end_time
+    files: $files
+  ) {
+    id
+  }
+}
