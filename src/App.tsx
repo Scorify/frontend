@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import {
   ApolloClient,
   ApolloProvider,
-  HttpLink,
   InMemoryCache,
   split,
 } from "@apollo/client";
@@ -12,6 +11,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
+import { createUploadLink } from "apollo-upload-client";
 import { createClient } from "graphql-ws";
 import { SnackbarProvider } from "notistack";
 
@@ -53,7 +53,7 @@ export default function App() {
     })
   );
 
-  const httpLink = new HttpLink({
+  const httpLink = createUploadLink({
     uri: gql_endpoint,
     credentials: "include",
   });

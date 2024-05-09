@@ -5,6 +5,8 @@ import ConfigField from "./Admin/Checks/ConfigField";
 import CreateCheckModal from "./Admin/Checks/CreateCheckModal";
 import DeleteCheckModal from "./Admin/Checks/DeleteCheckModal";
 import EditCheck from "./Admin/Checks/EditCheck";
+import CreateInjectModal from "./Admin/Injects/CreateInjectModal";
+import DeleteInjectModal from "./Admin/Injects/DeleteInjectModal";
 import CreateUserModal from "./Admin/Users/CreateUserModal";
 import DeleteUserModal from "./Admin/Users/DeleteUserModal";
 import EditUser from "./Admin/Users/EditUser";
@@ -28,8 +30,10 @@ export {
   ConfigureCheck,
   ConfirmModal,
   CreateCheckModal,
+  CreateInjectModal,
   CreateUserModal,
   DeleteCheckModal,
+  DeleteInjectModal,
   DeleteUserModal,
   DrawerComponent as Drawer,
   EditCheck,
