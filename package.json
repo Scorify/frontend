@@ -17,6 +17,8 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.4",
     "@mui/x-date-pickers": "^7.3.2",
+    "@types/apollo-upload-client": "^17.0.4",
+    "apollo-upload-client": "^17.0.0",
     "dayjs": "^1.11.11",
     "graphql": "^16.8.1",
     "graphql-ws": "^5.14.3",
