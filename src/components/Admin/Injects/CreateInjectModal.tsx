@@ -165,6 +165,9 @@ export default function CreateCheckModal({
                         display: "flex",
                         alignItems: "center",
                       }}
+                      onClick={() =>
+                        window.open(URL.createObjectURL(file), "_blank")
+                      }
                     >
                       <Typography variant='body2'>
                         {file.name.length > 25
@@ -175,7 +178,10 @@ export default function CreateCheckModal({
                       </Typography>
                       <IconButton
                         sx={{ ml: "auto" }}
-                        onClick={() => removeFile(i)}
+                        onClick={(e) => {
+                          removeFile(i);
+                          e.stopPropagation();
+                        }}
                       >
                         <Close />
                       </IconButton>
