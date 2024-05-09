@@ -1296,6 +1296,47 @@ export function useLatestRoundSubscription(baseOptions?: Apollo.SubscriptionHook
       }
 export type LatestRoundSubscriptionHookResult = ReturnType<typeof useLatestRoundSubscription>;
 export type LatestRoundSubscriptionResult = Apollo.SubscriptionResult<LatestRoundSubscription>;
+export const CreateInjectDocument = gql`
+    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!) {
+  createInject(
+    title: $title
+    start_time: $start_time
+    end_time: $end_time
+    files: $files
+  ) {
+    id
+  }
+}
+    `;
+export type CreateInjectMutationFn = Apollo.MutationFunction<CreateInjectMutation, CreateInjectMutationVariables>;
+
+/**
+ * __useCreateInjectMutation__
+ *
+ * To run a mutation, you first call `useCreateInjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInjectMutation, { data, loading, error }] = useCreateInjectMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      start_time: // value for 'start_time'
+ *      end_time: // value for 'end_time'
+ *      files: // value for 'files'
+ *   },
+ * });
+ */
+export function useCreateInjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateInjectMutation, CreateInjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateInjectMutation, CreateInjectMutationVariables>(CreateInjectDocument, options);
+      }
+export type CreateInjectMutationHookResult = ReturnType<typeof useCreateInjectMutation>;
+export type CreateInjectMutationResult = Apollo.MutationResult<CreateInjectMutation>;
+export type CreateInjectMutationOptions = Apollo.BaseMutationOptions<CreateInjectMutation, CreateInjectMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1454,3 +1495,13 @@ export type LatestRoundSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LatestRoundSubscription = { __typename?: 'Subscription', latestRound: { __typename?: 'Round', number: number } };
+
+export type CreateInjectMutationVariables = Exact<{
+  title: Scalars['String']['input'];
+  start_time: Scalars['Time']['input'];
+  end_time: Scalars['Time']['input'];
+  files: Array<Scalars['Upload']['input']> | Scalars['Upload']['input'];
+}>;
+
+
+export type CreateInjectMutation = { __typename?: 'Mutation', createInject: { __typename?: 'Inject', id: string } };
