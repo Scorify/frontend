@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { CloudUpload } from "@mui/icons-material";
+import { CloudUpload, Close } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,6 +10,7 @@ import {
   Paper,
   TextField,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -33,8 +34,13 @@ export default function CreateCheckModal({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
-      console.log(acceptedFiles);
-      setFiles(acceptedFiles);
+      setFiles((prev) => {
+        if (prev) {
+          return prev.concat(acceptedFiles);
+        } else {
+          return acceptedFiles;
+        }
+      });
     },
   });
 
@@ -109,7 +115,7 @@ export default function CreateCheckModal({
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  minHeight: "100px",
+                  minHeight: "75px",
                   padding: "12px",
                   borderRadius: "8px",
                   border: "4px dashed #ccc",
@@ -137,6 +143,30 @@ export default function CreateCheckModal({
                   </>
                 )}
               </Paper>
+              {files && files.length > 0 && (
+                <Box sx={{ display: "flex", flexWrap: "wrap", mt: "8px" }}>
+                  {files.map((file) => (
+                    <Paper
+                      key={file.name}
+                      sx={{
+                        padding: "8px 12px",
+                        borderRadius: "16px",
+                        margin: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography variant='body2'>{file.name}</Typography>
+                      <IconButton
+                        sx={{ ml: "auto" }}
+                        onClick={() => console.log(file)}
+                      >
+                        <Close />
+                      </IconButton>
+                    </Paper>
+                  ))}
+                </Box>
+              )}
             </Box>
           </LocalizationProvider>
           <Button
