@@ -86,6 +86,7 @@ export default function CreateCheckModal({
 
   return (
     <Modal
+      {...getRootProps()}
       open={open}
       onClose={() => {
         setOpen(false);
@@ -150,7 +151,6 @@ export default function CreateCheckModal({
                 }}
               />
               <Paper
-                {...getRootProps()}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -194,6 +194,7 @@ export default function CreateCheckModal({
                         margin: "2px",
                         display: "flex",
                         alignItems: "center",
+                        cursor: "pointer",
                       }}
                       onClick={() =>
                         window.open(URL.createObjectURL(file), "_blank")
