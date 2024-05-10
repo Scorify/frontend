@@ -292,8 +292,6 @@ query Injects {
     title
     start_time
     end_time
-    create_time
-    update_time
     files {
       id
       name
