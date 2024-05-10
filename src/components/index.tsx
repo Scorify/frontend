@@ -7,6 +7,7 @@ import DeleteCheckModal from "./Admin/Checks/DeleteCheckModal";
 import EditCheck from "./Admin/Checks/EditCheck";
 import CreateInjectModal from "./Admin/Injects/CreateInjectModal";
 import DeleteInjectModal from "./Admin/Injects/DeleteInjectModal";
+import EditInject from "./Admin/Injects/EditInject";
 import CreateUserModal from "./Admin/Users/CreateUserModal";
 import DeleteUserModal from "./Admin/Users/DeleteUserModal";
 import EditUser from "./Admin/Users/EditUser";
@@ -37,6 +38,7 @@ export {
   DeleteUserModal,
   DrawerComponent as Drawer,
   EditCheck,
+  EditInject,
   EditUser,
   EngineState,
   Error,

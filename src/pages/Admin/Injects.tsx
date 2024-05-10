@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { Clear } from "@mui/icons-material";
 import {
   Box,
-  Container,
-  Typography,
   Button,
-  TextField,
-  InputAdornment,
+  CircularProgress,
+  Container,
   IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Clear } from "@mui/icons-material";
-import { CreateInjectModal } from "../../components";
+
+import { CreateInjectModal, EditInject } from "../../components";
+import { useInjectsQuery } from "../../graph";
 
 export default function Injects() {
+  const { data, loading, error, refetch } = useInjectsQuery();
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -77,6 +81,34 @@ export default function Injects() {
               }}
             />
           </Box>
+          {loading && <CircularProgress />}
+          {error && (
+            <>
+              <Typography component='h1' variant='h4'>
+                Encountered Error
+              </Typography>
+              <Typography component='h1' variant='body1'>
+                {error.message}
+              </Typography>
+            </>
+          )}
+          {data &&
+            (!data.injects.length ? (
+              <Typography component='h1' variant='h5'>
+                No Injects Found
+              </Typography>
+            ) : (
+              data.injects.map((inject) => (
+                <EditInject
+                  key={inject.id}
+                  inject={inject}
+                  handleRefetch={refetch}
+                  visible={inject.title
+                    .toLowerCase()
+                    .includes(search.toLowerCase())}
+                />
+              ))
+            ))}
         </Box>
       </Container>
     </Box>
