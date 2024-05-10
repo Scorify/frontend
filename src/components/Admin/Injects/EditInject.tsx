@@ -62,11 +62,12 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                 {expanded ? (
                   <TextField
                     label='Name'
-                    value={name}
+                    value={title}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                     onChange={(e) => {
+                      console.log(e.target.value);
                       setTitle(e.target.value);
                     }}
                     sx={{ marginRight: "24px" }}
