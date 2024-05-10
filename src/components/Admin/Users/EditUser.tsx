@@ -208,7 +208,7 @@ export default function EditCheck({
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                {me?.me.username !== user.username && (
+                {me?.me?.username !== user.username && (
                   <>
                     <Slide
                       in={expanded}
