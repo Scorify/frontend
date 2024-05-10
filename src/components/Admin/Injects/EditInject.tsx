@@ -15,7 +15,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
+import dayjs, { Dayjs } from "dayjs";
 import { DeleteInjectModal } from "../..";
 import { InjectsQuery } from "../../../graph";
 
@@ -28,6 +31,20 @@ type props = {
 export default function EditInject({ inject, handleRefetch, visible }: props) {
   const [expanded, setExpanded] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const [startTime, setStartTime] = useState<Dayjs | null>(
+    dayjs(inject.start_time)
+  );
+  const startTimeChanged = useMemo(
+    () => startTime?.toISOString() != dayjs(inject.start_time).toISOString(),
+    [startTime, inject.start_time]
+  );
+
+  const [endTime, setEndTime] = useState<Dayjs | null>(dayjs(inject.end_time));
+  const endTimeChanged = useMemo(
+    () => endTime?.toISOString() != dayjs(inject.end_time).toISOString(),
+    [endTime, inject.end_time]
+  );
 
   const [title, setTitle] = useState<string>(inject.title);
   const titleChanged = useMemo(
@@ -106,7 +123,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </Button>
                 </Slide>
                 <Slide
-                  in={titleChanged}
+                  in={titleChanged || startTimeChanged || endTimeChanged}
                   timeout={300}
                   style={{
                     transformOrigin: "right",
@@ -139,15 +156,33 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
 
           <Collapse in={expanded} timeout={300}>
             <CardContent>
-              <Typography variant='body1' component='div'>
-                Start Time: {inject.start_time}
-              </Typography>
-              <Typography variant='body1' component='div'>
-                End Time: {inject.end_time}
-              </Typography>
-              <Typography variant='body1' component='div'>
-                Files: {JSON.stringify(inject.files)}
-              </Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "16px",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  }}
+                >
+                  <DateTimePicker
+                    sx={{ marginTop: "24px" }}
+                    label='Start Time'
+                    value={startTime}
+                    onChange={(date) => {
+                      setStartTime(date);
+                    }}
+                  />
+                  <DateTimePicker
+                    sx={{ marginTop: "24px" }}
+                    label='End Time'
+                    value={endTime}
+                    onChange={(date) => {
+                      setEndTime(date);
+                    }}
+                  />
+                </Box>
+              </LocalizationProvider>
             </CardContent>
           </Collapse>
         </Card>
