@@ -1337,6 +1337,55 @@ export function useCreateInjectMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateInjectMutationHookResult = ReturnType<typeof useCreateInjectMutation>;
 export type CreateInjectMutationResult = Apollo.MutationResult<CreateInjectMutation>;
 export type CreateInjectMutationOptions = Apollo.BaseMutationOptions<CreateInjectMutation, CreateInjectMutationVariables>;
+export const InjectsDocument = gql`
+    query Injects {
+  injects {
+    id
+    title
+    start_time
+    end_time
+    create_time
+    update_time
+    files {
+      id
+      name
+      url
+    }
+  }
+}
+    `;
+
+/**
+ * __useInjectsQuery__
+ *
+ * To run a query within a React component, call `useInjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInjectsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInjectsQuery(baseOptions?: Apollo.QueryHookOptions<InjectsQuery, InjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InjectsQuery, InjectsQueryVariables>(InjectsDocument, options);
+      }
+export function useInjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InjectsQuery, InjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InjectsQuery, InjectsQueryVariables>(InjectsDocument, options);
+        }
+export function useInjectsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<InjectsQuery, InjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<InjectsQuery, InjectsQueryVariables>(InjectsDocument, options);
+        }
+export type InjectsQueryHookResult = ReturnType<typeof useInjectsQuery>;
+export type InjectsLazyQueryHookResult = ReturnType<typeof useInjectsLazyQuery>;
+export type InjectsSuspenseQueryHookResult = ReturnType<typeof useInjectsSuspenseQuery>;
+export type InjectsQueryResult = Apollo.QueryResult<InjectsQuery, InjectsQueryVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1505,3 +1554,8 @@ export type CreateInjectMutationVariables = Exact<{
 
 
 export type CreateInjectMutation = { __typename?: 'Mutation', createInject: { __typename?: 'Inject', id: string } };
+
+export type InjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, create_time: any, update_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }> }> };

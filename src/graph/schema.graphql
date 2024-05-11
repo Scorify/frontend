@@ -285,3 +285,17 @@ mutation CreateInject(
     id
   }
 }
+
+query Injects {
+  injects {
+    id
+    title
+    start_time
+    end_time
+    files {
+      id
+      name
+      url
+    }
+  }
+}
