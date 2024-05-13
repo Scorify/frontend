@@ -105,7 +105,6 @@ export type LoginOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addInjectFiles: Inject;
   adminBecome: LoginOutput;
   adminLogin: LoginOutput;
   changePassword: Scalars['Boolean']['output'];
@@ -114,7 +113,6 @@ export type Mutation = {
   createUser: User;
   deleteCheck: Scalars['Boolean']['output'];
   deleteInject: Scalars['Boolean']['output'];
-  deleteInjectFile: Inject;
   deleteUser: Scalars['Boolean']['output'];
   editConfig: Config;
   login: LoginOutput;
@@ -125,12 +123,6 @@ export type Mutation = {
   updateCheck: Check;
   updateInject: Inject;
   updateUser: User;
-};
-
-
-export type MutationAddInjectFilesArgs = {
-  files: Array<Scalars['Upload']['input']>;
-  id: Scalars['ID']['input'];
 };
 
 
@@ -185,12 +177,6 @@ export type MutationDeleteInjectArgs = {
 };
 
 
-export type MutationDeleteInjectFileArgs = {
-  file: Scalars['String']['input'];
-  id: Scalars['ID']['input'];
-};
-
-
 export type MutationDeleteUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -230,6 +216,8 @@ export type MutationUpdateCheckArgs = {
 
 
 export type MutationUpdateInjectArgs = {
+  add_files?: InputMaybe<Array<Scalars['Upload']['input']>>;
+  delete_files?: InputMaybe<Array<Scalars['ID']['input']>>;
   end_time?: InputMaybe<Scalars['Time']['input']>;
   id: Scalars['ID']['input'];
   start_time?: InputMaybe<Scalars['Time']['input']>;
@@ -1344,8 +1332,6 @@ export const InjectsDocument = gql`
     title
     start_time
     end_time
-    create_time
-    update_time
     files {
       id
       name
@@ -1558,4 +1544,4 @@ export type CreateInjectMutation = { __typename?: 'Mutation', createInject: { __
 export type InjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, create_time: any, update_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }> }> };
+export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }> }> };
