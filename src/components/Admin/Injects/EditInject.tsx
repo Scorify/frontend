@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, CloudUpload } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -15,6 +16,7 @@ import {
   Slide,
   TextField,
   Typography,
+  Paper,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,6 +24,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { DeleteInjectModal } from "../..";
 import { InjectsQuery } from "../../../graph";
+import { enqueueSnackbar } from "notistack";
 
 type props = {
   inject: InjectsQuery["injects"][0];
@@ -59,6 +62,22 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     () => deleteFiles.length > 0 || newFiles.length > 0,
     [deleteFiles, newFiles]
   );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setNewFiles((prev) => {
+        if (prev) {
+          return prev.concat(acceptedFiles);
+        } else {
+          return acceptedFiles;
+        }
+      });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
+    },
+  });
 
   const handleSave = () => {
     handleRefetch();
@@ -167,7 +186,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
           {expanded && <Divider sx={{ margin: "0px 20%" }} />}
 
           <Collapse in={expanded} timeout={300}>
-            <CardContent>
+            <CardContent {...getRootProps()}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Box
                   sx={{
@@ -195,6 +214,35 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   />
                 </Box>
               </LocalizationProvider>
+              <Paper
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "75px",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  border: "4px dashed #ccc",
+                  cursor: "pointer",
+                  marginTop: "24px",
+                }}
+              >
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                  <Typography variant='h5'>Drop files here...</Typography>
+                ) : (
+                  <>
+                    <CloudUpload
+                      sx={{
+                        fontSize: "36px",
+                        color: "#ccc",
+                        marginRight: "8px",
+                      }}
+                    />
+                    <Typography variant='h6'>Add Files</Typography>
+                  </>
+                )}
+              </Paper>
               {(newFiles.length > 0 ||
                 (inject.files && inject.files.length > 0)) && (
                 <Box
@@ -226,6 +274,24 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                           return;
                         }
                         setDeleteFiles((prev) => [...prev, file.id]);
+                      }}
+                    />
+                  ))}
+                  {newFiles.map((file, i) => (
+                    <Chip
+                      key={`${file.name}-${i}`}
+                      label={
+                        file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name
+                      }
+                      color='success'
+                      onDelete={() => {
+                        setNewFiles((prev) =>
+                          prev.filter((_, index) => i != index)
+                        );
                       }}
                     />
                   ))}
