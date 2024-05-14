@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Collapse,
   Divider,
   Grow,
@@ -52,6 +53,13 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     [title, inject.title]
   );
 
+  const [deleteFiles, setDeleteFiles] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const filesChanged = useMemo(
+    () => deleteFiles.length > 0 || newFiles.length > 0,
+    [deleteFiles, newFiles]
+  );
+
   const handleSave = () => {
     handleRefetch();
   };
@@ -84,7 +92,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                       e.stopPropagation();
                     }}
                     onChange={(e) => {
-                      console.log(e.target.value);
                       setTitle(e.target.value);
                     }}
                     sx={{ marginRight: "24px" }}
@@ -123,7 +130,12 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </Button>
                 </Slide>
                 <Slide
-                  in={titleChanged || startTimeChanged || endTimeChanged}
+                  in={
+                    titleChanged ||
+                    startTimeChanged ||
+                    endTimeChanged ||
+                    filesChanged
+                  }
                   timeout={300}
                   style={{
                     transformOrigin: "right",
@@ -183,6 +195,42 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   />
                 </Box>
               </LocalizationProvider>
+              {(newFiles.length > 0 ||
+                (inject.files && inject.files.length > 0)) && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    mt: "8px",
+                    gap: "8px",
+                  }}
+                >
+                  {inject.files.map((file) => (
+                    <Chip
+                      key={file.id}
+                      label={
+                        file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name
+                      }
+                      color={
+                        deleteFiles.includes(file.id) ? "error" : "default"
+                      }
+                      onDelete={() => {
+                        if (deleteFiles.includes(file.id)) {
+                          setDeleteFiles((prev) =>
+                            prev.filter((id) => id != file.id)
+                          );
+                          return;
+                        }
+                        setDeleteFiles((prev) => [...prev, file.id]);
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
             </CardContent>
           </Collapse>
         </Card>
