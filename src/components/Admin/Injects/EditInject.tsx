@@ -266,6 +266,12 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                       color={
                         deleteFiles.includes(file.id) ? "error" : "default"
                       }
+                      onClick={() =>
+                        window.open(
+                          "http://localhost:8080" + file.url,
+                          "_blank"
+                        )
+                      }
                       onDelete={() => {
                         if (deleteFiles.includes(file.id)) {
                           setDeleteFiles((prev) =>
@@ -286,6 +292,9 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                               file.name.length - 10
                             )}`
                           : file.name
+                      }
+                      onClick={() =>
+                        window.open(URL.createObjectURL(file), "_blank")
                       }
                       color='success'
                       onDelete={() => {
