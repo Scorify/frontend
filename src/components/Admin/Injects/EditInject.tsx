@@ -23,7 +23,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { DeleteInjectModal } from "../..";
-import { InjectsQuery, useUpdateInjectMutation } from "../../../graph";
+import {
+  InjectsQuery,
+  useUpdateInjectMutation,
+  useDeleteInjectMutation,
+} from "../../../graph";
 import { enqueueSnackbar } from "notistack";
 
 type props = {
@@ -66,6 +70,17 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   const [updateInjectMutation] = useUpdateInjectMutation({
     onCompleted: () => {
       enqueueSnackbar("Inject updated successfully", { variant: "success" });
+      handleRefetch();
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
+  const [deleteInjectMutation] = useDeleteInjectMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Inject deleted successfully", { variant: "success" });
+      handleRefetch();
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -110,10 +125,15 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     });
     setDeleteFiles([]);
     setNewFiles([]);
-    handleRefetch();
   };
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    deleteInjectMutation({
+      variables: {
+        id: inject.id,
+      },
+    });
+  };
   return (
     <>
       <DeleteInjectModal
@@ -162,9 +182,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                 <Slide
                   in={expanded}
                   timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
                   direction='left'
                   unmountOnExit
                   mountOnEnter
@@ -187,9 +204,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                     filesChanged
                   }
                   timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
                   direction='left'
                   unmountOnExit
                   mountOnEnter
@@ -214,7 +228,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
               setExpanded((prev) => !prev);
             }}
           />
-          {expanded && <Divider sx={{ margin: "0px 20%" }} />}
+          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
 
           <Collapse in={expanded} timeout={300}>
             <CardContent {...getRootProps()}>

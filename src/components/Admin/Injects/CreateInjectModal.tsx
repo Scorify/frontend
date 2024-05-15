@@ -86,7 +86,6 @@ export default function CreateCheckModal({
 
   return (
     <Modal
-      {...getRootProps()}
       open={open}
       onClose={() => {
         setOpen(false);
@@ -151,6 +150,7 @@ export default function CreateCheckModal({
                 }}
               />
               <Paper
+                {...getRootProps()}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -225,7 +225,7 @@ export default function CreateCheckModal({
           <Button
             variant='contained'
             sx={{ marginTop: "24px" }}
-            disabled={name === ""}
+            disabled={name === "" || !startTime || !endTime}
             onClick={handleCreateInject}
           >
             Create Inject
