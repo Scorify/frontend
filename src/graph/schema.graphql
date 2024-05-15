@@ -319,3 +319,7 @@ mutation UpdateInject(
     id
   }
 }
+
+mutation DeleteInject($id: ID!) {
+  deleteInject(id: $id)
+}
