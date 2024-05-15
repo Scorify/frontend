@@ -1372,6 +1372,51 @@ export type InjectsQueryHookResult = ReturnType<typeof useInjectsQuery>;
 export type InjectsLazyQueryHookResult = ReturnType<typeof useInjectsLazyQuery>;
 export type InjectsSuspenseQueryHookResult = ReturnType<typeof useInjectsSuspenseQuery>;
 export type InjectsQueryResult = Apollo.QueryResult<InjectsQuery, InjectsQueryVariables>;
+export const UpdateInjectDocument = gql`
+    mutation UpdateInject($id: ID!, $title: String, $start_time: Time, $end_time: Time, $delete_files: [ID!], $add_files: [Upload!]) {
+  updateInject(
+    id: $id
+    title: $title
+    start_time: $start_time
+    end_time: $end_time
+    delete_files: $delete_files
+    add_files: $add_files
+  ) {
+    id
+  }
+}
+    `;
+export type UpdateInjectMutationFn = Apollo.MutationFunction<UpdateInjectMutation, UpdateInjectMutationVariables>;
+
+/**
+ * __useUpdateInjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateInjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInjectMutation, { data, loading, error }] = useUpdateInjectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      start_time: // value for 'start_time'
+ *      end_time: // value for 'end_time'
+ *      delete_files: // value for 'delete_files'
+ *      add_files: // value for 'add_files'
+ *   },
+ * });
+ */
+export function useUpdateInjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateInjectMutation, UpdateInjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateInjectMutation, UpdateInjectMutationVariables>(UpdateInjectDocument, options);
+      }
+export type UpdateInjectMutationHookResult = ReturnType<typeof useUpdateInjectMutation>;
+export type UpdateInjectMutationResult = Apollo.MutationResult<UpdateInjectMutation>;
+export type UpdateInjectMutationOptions = Apollo.BaseMutationOptions<UpdateInjectMutation, UpdateInjectMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1545,3 +1590,15 @@ export type InjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }> }> };
+
+export type UpdateInjectMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+  start_time?: InputMaybe<Scalars['Time']['input']>;
+  end_time?: InputMaybe<Scalars['Time']['input']>;
+  delete_files?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
+  add_files?: InputMaybe<Array<Scalars['Upload']['input']> | Scalars['Upload']['input']>;
+}>;
+
+
+export type UpdateInjectMutation = { __typename?: 'Mutation', updateInject: { __typename?: 'Inject', id: string } };
