@@ -112,7 +112,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     ) {
       return;
     }
-    console.log({ newFiles, deleteFiles });
     updateInjectMutation({
       variables: {
         id: inject.id,
@@ -231,7 +230,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
           {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
 
           <Collapse in={expanded} timeout={300}>
-            <CardContent {...getRootProps()}>
+            <CardContent>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Box
                   sx={{
@@ -260,17 +259,18 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                 </Box>
               </LocalizationProvider>
               <Paper
+                {...getRootProps()}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   minHeight: "75px",
-                  padding: "12px",
                   borderRadius: "8px",
                   border: "4px dashed #ccc",
                   cursor: "pointer",
-                  marginTop: "24px",
+                  margin: "24px 12px 16px 12px",
                 }}
+                elevation={4}
               >
                 <input {...getInputProps()} />
                 {isDragActive ? (
