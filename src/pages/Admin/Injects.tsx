@@ -25,12 +25,16 @@ export default function Injects() {
   const urlSearchParams = new URLSearchParams(location.search);
   const [search, setSearch] = useState(urlSearchParams.get("q") || "");
 
+  const handleRefetch = () => {
+    refetch();
+  };
+
   return (
     <Box>
       <CreateInjectModal
         open={open}
         setOpen={setOpen}
-        handleRefetch={() => {}}
+        handleRefetch={handleRefetch}
       />
       <Container component='main' maxWidth='md'>
         <Box
@@ -102,7 +106,7 @@ export default function Injects() {
                 <EditInject
                   key={inject.id}
                   inject={inject}
-                  handleRefetch={refetch}
+                  handleRefetch={handleRefetch}
                   visible={inject.title
                     .toLowerCase()
                     .includes(search.toLowerCase())}

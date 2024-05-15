@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, CloudUpload } from "@mui/icons-material";
 import {
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Collapse,
   Divider,
   Grow,
@@ -14,13 +16,19 @@ import {
   Slide,
   TextField,
   Typography,
+  Paper,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { DeleteInjectModal } from "../..";
-import { InjectsQuery } from "../../../graph";
+import {
+  InjectsQuery,
+  useUpdateInjectMutation,
+  useDeleteInjectMutation,
+} from "../../../graph";
+import { enqueueSnackbar } from "notistack";
 
 type props = {
   inject: InjectsQuery["injects"][0];
@@ -52,10 +60,79 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     [title, inject.title]
   );
 
+  const [deleteFiles, setDeleteFiles] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const filesChanged = useMemo(
+    () => deleteFiles.length > 0 || newFiles.length > 0,
+    [deleteFiles, newFiles]
+  );
+
+  const [updateInjectMutation] = useUpdateInjectMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Inject updated successfully", { variant: "success" });
+      handleRefetch();
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
+  const [deleteInjectMutation] = useDeleteInjectMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Inject deleted successfully", { variant: "success" });
+      handleRefetch();
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setNewFiles((prev) => {
+        if (prev) {
+          return prev.concat(acceptedFiles);
+        } else {
+          return acceptedFiles;
+        }
+      });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
+    },
+  });
+
   const handleSave = () => {
-    handleRefetch();
+    if (
+      !titleChanged &&
+      !startTimeChanged &&
+      !endTimeChanged &&
+      !filesChanged
+    ) {
+      return;
+    }
+    updateInjectMutation({
+      variables: {
+        id: inject.id,
+        title: titleChanged ? title : undefined,
+        start_time: startTimeChanged ? startTime?.toISOString() : undefined,
+        end_time: endTimeChanged ? endTime?.toISOString() : undefined,
+        add_files: newFiles.length > 0 ? newFiles : undefined,
+        delete_files: deleteFiles.length > 0 ? deleteFiles : undefined,
+      },
+    });
+    setDeleteFiles([]);
+    setNewFiles([]);
   };
-  const handleDelete = () => {};
+
+  const handleDelete = () => {
+    deleteInjectMutation({
+      variables: {
+        id: inject.id,
+      },
+    });
+  };
   return (
     <>
       <DeleteInjectModal
@@ -84,7 +161,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                       e.stopPropagation();
                     }}
                     onChange={(e) => {
-                      console.log(e.target.value);
                       setTitle(e.target.value);
                     }}
                     sx={{ marginRight: "24px" }}
@@ -105,9 +181,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                 <Slide
                   in={expanded}
                   timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
                   direction='left'
                   unmountOnExit
                   mountOnEnter
@@ -123,11 +196,13 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </Button>
                 </Slide>
                 <Slide
-                  in={titleChanged || startTimeChanged || endTimeChanged}
+                  in={
+                    titleChanged ||
+                    startTimeChanged ||
+                    endTimeChanged ||
+                    filesChanged
+                  }
                   timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
                   direction='left'
                   unmountOnExit
                   mountOnEnter
@@ -152,7 +227,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
               setExpanded((prev) => !prev);
             }}
           />
-          {expanded && <Divider sx={{ margin: "0px 20%" }} />}
+          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
 
           <Collapse in={expanded} timeout={300}>
             <CardContent>
@@ -183,6 +258,99 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   />
                 </Box>
               </LocalizationProvider>
+              <Paper
+                {...getRootProps()}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "75px",
+                  borderRadius: "8px",
+                  border: "4px dashed #ccc",
+                  cursor: "pointer",
+                  margin: "24px 12px 16px 12px",
+                }}
+                elevation={4}
+              >
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                  <Typography variant='h5'>Drop files here...</Typography>
+                ) : (
+                  <>
+                    <CloudUpload
+                      sx={{
+                        fontSize: "36px",
+                        color: "#ccc",
+                        marginRight: "8px",
+                      }}
+                    />
+                    <Typography variant='h6'>Add Files</Typography>
+                  </>
+                )}
+              </Paper>
+              {(newFiles.length > 0 ||
+                (inject.files && inject.files.length > 0)) && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    mt: "8px",
+                    gap: "8px",
+                  }}
+                >
+                  {inject.files.map((file) => (
+                    <Chip
+                      key={file.id}
+                      label={
+                        file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name
+                      }
+                      color={
+                        deleteFiles.includes(file.id) ? "error" : "default"
+                      }
+                      onClick={() =>
+                        window.open(
+                          "http://localhost:8080" + file.url,
+                          "_blank"
+                        )
+                      }
+                      onDelete={() => {
+                        if (deleteFiles.includes(file.id)) {
+                          setDeleteFiles((prev) =>
+                            prev.filter((id) => id != file.id)
+                          );
+                          return;
+                        }
+                        setDeleteFiles((prev) => [...prev, file.id]);
+                      }}
+                    />
+                  ))}
+                  {newFiles.map((file, i) => (
+                    <Chip
+                      key={`${file.name}-${i}`}
+                      label={
+                        file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name
+                      }
+                      onClick={() =>
+                        window.open(URL.createObjectURL(file), "_blank")
+                      }
+                      color='success'
+                      onDelete={() => {
+                        setNewFiles((prev) =>
+                          prev.filter((_, index) => i != index)
+                        );
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
             </CardContent>
           </Collapse>
         </Card>

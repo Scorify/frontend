@@ -299,3 +299,27 @@ query Injects {
     }
   }
 }
+
+mutation UpdateInject(
+  $id: ID!
+  $title: String
+  $start_time: Time
+  $end_time: Time
+  $delete_files: [ID!]
+  $add_files: [Upload!]
+) {
+  updateInject(
+    id: $id
+    title: $title
+    start_time: $start_time
+    end_time: $end_time
+    delete_files: $delete_files
+    add_files: $add_files
+  ) {
+    id
+  }
+}
+
+mutation DeleteInject($id: ID!) {
+  deleteInject(id: $id)
+}
