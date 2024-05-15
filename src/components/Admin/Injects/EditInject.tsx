@@ -23,7 +23,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { DeleteInjectModal } from "../..";
-import { InjectsQuery } from "../../../graph";
+import { InjectsQuery, useUpdateInjectMutation } from "../../../graph";
 import { enqueueSnackbar } from "notistack";
 
 type props = {
@@ -63,6 +63,15 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     [deleteFiles, newFiles]
   );
 
+  const [updateInjectMutation] = useUpdateInjectMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Inject updated successfully", { variant: "success" });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       setNewFiles((prev) => {
@@ -80,8 +89,30 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   });
 
   const handleSave = () => {
+    if (
+      !titleChanged &&
+      !startTimeChanged &&
+      !endTimeChanged &&
+      !filesChanged
+    ) {
+      return;
+    }
+    console.log({ newFiles, deleteFiles });
+    updateInjectMutation({
+      variables: {
+        id: inject.id,
+        title: titleChanged ? title : undefined,
+        start_time: startTimeChanged ? startTime?.toISOString() : undefined,
+        end_time: endTimeChanged ? endTime?.toISOString() : undefined,
+        add_files: newFiles.length > 0 ? newFiles : undefined,
+        delete_files: deleteFiles.length > 0 ? deleteFiles : undefined,
+      },
+    });
+    setDeleteFiles([]);
+    setNewFiles([]);
     handleRefetch();
   };
+
   const handleDelete = () => {};
   return (
     <>
