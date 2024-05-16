@@ -175,52 +175,60 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
             }
             action={
               <Box display='flex' flexDirection='row' gap='12px'>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  gap='12px'
+                  padding='0px 4px'
+                  overflow='hidden'
+                >
+                  <Slide
+                    in={expanded}
+                    timeout={300}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                      color='error'
+                    >
+                      Delete
+                    </Button>
+                  </Slide>
+                  <Slide
+                    in={
+                      titleChanged ||
+                      startTimeChanged ||
+                      endTimeChanged ||
+                      filesChanged
+                    }
+                    timeout={300}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      color='success'
+                      onClick={(e) => {
+                        if (!expanded) {
+                          e.stopPropagation();
+                        }
+
+                        handleSave();
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Slide>
+                </Box>
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                <Slide
-                  in={expanded}
-                  timeout={300}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    onClick={() => {
-                      setOpen(true);
-                    }}
-                    color='error'
-                  >
-                    Delete
-                  </Button>
-                </Slide>
-                <Slide
-                  in={
-                    titleChanged ||
-                    startTimeChanged ||
-                    endTimeChanged ||
-                    filesChanged
-                  }
-                  timeout={300}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    color='success'
-                    onClick={(e) => {
-                      if (!expanded) {
-                        e.stopPropagation();
-                      }
-
-                      handleSave();
-                    }}
-                  >
-                    Save
-                  </Button>
-                </Slide>
               </Box>
             }
             onClick={() => {
