@@ -205,93 +205,101 @@ export default function EditCheck({
             }
             action={
               <Box display='flex' flexDirection='row' gap='12px'>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  gap='12px'
+                  padding='0px 4px'
+                  overflow='hidden'
+                >
+                  {me?.me?.username !== user.username && (
+                    <>
+                      <Slide
+                        in={expanded}
+                        timeout={300}
+                        style={{
+                          transformOrigin: "right",
+                        }}
+                        direction='left'
+                        unmountOnExit
+                        mountOnEnter
+                      >
+                        <Button
+                          variant='contained'
+                          onClick={loginAs}
+                          color='primary'
+                        >
+                          Become
+                        </Button>
+                      </Slide>
+                      <Slide
+                        in={expanded}
+                        timeout={300}
+                        style={{
+                          transformOrigin: "right",
+                        }}
+                        direction='left'
+                        unmountOnExit
+                        mountOnEnter
+                      >
+                        <Button
+                          variant='contained'
+                          onClick={viewAs}
+                          color='secondary'
+                        >
+                          View As
+                        </Button>
+                      </Slide>
+                      <Slide
+                        in={expanded}
+                        timeout={300}
+                        style={{
+                          transformOrigin: "right",
+                        }}
+                        direction='left'
+                        unmountOnExit
+                        mountOnEnter
+                      >
+                        <Button
+                          variant='contained'
+                          onClick={() => {
+                            setOpenDeleteModal(true);
+                          }}
+                          color='error'
+                        >
+                          Delete
+                        </Button>
+                      </Slide>
+                    </>
+                  )}
+                  <Slide
+                    in={nameChanged || passwordChanged || numberChanged}
+                    timeout={300}
+                    style={{
+                      transformOrigin: "right",
+                    }}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      color='success'
+                      onClick={(e) => {
+                        if (!expanded) {
+                          e.stopPropagation();
+                        }
+
+                        handleSave();
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Slide>
+                </Box>
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                {me?.me?.username !== user.username && (
-                  <>
-                    <Slide
-                      in={expanded}
-                      timeout={300}
-                      style={{
-                        transformOrigin: "right",
-                      }}
-                      direction='left'
-                      unmountOnExit
-                      mountOnEnter
-                    >
-                      <Button
-                        variant='contained'
-                        onClick={loginAs}
-                        color='primary'
-                      >
-                        Become
-                      </Button>
-                    </Slide>
-                    <Slide
-                      in={expanded}
-                      timeout={300}
-                      style={{
-                        transformOrigin: "right",
-                      }}
-                      direction='left'
-                      unmountOnExit
-                      mountOnEnter
-                    >
-                      <Button
-                        variant='contained'
-                        onClick={viewAs}
-                        color='secondary'
-                      >
-                        View As
-                      </Button>
-                    </Slide>
-                    <Slide
-                      in={expanded}
-                      timeout={300}
-                      style={{
-                        transformOrigin: "right",
-                      }}
-                      direction='left'
-                      unmountOnExit
-                      mountOnEnter
-                    >
-                      <Button
-                        variant='contained'
-                        onClick={() => {
-                          setOpenDeleteModal(true);
-                        }}
-                        color='error'
-                      >
-                        Delete
-                      </Button>
-                    </Slide>
-                  </>
-                )}
-                <Slide
-                  in={nameChanged || passwordChanged || numberChanged}
-                  timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    color='success'
-                    onClick={(e) => {
-                      if (!expanded) {
-                        e.stopPropagation();
-                      }
-
-                      handleSave();
-                    }}
-                  >
-                    Save
-                  </Button>
-                </Slide>
               </Box>
             }
             onClick={handleExpandClick}

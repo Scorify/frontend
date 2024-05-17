@@ -183,58 +183,66 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
             }
             action={
               <Box display='flex' flexDirection='row' gap='12px'>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  gap='12px'
+                  padding='0px 4px'
+                  overflow='hidden'
+                >
+                  <Slide
+                    in={expanded}
+                    timeout={300}
+                    style={{
+                      transformOrigin: "right",
+                    }}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                      color='error'
+                    >
+                      Delete
+                    </Button>
+                  </Slide>
+                  <Slide
+                    in={
+                      configChanged ||
+                      nameChanged ||
+                      editableFieldsChanged ||
+                      weightChanged
+                    }
+                    timeout={300}
+                    style={{
+                      transformOrigin: "right",
+                    }}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      color='success'
+                      onClick={(e) => {
+                        if (!expanded) {
+                          e.stopPropagation();
+                        }
+
+                        handleSave();
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Slide>
+                </Box>
                 <IconButton>
                   <ExpandMore />
                 </IconButton>
-                <Slide
-                  in={expanded}
-                  timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    onClick={() => {
-                      setOpen(true);
-                    }}
-                    color='error'
-                  >
-                    Delete
-                  </Button>
-                </Slide>
-                <Slide
-                  in={
-                    configChanged ||
-                    nameChanged ||
-                    editableFieldsChanged ||
-                    weightChanged
-                  }
-                  timeout={300}
-                  style={{
-                    transformOrigin: "right",
-                  }}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    color='success'
-                    onClick={(e) => {
-                      if (!expanded) {
-                        e.stopPropagation();
-                      }
-
-                      handleSave();
-                    }}
-                  >
-                    Save
-                  </Button>
-                </Slide>
               </Box>
             }
             onClick={handleExpandClick}
