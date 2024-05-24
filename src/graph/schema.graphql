@@ -275,12 +275,14 @@ mutation CreateInject(
   $start_time: Time!
   $end_time: Time!
   $files: [Upload!]!
+  $rubric_template_input: RubricTemplateInput!
 ) {
   createInject(
     title: $title
     start_time: $start_time
     end_time: $end_time
     files: $files
+    rubric: $rubric_template_input
   ) {
     id
   }
