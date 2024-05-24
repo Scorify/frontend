@@ -1338,13 +1338,13 @@ export function useLatestRoundSubscription(baseOptions?: Apollo.SubscriptionHook
 export type LatestRoundSubscriptionHookResult = ReturnType<typeof useLatestRoundSubscription>;
 export type LatestRoundSubscriptionResult = Apollo.SubscriptionResult<LatestRoundSubscription>;
 export const CreateInjectDocument = gql`
-    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!, $rubric_template_input: RubricTemplateInput!) {
+    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!, $rubric: RubricTemplateInput!) {
   createInject(
     title: $title
     start_time: $start_time
     end_time: $end_time
     files: $files
-    rubric: $rubric_template_input
+    rubric: $rubric
   ) {
     id
   }
@@ -1369,7 +1369,7 @@ export type CreateInjectMutationFn = Apollo.MutationFunction<CreateInjectMutatio
  *      start_time: // value for 'start_time'
  *      end_time: // value for 'end_time'
  *      files: // value for 'files'
- *      rubric_template_input: // value for 'rubric_template_input'
+ *      rubric: // value for 'rubric'
  *   },
  * });
  */
@@ -1667,7 +1667,7 @@ export type CreateInjectMutationVariables = Exact<{
   start_time: Scalars['Time']['input'];
   end_time: Scalars['Time']['input'];
   files: Array<Scalars['Upload']['input']> | Scalars['Upload']['input'];
-  rubric_template_input: RubricTemplateInput;
+  rubric: RubricTemplateInput;
 }>;
 
 
