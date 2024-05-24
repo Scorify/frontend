@@ -74,6 +74,7 @@ export type Inject = {
   end_time: Scalars['Time']['output'];
   files: Array<File>;
   id: Scalars['ID']['output'];
+  rubric: RubricTemplate;
   start_time: Scalars['Time']['output'];
   submissions: Array<InjectSubmission>;
   title: Scalars['String']['output'];
@@ -84,9 +85,11 @@ export type InjectSubmission = {
   __typename?: 'InjectSubmission';
   create_time: Scalars['Time']['output'];
   files: Array<File>;
+  graded: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   inject: Inject;
   inject_id: Scalars['ID']['output'];
+  rubric: Rubric;
   update_time: Scalars['Time']['output'];
   user: User;
   user_id: Scalars['ID']['output'];
@@ -154,6 +157,7 @@ export type MutationCreateCheckArgs = {
 export type MutationCreateInjectArgs = {
   end_time: Scalars['Time']['input'];
   files: Array<Scalars['Upload']['input']>;
+  rubric: RubricTemplateInput;
   start_time: Scalars['Time']['input'];
   title: Scalars['String']['input'];
 };
@@ -220,6 +224,7 @@ export type MutationUpdateInjectArgs = {
   delete_files?: InputMaybe<Array<Scalars['ID']['input']>>;
   end_time?: InputMaybe<Scalars['Time']['input']>;
   id: Scalars['ID']['input'];
+  rubric?: InputMaybe<RubricTemplateInput>;
   start_time?: InputMaybe<Scalars['Time']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -308,6 +313,54 @@ export type Round = {
   score_caches: Array<ScoreCache>;
   statuses: Array<Status>;
   update_time: Scalars['Time']['output'];
+};
+
+export type Rubric = {
+  __typename?: 'Rubric';
+  fields: Array<RubricField>;
+  notes?: Maybe<Scalars['String']['output']>;
+};
+
+export type RubricField = {
+  __typename?: 'RubricField';
+  name: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  score: Scalars['Int']['output'];
+};
+
+export type RubricFieldInput = {
+  name: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  score: Scalars['Int']['input'];
+};
+
+export type RubricInput = {
+  fields: Array<RubricFieldInput>;
+  max_score: Scalars['Int']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  score: Scalars['Int']['input'];
+};
+
+export type RubricTemplate = {
+  __typename?: 'RubricTemplate';
+  fields: Array<RubricTemplateField>;
+  max_score: Scalars['Int']['output'];
+};
+
+export type RubricTemplateField = {
+  __typename?: 'RubricTemplateField';
+  max_score: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type RubricTemplateFieldInput = {
+  max_score: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type RubricTemplateInput = {
+  fields: Array<RubricTemplateFieldInput>;
+  max_score: Scalars['Int']['input'];
 };
 
 export type Score = {
@@ -1285,12 +1338,13 @@ export function useLatestRoundSubscription(baseOptions?: Apollo.SubscriptionHook
 export type LatestRoundSubscriptionHookResult = ReturnType<typeof useLatestRoundSubscription>;
 export type LatestRoundSubscriptionResult = Apollo.SubscriptionResult<LatestRoundSubscription>;
 export const CreateInjectDocument = gql`
-    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!) {
+    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!, $rubric_template_input: RubricTemplateInput!) {
   createInject(
     title: $title
     start_time: $start_time
     end_time: $end_time
     files: $files
+    rubric: $rubric_template_input
   ) {
     id
   }
@@ -1315,6 +1369,7 @@ export type CreateInjectMutationFn = Apollo.MutationFunction<CreateInjectMutatio
  *      start_time: // value for 'start_time'
  *      end_time: // value for 'end_time'
  *      files: // value for 'files'
+ *      rubric_template_input: // value for 'rubric_template_input'
  *   },
  * });
  */
@@ -1612,6 +1667,7 @@ export type CreateInjectMutationVariables = Exact<{
   start_time: Scalars['Time']['input'];
   end_time: Scalars['Time']['input'];
   files: Array<Scalars['Upload']['input']> | Scalars['Upload']['input'];
+  rubric_template_input: RubricTemplateInput;
 }>;
 
 
