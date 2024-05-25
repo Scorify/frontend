@@ -1435,7 +1435,7 @@ export type InjectsLazyQueryHookResult = ReturnType<typeof useInjectsLazyQuery>;
 export type InjectsSuspenseQueryHookResult = ReturnType<typeof useInjectsSuspenseQuery>;
 export type InjectsQueryResult = Apollo.QueryResult<InjectsQuery, InjectsQueryVariables>;
 export const UpdateInjectDocument = gql`
-    mutation UpdateInject($id: ID!, $title: String, $start_time: Time, $end_time: Time, $delete_files: [ID!], $add_files: [Upload!]) {
+    mutation UpdateInject($id: ID!, $title: String, $start_time: Time, $end_time: Time, $delete_files: [ID!], $add_files: [Upload!], $rubric: RubricTemplateInput) {
   updateInject(
     id: $id
     title: $title
@@ -1443,6 +1443,7 @@ export const UpdateInjectDocument = gql`
     end_time: $end_time
     delete_files: $delete_files
     add_files: $add_files
+    rubric: $rubric
   ) {
     id
   }
@@ -1469,6 +1470,7 @@ export type UpdateInjectMutationFn = Apollo.MutationFunction<UpdateInjectMutatio
  *      end_time: // value for 'end_time'
  *      delete_files: // value for 'delete_files'
  *      add_files: // value for 'add_files'
+ *      rubric: // value for 'rubric'
  *   },
  * });
  */
@@ -1692,6 +1694,7 @@ export type UpdateInjectMutationVariables = Exact<{
   end_time?: InputMaybe<Scalars['Time']['input']>;
   delete_files?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
   add_files?: InputMaybe<Array<Scalars['Upload']['input']> | Scalars['Upload']['input']>;
+  rubric?: InputMaybe<RubricTemplateInput>;
 }>;
 
 
