@@ -17,7 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
 
-import { useCreateInjectMutation } from "../../../graph";
+import { useCreateInjectMutation, RubricTemplateInput } from "../../../graph";
 
 type props = {
   open: boolean;
@@ -45,6 +45,10 @@ export default function CreateCheckModal({
   const [startTime, setStartTime] = useState<Dayjs | null>(null);
   const [endTime, setEndTime] = useState<Dayjs | null>(null);
   const [files, setFiles] = useState<File[] | null>(null);
+  const [rubric, setRubric] = useState<RubricTemplateInput>({
+    max_score: 0,
+    fields: [],
+  });
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
@@ -80,6 +84,7 @@ export default function CreateCheckModal({
         start_time: startTime.toISOString(),
         end_time: endTime.toISOString(),
         files,
+        rubric,
       },
     });
   };

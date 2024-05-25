@@ -74,6 +74,7 @@ export type Inject = {
   end_time: Scalars['Time']['output'];
   files: Array<File>;
   id: Scalars['ID']['output'];
+  rubric: RubricTemplate;
   start_time: Scalars['Time']['output'];
   submissions: Array<InjectSubmission>;
   title: Scalars['String']['output'];
@@ -84,9 +85,11 @@ export type InjectSubmission = {
   __typename?: 'InjectSubmission';
   create_time: Scalars['Time']['output'];
   files: Array<File>;
+  graded: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   inject: Inject;
   inject_id: Scalars['ID']['output'];
+  rubric: Rubric;
   update_time: Scalars['Time']['output'];
   user: User;
   user_id: Scalars['ID']['output'];
@@ -154,6 +157,7 @@ export type MutationCreateCheckArgs = {
 export type MutationCreateInjectArgs = {
   end_time: Scalars['Time']['input'];
   files: Array<Scalars['Upload']['input']>;
+  rubric: RubricTemplateInput;
   start_time: Scalars['Time']['input'];
   title: Scalars['String']['input'];
 };
@@ -220,6 +224,7 @@ export type MutationUpdateInjectArgs = {
   delete_files?: InputMaybe<Array<Scalars['ID']['input']>>;
   end_time?: InputMaybe<Scalars['Time']['input']>;
   id: Scalars['ID']['input'];
+  rubric?: InputMaybe<RubricTemplateInput>;
   start_time?: InputMaybe<Scalars['Time']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -308,6 +313,54 @@ export type Round = {
   score_caches: Array<ScoreCache>;
   statuses: Array<Status>;
   update_time: Scalars['Time']['output'];
+};
+
+export type Rubric = {
+  __typename?: 'Rubric';
+  fields: Array<RubricField>;
+  notes?: Maybe<Scalars['String']['output']>;
+};
+
+export type RubricField = {
+  __typename?: 'RubricField';
+  name: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  score: Scalars['Int']['output'];
+};
+
+export type RubricFieldInput = {
+  name: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  score: Scalars['Int']['input'];
+};
+
+export type RubricInput = {
+  fields: Array<RubricFieldInput>;
+  max_score: Scalars['Int']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  score: Scalars['Int']['input'];
+};
+
+export type RubricTemplate = {
+  __typename?: 'RubricTemplate';
+  fields: Array<RubricTemplateField>;
+  max_score: Scalars['Int']['output'];
+};
+
+export type RubricTemplateField = {
+  __typename?: 'RubricTemplateField';
+  max_score: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type RubricTemplateFieldInput = {
+  max_score: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type RubricTemplateInput = {
+  fields: Array<RubricTemplateFieldInput>;
+  max_score: Scalars['Int']['input'];
 };
 
 export type Score = {
@@ -1285,12 +1338,13 @@ export function useLatestRoundSubscription(baseOptions?: Apollo.SubscriptionHook
 export type LatestRoundSubscriptionHookResult = ReturnType<typeof useLatestRoundSubscription>;
 export type LatestRoundSubscriptionResult = Apollo.SubscriptionResult<LatestRoundSubscription>;
 export const CreateInjectDocument = gql`
-    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!) {
+    mutation CreateInject($title: String!, $start_time: Time!, $end_time: Time!, $files: [Upload!]!, $rubric: RubricTemplateInput!) {
   createInject(
     title: $title
     start_time: $start_time
     end_time: $end_time
     files: $files
+    rubric: $rubric
   ) {
     id
   }
@@ -1315,6 +1369,7 @@ export type CreateInjectMutationFn = Apollo.MutationFunction<CreateInjectMutatio
  *      start_time: // value for 'start_time'
  *      end_time: // value for 'end_time'
  *      files: // value for 'files'
+ *      rubric: // value for 'rubric'
  *   },
  * });
  */
@@ -1336,6 +1391,13 @@ export const InjectsDocument = gql`
       id
       name
       url
+    }
+    rubric {
+      max_score
+      fields {
+        name
+        max_score
+      }
     }
   }
 }
@@ -1373,7 +1435,7 @@ export type InjectsLazyQueryHookResult = ReturnType<typeof useInjectsLazyQuery>;
 export type InjectsSuspenseQueryHookResult = ReturnType<typeof useInjectsSuspenseQuery>;
 export type InjectsQueryResult = Apollo.QueryResult<InjectsQuery, InjectsQueryVariables>;
 export const UpdateInjectDocument = gql`
-    mutation UpdateInject($id: ID!, $title: String, $start_time: Time, $end_time: Time, $delete_files: [ID!], $add_files: [Upload!]) {
+    mutation UpdateInject($id: ID!, $title: String, $start_time: Time, $end_time: Time, $delete_files: [ID!], $add_files: [Upload!], $rubric: RubricTemplateInput) {
   updateInject(
     id: $id
     title: $title
@@ -1381,6 +1443,7 @@ export const UpdateInjectDocument = gql`
     end_time: $end_time
     delete_files: $delete_files
     add_files: $add_files
+    rubric: $rubric
   ) {
     id
   }
@@ -1407,6 +1470,7 @@ export type UpdateInjectMutationFn = Apollo.MutationFunction<UpdateInjectMutatio
  *      end_time: // value for 'end_time'
  *      delete_files: // value for 'delete_files'
  *      add_files: // value for 'add_files'
+ *      rubric: // value for 'rubric'
  *   },
  * });
  */
@@ -1612,6 +1676,7 @@ export type CreateInjectMutationVariables = Exact<{
   start_time: Scalars['Time']['input'];
   end_time: Scalars['Time']['input'];
   files: Array<Scalars['Upload']['input']> | Scalars['Upload']['input'];
+  rubric: RubricTemplateInput;
 }>;
 
 
@@ -1620,7 +1685,7 @@ export type CreateInjectMutation = { __typename?: 'Mutation', createInject: { __
 export type InjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }> }> };
+export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> } }> };
 
 export type UpdateInjectMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -1629,6 +1694,7 @@ export type UpdateInjectMutationVariables = Exact<{
   end_time?: InputMaybe<Scalars['Time']['input']>;
   delete_files?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
   add_files?: InputMaybe<Array<Scalars['Upload']['input']> | Scalars['Upload']['input']>;
+  rubric?: InputMaybe<RubricTemplateInput>;
 }>;
 
 
