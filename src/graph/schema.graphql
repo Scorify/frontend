@@ -316,6 +316,7 @@ mutation UpdateInject(
   $end_time: Time
   $delete_files: [ID!]
   $add_files: [Upload!]
+  $rubric: RubricTemplateInput
 ) {
   updateInject(
     id: $id
@@ -324,6 +325,7 @@ mutation UpdateInject(
     end_time: $end_time
     delete_files: $delete_files
     add_files: $add_files
+    rubric: $rubric
   ) {
     id
   }
