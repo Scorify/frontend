@@ -299,6 +299,13 @@ query Injects {
       name
       url
     }
+    rubric {
+      max_score
+      fields {
+        name
+        max_score
+      }
+    }
   }
 }
 
