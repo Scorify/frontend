@@ -1392,6 +1392,13 @@ export const InjectsDocument = gql`
       name
       url
     }
+    rubric {
+      max_score
+      fields {
+        name
+        max_score
+      }
+    }
   }
 }
     `;
@@ -1676,7 +1683,7 @@ export type CreateInjectMutation = { __typename?: 'Mutation', createInject: { __
 export type InjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }> }> };
+export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> } }> };
 
 export type UpdateInjectMutationVariables = Exact<{
   id: Scalars['ID']['input'];
