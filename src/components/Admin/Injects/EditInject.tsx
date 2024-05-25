@@ -27,6 +27,7 @@ import {
   InjectsQuery,
   useUpdateInjectMutation,
   useDeleteInjectMutation,
+  RubricTemplateInput,
 } from "../../../graph";
 import { enqueueSnackbar } from "notistack";
 
@@ -65,6 +66,12 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   const filesChanged = useMemo(
     () => deleteFiles.length > 0 || newFiles.length > 0,
     [deleteFiles, newFiles]
+  );
+
+  const [rubric, setRubric] = useState<RubricTemplateInput>(inject.rubric);
+  const rubricChanged = useMemo(
+    () => JSON.stringify(rubric) != JSON.stringify(inject.rubric),
+    [rubric, inject]
   );
 
   const [updateInjectMutation] = useUpdateInjectMutation({
@@ -120,6 +127,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
         end_time: endTimeChanged ? endTime?.toISOString() : undefined,
         add_files: newFiles.length > 0 ? newFiles : undefined,
         delete_files: deleteFiles.length > 0 ? deleteFiles : undefined,
+        rubric: rubricChanged ? rubric : undefined,
       },
     });
     setDeleteFiles([]);
