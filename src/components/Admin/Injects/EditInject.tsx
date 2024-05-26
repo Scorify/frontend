@@ -68,9 +68,23 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     [deleteFiles, newFiles]
   );
 
-  const [rubric, setRubric] = useState<RubricTemplateInput>(inject.rubric);
+  const [rubric, setRubric] = useState<RubricTemplateInput>({
+    max_score: inject.rubric.max_score,
+    fields: inject.rubric.fields.map((field) => ({
+      name: field.name,
+      max_score: field.max_score,
+    })),
+  });
   const rubricChanged = useMemo(
-    () => JSON.stringify(rubric) != JSON.stringify(inject.rubric),
+    () =>
+      JSON.stringify(rubric) !=
+      JSON.stringify({
+        max_score: inject.rubric.max_score,
+        fields: inject.rubric.fields.map((field) => ({
+          name: field.name,
+          max_score: field.max_score,
+        })),
+      }),
     [rubric, inject]
   );
 
@@ -115,7 +129,8 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
       !titleChanged &&
       !startTimeChanged &&
       !endTimeChanged &&
-      !filesChanged
+      !filesChanged &&
+      !rubricChanged
     ) {
       return;
     }
@@ -213,7 +228,8 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                       titleChanged ||
                       startTimeChanged ||
                       endTimeChanged ||
-                      filesChanged
+                      filesChanged ||
+                      rubricChanged
                     }
                     timeout={300}
                     direction='left'
