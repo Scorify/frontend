@@ -141,6 +141,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
       },
     });
   };
+
   return (
     <>
       <DeleteInjectModal
@@ -285,7 +286,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                 elevation={2}
               >
                 {rubric.fields.map((field, i) => (
-                  <Paper key={i}>
+                  <Paper key={i} elevation={3}>
                     <Box
                       sx={{
                         display: "flex",
@@ -314,9 +315,10 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                         variant='outlined'
                         size='small'
                         type='number'
-                        value={field.max_score}
+                        value={field.max_score === 0 ? "" : field.max_score}
                         onChange={(e) => {
-                          const newScore = parseInt(e.target.value, 10) || 0;
+                          const newValue = e.target.value.replace(/^0+/, "");
+                          const newScore = parseInt(newValue, 10) || 0;
                           setRubric((prev) => ({
                             max_score:
                               prev.max_score + newScore - field.max_score,
@@ -325,6 +327,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                             ),
                           }));
                         }}
+                        inputProps={{ inputMode: "numeric" }}
                       />
                     </Box>
                   </Paper>
