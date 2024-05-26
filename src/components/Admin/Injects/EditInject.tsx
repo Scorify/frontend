@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { ExpandMore, CloudUpload } from "@mui/icons-material";
+import { CloudUpload, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -13,24 +13,23 @@ import {
   Divider,
   Grow,
   IconButton,
+  Paper,
   Slide,
   TextField,
   Typography,
-  Paper,
-  Grid,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
+import { enqueueSnackbar } from "notistack";
 import { DeleteInjectModal } from "../..";
 import {
   InjectsQuery,
-  useUpdateInjectMutation,
-  useDeleteInjectMutation,
   RubricTemplateInput,
+  useDeleteInjectMutation,
+  useUpdateInjectMutation,
 } from "../../../graph";
-import { enqueueSnackbar } from "notistack";
 
 type props = {
   inject: InjectsQuery["injects"][0];
