@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { CloudUpload, ExpandMore } from "@mui/icons-material";
+import { CloudUpload, ExpandMore, Close } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -329,6 +329,18 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                         }}
                         inputProps={{ inputMode: "numeric" }}
                       />
+                      <IconButton
+                        onClick={() => {
+                          setRubric((prev) => ({
+                            max_score: prev.max_score - field.max_score,
+                            fields: prev.fields.filter(
+                              (_, index) => index !== i
+                            ),
+                          }));
+                        }}
+                      >
+                        <Close />
+                      </IconButton>
                     </Box>
                   </Paper>
                 ))}
