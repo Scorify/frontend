@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { ExpandMore, CloudUpload } from "@mui/icons-material";
+import { CloudUpload, ExpandMore, Close } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -13,23 +13,23 @@ import {
   Divider,
   Grow,
   IconButton,
+  Paper,
   Slide,
   TextField,
   Typography,
-  Paper,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
+import { enqueueSnackbar } from "notistack";
 import { DeleteInjectModal } from "../..";
 import {
   InjectsQuery,
-  useUpdateInjectMutation,
-  useDeleteInjectMutation,
   RubricTemplateInput,
+  useDeleteInjectMutation,
+  useUpdateInjectMutation,
 } from "../../../graph";
-import { enqueueSnackbar } from "notistack";
 
 type props = {
   inject: InjectsQuery["injects"][0];
@@ -68,9 +68,23 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     [deleteFiles, newFiles]
   );
 
-  const [rubric, setRubric] = useState<RubricTemplateInput>(inject.rubric);
+  const [rubric, setRubric] = useState<RubricTemplateInput>({
+    max_score: inject.rubric.max_score,
+    fields: inject.rubric.fields.map((field) => ({
+      name: field.name,
+      max_score: field.max_score,
+    })),
+  });
   const rubricChanged = useMemo(
-    () => JSON.stringify(rubric) != JSON.stringify(inject.rubric),
+    () =>
+      JSON.stringify(rubric) !=
+      JSON.stringify({
+        max_score: inject.rubric.max_score,
+        fields: inject.rubric.fields.map((field) => ({
+          name: field.name,
+          max_score: field.max_score,
+        })),
+      }),
     [rubric, inject]
   );
 
@@ -115,7 +129,8 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
       !titleChanged &&
       !startTimeChanged &&
       !endTimeChanged &&
-      !filesChanged
+      !filesChanged &&
+      !rubricChanged
     ) {
       return;
     }
@@ -141,6 +156,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
       },
     });
   };
+
   return (
     <>
       <DeleteInjectModal
@@ -212,7 +228,8 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                       titleChanged ||
                       startTimeChanged ||
                       endTimeChanged ||
-                      filesChanged
+                      filesChanged ||
+                      rubricChanged
                     }
                     timeout={300}
                     direction='left'
@@ -274,6 +291,105 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   />
                 </Box>
               </LocalizationProvider>
+              <Paper
+                sx={{
+                  marginTop: "24px",
+                  padding: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+                elevation={2}
+              >
+                {rubric.fields.map((field, i) => (
+                  <Paper key={i} elevation={3}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px",
+                        gap: "16px",
+                      }}
+                    >
+                      <TextField
+                        label='Field Name'
+                        variant='outlined'
+                        size='small'
+                        value={field.name}
+                        onChange={(e) => {
+                          setRubric((prev) => ({
+                            ...prev,
+                            fields: prev.fields.map((f, index) =>
+                              index === i ? { ...f, name: e.target.value } : f
+                            ),
+                          }));
+                        }}
+                        fullWidth
+                      />
+                      <TextField
+                        label='Max Score'
+                        variant='outlined'
+                        size='small'
+                        type='number'
+                        value={field.max_score === 0 ? "" : field.max_score}
+                        onChange={(e) => {
+                          const newValue = e.target.value.replace(/^0+/, "");
+                          const newScore = parseInt(newValue, 10) || 0;
+                          setRubric((prev) => ({
+                            max_score:
+                              prev.max_score + newScore - field.max_score,
+                            fields: prev.fields.map((f, index) =>
+                              index === i ? { ...f, max_score: newScore } : f
+                            ),
+                          }));
+                        }}
+                        inputProps={{ inputMode: "numeric" }}
+                      />
+                      <IconButton
+                        onClick={() => {
+                          setRubric((prev) => ({
+                            max_score: prev.max_score - field.max_score,
+                            fields: prev.fields.filter(
+                              (_, index) => index !== i
+                            ),
+                          }));
+                        }}
+                      >
+                        <Close />
+                      </IconButton>
+                    </Box>
+                  </Paper>
+                ))}
+                <Box sx={{ display: "flex", gap: "16px" }}>
+                  <Button
+                    variant='contained'
+                    onClick={() => {
+                      setRubric((prev) => ({
+                        ...prev,
+                        fields: [...prev.fields, { name: "", max_score: 0 }],
+                      }));
+                    }}
+                    color='inherit'
+                    fullWidth
+                  >
+                    Add New Field
+                  </Button>
+                  <TextField
+                    label='Max Score'
+                    variant='outlined'
+                    size='small'
+                    type='number'
+                    value={rubric.max_score}
+                    onChange={(e) => {
+                      const newScore = parseInt(e.target.value, 10);
+                      setRubric((prev) => ({
+                        max_score: newScore,
+                        fields: prev.fields,
+                      }));
+                    }}
+                  />
+                </Box>
+              </Paper>
               <Paper
                 {...getRootProps()}
                 sx={{
