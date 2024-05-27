@@ -162,10 +162,10 @@ export default function CreateCheckModal({
                   flexDirection: "column",
                   gap: "16px",
                 }}
-                elevation={2}
+                elevation={1}
               >
                 {rubric.fields.map((field, i) => (
-                  <Paper key={i} elevation={3}>
+                  <Paper key={i} elevation={2}>
                     <Box
                       sx={{
                         display: "flex",
