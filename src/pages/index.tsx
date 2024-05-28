@@ -9,6 +9,7 @@ import Me from "./Me";
 import ScoreboardRound from "./Scoreboard/Round";
 import Scoreboard from "./Scoreboard/Scoreboard";
 import UserChecks from "./User/Checks";
+import UserInjects from "./User/Injects";
 
 export {
   AdminChecks,
@@ -21,5 +22,6 @@ export {
   Scoreboard,
   ScoreboardRound,
   UserChecks,
+  UserInjects,
   Users,
 };
