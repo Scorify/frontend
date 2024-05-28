@@ -79,7 +79,7 @@ export default function Injects() {
           </>
         )}
         {data &&
-          (!data.injects ? (
+          (!data.injects.length ? (
             <Typography component='h1' variant='h5'>
               No injects found
             </Typography>
