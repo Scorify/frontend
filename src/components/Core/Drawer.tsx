@@ -142,6 +142,17 @@ export default function DrawerComponent({
                     <ListItemText primary='Checks' />
                   </ListItemButton>
                 </ListItem>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    navigate("/injects");
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<Vaccines />}</ListItemIcon>
+                    <ListItemText primary='Injects' />
+                  </ListItemButton>
+                </ListItem>
               </List>
             )}
             {me.me.role === "admin" && (
