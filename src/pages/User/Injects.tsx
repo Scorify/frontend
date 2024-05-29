@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import { useInjectsQuery } from "../../graph";
+import { Inject } from "../../components";
 
 export default function Injects() {
   const { data, loading, error, refetch } = useInjectsQuery();
@@ -85,9 +86,13 @@ export default function Injects() {
             </Typography>
           ) : (
             data.injects.map((inject) => (
-              <Typography key={inject.id} component='h1' variant='h5'>
-                {inject.title}
-              </Typography>
+              <Inject
+                inject={inject}
+                visible={inject.title
+                  .toLowerCase()
+                  .includes(search.toLowerCase())}
+                handleRefetch={refetch}
+              />
             ))
           ))}
       </Box>
