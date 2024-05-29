@@ -23,6 +23,7 @@ import Scoreboard from "./Scoreboard/Scoreboard";
 import ScoreboardWrapper from "./Scoreboard/ScoreboardWrapper";
 import Scores from "./Scoreboard/Scores";
 import ConfigureCheck from "./User/ConfigureCheck";
+import Inject from "./User/Inject";
 import User from "./User/User";
 
 export {
@@ -42,6 +43,7 @@ export {
   EditUser,
   EngineState,
   Error,
+  Inject,
   Main,
   Multiselect,
   Navbar,

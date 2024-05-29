@@ -17,13 +17,14 @@ import {
   AdminPanel,
   ChangePassword,
   Home,
+  Injects,
   Login,
   Me,
   Scoreboard,
   ScoreboardRound,
   UserChecks,
+  UserInjects,
   Users,
-  Injects,
 } from "./pages";
 
 const LazyComponent = ({ element }: { element: ReactNode }): ReactElement => {
@@ -139,6 +140,10 @@ export function Router({ theme, setTheme, apolloClient }: props) {
             {
               path: "checks",
               element: <LazyComponent element={<UserChecks />} />,
+            },
+            {
+              path: "injects",
+              element: <LazyComponent element={<UserInjects />} />,
             },
           ],
         },
