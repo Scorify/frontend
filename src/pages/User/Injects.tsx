@@ -33,7 +33,7 @@ export default function Injects() {
         }}
       >
         <Typography component='h1' variant='h3' sx={{ marginBottom: "24px" }}>
-          Checks
+          Injects
         </Typography>
         <Box marginBottom='24px' display='flex' gap='12px'>
           <TextField
