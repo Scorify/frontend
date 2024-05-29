@@ -4,6 +4,7 @@ import { ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Chip,
   Card,
   CardHeader,
   Grow,
@@ -23,11 +24,10 @@ type props = {
   visible: boolean;
 };
 
-export default function Inject({ inject, handleRefetch, visible }: props) {
+export default function Inject({ inject, visible }: props) {
   const [expanded, setExpanded] = useState(false);
 
   const handleSubmit = () => {};
-
   const handleExpandClick = () => setExpanded((prev) => !prev);
 
   return (
@@ -85,15 +85,56 @@ export default function Inject({ inject, handleRefetch, visible }: props) {
 
         <Collapse in={expanded} timeout={300}>
           <CardContent>
+            <Typography variant='h4' align='center'>
+              Files
+            </Typography>
             <Box
               sx={{
                 display: "flex",
-                gap: "16px",
                 flexWrap: "wrap",
                 justifyContent: "center",
+                mt: "8px",
+                gap: "8px",
+                mb: "24px",
               }}
             >
-              Add Details here
+              {inject.files.length ? (
+                inject.files.map((file) => (
+                  <Chip
+                    key={file.id}
+                    label={
+                      file.name.length > 25
+                        ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                            file.name.length - 10
+                          )}`
+                        : file.name
+                    }
+                    onClick={() =>
+                      window.open("http://localhost:8080" + file.url, "_blank")
+                    }
+                  />
+                ))
+              ) : (
+                <Typography variant='body1' align='center'>
+                  No Files
+                </Typography>
+              )}
+            </Box>
+            <Typography variant='h4' align='center'>
+              Submissions
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                mt: "8px",
+                gap: "8px",
+              }}
+            >
+              <Typography variant='body1' align='center'>
+                No Submissions
+              </Typography>
             </Box>
           </CardContent>
         </Collapse>
