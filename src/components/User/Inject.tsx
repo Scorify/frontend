@@ -27,6 +27,7 @@ type props = {
 export default function Inject({ inject, visible }: props) {
   const [expanded, setExpanded] = useState(false);
 
+  // TODO: Create Inject Submission Modal and connect to handleSubmit
   const handleSubmit = () => {};
   const handleExpandClick = () => setExpanded((prev) => !prev);
 
@@ -132,6 +133,7 @@ export default function Inject({ inject, visible }: props) {
                 gap: "8px",
               }}
             >
+              {/* TODO: Create Inject Submission Component */}
               <Typography variant='body1' align='center'>
                 No Submissions
               </Typography>
