@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import { ExpandMore } from "@mui/icons-material";
 import {
@@ -17,6 +17,41 @@ import {
 } from "@mui/material";
 
 import { InjectsQuery } from "../../graph";
+
+type countdownChipProps = {
+  target: number;
+};
+
+function CountdownChip({ target }: countdownChipProps) {
+  const [difference, setDifference] = useState(target - Date.now() - 5);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDifference(target - Date.now() - 5);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [target]);
+
+  const handleLabel = (durationMs: number) => {
+    let duration = Math.floor(durationMs / 1000);
+    if (duration < 60) {
+      return `${Math.floor(duration)} seconds`;
+    } else if (duration < 90 * 60) {
+      return `${Math.floor(duration / 60)} minutes`;
+    } else {
+      return `${(duration / 3600).toFixed(1)} hours`;
+    }
+  };
+
+  return (
+    <Chip
+      color={difference < 0 ? "error" : "success"}
+      label={handleLabel(Math.abs(difference))}
+      size='small'
+    />
+  );
+}
 
 type props = {
   inject: InjectsQuery["injects"][0];
@@ -47,6 +82,7 @@ export default function Inject({ inject, visible }: props) {
               <Typography variant='h6' component='div' marginRight='24px'>
                 {inject.title}
               </Typography>
+              <CountdownChip target={new Date(inject.end_time).getTime()} />
             </Box>
           }
           action={
