@@ -354,3 +354,9 @@ mutation UpdateInject(
 mutation DeleteInject($id: ID!) {
   deleteInject(id: $id)
 }
+
+mutation SubmitInject($id: ID!, $files: [Upload!]!, $notes: String) {
+  submitInject(injectID: $id, files: $files, notes: $notes) {
+    id
+  }
+}
