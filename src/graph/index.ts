@@ -1534,6 +1534,41 @@ export function useDeleteInjectMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteInjectMutationHookResult = ReturnType<typeof useDeleteInjectMutation>;
 export type DeleteInjectMutationResult = Apollo.MutationResult<DeleteInjectMutation>;
 export type DeleteInjectMutationOptions = Apollo.BaseMutationOptions<DeleteInjectMutation, DeleteInjectMutationVariables>;
+export const SubmitInjectDocument = gql`
+    mutation SubmitInject($id: ID!, $files: [Upload!]!, $notes: String) {
+  submitInject(injectID: $id, files: $files, notes: $notes) {
+    id
+  }
+}
+    `;
+export type SubmitInjectMutationFn = Apollo.MutationFunction<SubmitInjectMutation, SubmitInjectMutationVariables>;
+
+/**
+ * __useSubmitInjectMutation__
+ *
+ * To run a mutation, you first call `useSubmitInjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitInjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitInjectMutation, { data, loading, error }] = useSubmitInjectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      files: // value for 'files'
+ *      notes: // value for 'notes'
+ *   },
+ * });
+ */
+export function useSubmitInjectMutation(baseOptions?: Apollo.MutationHookOptions<SubmitInjectMutation, SubmitInjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitInjectMutation, SubmitInjectMutationVariables>(SubmitInjectDocument, options);
+      }
+export type SubmitInjectMutationHookResult = ReturnType<typeof useSubmitInjectMutation>;
+export type SubmitInjectMutationResult = Apollo.MutationResult<SubmitInjectMutation>;
+export type SubmitInjectMutationOptions = Apollo.BaseMutationOptions<SubmitInjectMutation, SubmitInjectMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1728,3 +1763,12 @@ export type DeleteInjectMutationVariables = Exact<{
 
 
 export type DeleteInjectMutation = { __typename?: 'Mutation', deleteInject: boolean };
+
+export type SubmitInjectMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  files: Array<Scalars['Upload']['input']> | Scalars['Upload']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type SubmitInjectMutation = { __typename?: 'Mutation', submitInject: { __typename?: 'InjectSubmission', id: string } };
