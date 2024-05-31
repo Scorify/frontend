@@ -306,6 +306,25 @@ query Injects {
         max_score
       }
     }
+    submissions {
+      id
+      create_time
+      update_time
+      files {
+        id
+        name
+        url
+      }
+      rubric {
+        fields {
+          name
+          score
+          notes
+        }
+        notes
+      }
+      graded
+    }
   }
 }
 
