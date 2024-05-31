@@ -89,6 +89,7 @@ export type InjectSubmission = {
   id: Scalars['ID']['output'];
   inject: Inject;
   inject_id: Scalars['ID']['output'];
+  notes: Scalars['String']['output'];
   rubric: Rubric;
   update_time: Scalars['Time']['output'];
   user: User;
@@ -207,6 +208,7 @@ export type MutationSendGlobalNotificationArgs = {
 export type MutationSubmitInjectArgs = {
   files: Array<Scalars['Upload']['input']>;
   injectID: Scalars['ID']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1416,6 +1418,7 @@ export const InjectsDocument = gql`
         }
         notes
       }
+      notes
       graded
     }
   }
@@ -1704,7 +1707,7 @@ export type CreateInjectMutation = { __typename?: 'Mutation', createInject: { __
 export type InjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> }, submissions: Array<{ __typename?: 'InjectSubmission', id: string, create_time: any, update_time: any, graded: boolean, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, rubric: { __typename?: 'Rubric', notes?: string | null, fields: Array<{ __typename?: 'RubricField', name: string, score: number, notes?: string | null }> } }> }> };
+export type InjectsQuery = { __typename?: 'Query', injects: Array<{ __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> }, submissions: Array<{ __typename?: 'InjectSubmission', id: string, create_time: any, update_time: any, notes: string, graded: boolean, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, rubric: { __typename?: 'Rubric', notes?: string | null, fields: Array<{ __typename?: 'RubricField', name: string, score: number, notes?: string | null }> } }> }> };
 
 export type UpdateInjectMutationVariables = Exact<{
   id: Scalars['ID']['input'];
