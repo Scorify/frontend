@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 
 import { InjectsQuery } from "../../graph";
+import Submission from "./Submission";
 import SubmitInjectModal from "./SubmitInjectModal";
 
 type countdownChipProps = {
@@ -179,10 +180,23 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                   gap: "8px",
                 }}
               >
-                {/* TODO: Create Inject Submission Component */}
-                <Typography variant='body1' align='center'>
-                  No Submissions
-                </Typography>
+                {inject.submissions.length ? (
+                  <>
+                    {[...inject.submissions]
+                      .sort(
+                        (a, b) =>
+                          new Date(b.create_time).getTime() -
+                          new Date(a.create_time).getTime()
+                      )
+                      .map((submission) => (
+                        <Submission inject={inject} submission={submission} />
+                      ))}
+                  </>
+                ) : (
+                  <Typography variant='body1' align='center'>
+                    No Submissions
+                  </Typography>
+                )}
               </Box>
             </CardContent>
           </Collapse>
