@@ -8,7 +8,6 @@ import EditCheck from "./Admin/Checks/EditCheck";
 import CreateInjectModal from "./Admin/Injects/CreateInjectModal";
 import DeleteInjectModal from "./Admin/Injects/DeleteInjectModal";
 import EditInject from "./Admin/Injects/EditInject";
-import SubmitInjectModal from "./User/SubmitInjectModal";
 import CreateUserModal from "./Admin/Users/CreateUserModal";
 import DeleteUserModal from "./Admin/Users/DeleteUserModal";
 import EditUser from "./Admin/Users/EditUser";
@@ -25,6 +24,8 @@ import ScoreboardWrapper from "./Scoreboard/ScoreboardWrapper";
 import Scores from "./Scoreboard/Scores";
 import ConfigureCheck from "./User/ConfigureCheck";
 import Inject from "./User/Inject";
+import Submission from "./User/Submission";
+import SubmitInjectModal from "./User/SubmitInjectModal";
 import User from "./User/User";
 
 export {
@@ -34,7 +35,6 @@ export {
   ConfirmModal,
   CreateCheckModal,
   CreateInjectModal,
-  SubmitInjectModal,
   CreateUserModal,
   DeleteCheckModal,
   DeleteInjectModal,
@@ -55,5 +55,7 @@ export {
   ScoreboardWrapper,
   Scores,
   StatusIndicator,
+  Submission,
+  SubmitInjectModal,
   User,
 };
