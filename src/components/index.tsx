@@ -24,6 +24,8 @@ import ScoreboardWrapper from "./Scoreboard/ScoreboardWrapper";
 import Scores from "./Scoreboard/Scores";
 import ConfigureCheck from "./User/ConfigureCheck";
 import Inject from "./User/Inject";
+import Submission from "./User/Submission";
+import SubmitInjectModal from "./User/SubmitInjectModal";
 import User from "./User/User";
 
 export {
@@ -53,5 +55,7 @@ export {
   ScoreboardWrapper,
   Scores,
   StatusIndicator,
+  Submission,
+  SubmitInjectModal,
   User,
 };

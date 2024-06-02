@@ -306,6 +306,26 @@ query Injects {
         max_score
       }
     }
+    submissions {
+      id
+      create_time
+      update_time
+      files {
+        id
+        name
+        url
+      }
+      rubric {
+        fields {
+          name
+          score
+          notes
+        }
+        notes
+      }
+      notes
+      graded
+    }
   }
 }
 
@@ -333,4 +353,10 @@ mutation UpdateInject(
 
 mutation DeleteInject($id: ID!) {
   deleteInject(id: $id)
+}
+
+mutation SubmitInject($id: ID!, $files: [Upload!]!, $notes: String!) {
+  submitInject(injectID: $id, files: $files, notes: $notes) {
+    id
+  }
 }
