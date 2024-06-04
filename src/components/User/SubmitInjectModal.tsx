@@ -64,8 +64,6 @@ export default function SubmitInjectModal({
     },
   });
 
-  console.log(inject);
-
   return (
     <Modal
       open={open}
