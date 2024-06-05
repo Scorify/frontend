@@ -12,6 +12,8 @@ import {
   Divider,
   Grow,
   IconButton,
+  Paper,
+  TextField,
   Slide,
   Typography,
 } from "@mui/material";
@@ -168,6 +170,63 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                   </Typography>
                 )}
               </Box>
+              <Typography variant='h4' align='center'>
+                Rubric
+              </Typography>
+              <Paper
+                elevation={3}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "16px",
+                  marginTop: "8px",
+                  marginBottom: "24px",
+                }}
+              >
+                {inject.rubric.fields.length && (
+                  <Box
+                    display='flex'
+                    flexDirection='column'
+                    gap='8px'
+                    width='100%'
+                  >
+                    {inject.rubric.fields.map((field) => (
+                      <Paper
+                        elevation={4}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "12px",
+                          width: "100%",
+                          marginBottom: "8px",
+                          gap: "16px",
+                        }}
+                      >
+                        <TextField
+                          size='small'
+                          label='Criteria Name'
+                          value={field.name}
+                          fullWidth
+                        />
+                        <TextField
+                          size='small'
+                          label='Criteria Max Points'
+                          value={field.max_score}
+                        />
+                      </Paper>
+                    ))}
+                    <TextField
+                      size='small'
+                      label='Inject Max Points'
+                      value={inject.rubric.max_score}
+                    />
+                  </Box>
+                )}
+              </Paper>
               <Typography variant='h4' align='center'>
                 Submissions
               </Typography>
