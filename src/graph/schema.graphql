@@ -360,3 +360,45 @@ mutation SubmitInject($id: ID!, $files: [Upload!]!, $notes: String!) {
     id
   }
 }
+
+query Submissions {
+  injectSubmissions {
+    id
+    create_time
+    update_time
+    files {
+      id
+      name
+      url
+    }
+    user {
+      id
+      username
+    }
+    inject {
+      id
+      title
+      start_time
+      end_time
+      create_time
+      update_time
+      rubric {
+        fields {
+          name
+          max_score
+        }
+        max_score
+      }
+    }
+    rubric {
+      fields {
+        name
+        score
+        notes
+      }
+      notes
+    }
+    graded
+    notes
+  }
+}
