@@ -1569,6 +1569,81 @@ export function useSubmitInjectMutation(baseOptions?: Apollo.MutationHookOptions
 export type SubmitInjectMutationHookResult = ReturnType<typeof useSubmitInjectMutation>;
 export type SubmitInjectMutationResult = Apollo.MutationResult<SubmitInjectMutation>;
 export type SubmitInjectMutationOptions = Apollo.BaseMutationOptions<SubmitInjectMutation, SubmitInjectMutationVariables>;
+export const SubmissionsDocument = gql`
+    query Submissions {
+  injectSubmissions {
+    id
+    create_time
+    update_time
+    files {
+      id
+      name
+      url
+    }
+    user {
+      id
+      username
+    }
+    inject {
+      id
+      title
+      start_time
+      end_time
+      create_time
+      update_time
+      rubric {
+        fields {
+          name
+          max_score
+        }
+        max_score
+      }
+    }
+    rubric {
+      fields {
+        name
+        score
+        notes
+      }
+      notes
+    }
+    graded
+    notes
+  }
+}
+    `;
+
+/**
+ * __useSubmissionsQuery__
+ *
+ * To run a query within a React component, call `useSubmissionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubmissionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubmissionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSubmissionsQuery(baseOptions?: Apollo.QueryHookOptions<SubmissionsQuery, SubmissionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SubmissionsQuery, SubmissionsQueryVariables>(SubmissionsDocument, options);
+      }
+export function useSubmissionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SubmissionsQuery, SubmissionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SubmissionsQuery, SubmissionsQueryVariables>(SubmissionsDocument, options);
+        }
+export function useSubmissionsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SubmissionsQuery, SubmissionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SubmissionsQuery, SubmissionsQueryVariables>(SubmissionsDocument, options);
+        }
+export type SubmissionsQueryHookResult = ReturnType<typeof useSubmissionsQuery>;
+export type SubmissionsLazyQueryHookResult = ReturnType<typeof useSubmissionsLazyQuery>;
+export type SubmissionsSuspenseQueryHookResult = ReturnType<typeof useSubmissionsSuspenseQuery>;
+export type SubmissionsQueryResult = Apollo.QueryResult<SubmissionsQuery, SubmissionsQueryVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1772,3 +1847,8 @@ export type SubmitInjectMutationVariables = Exact<{
 
 
 export type SubmitInjectMutation = { __typename?: 'Mutation', submitInject: { __typename?: 'InjectSubmission', id: string } };
+
+export type SubmissionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SubmissionsQuery = { __typename?: 'Query', injectSubmissions: Array<{ __typename?: 'InjectSubmission', id: string, create_time: any, update_time: any, graded: boolean, notes: string, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, user: { __typename?: 'User', id: string, username: string }, inject: { __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, create_time: any, update_time: any, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> } }, rubric?: { __typename?: 'Rubric', notes?: string | null, fields: Array<{ __typename?: 'RubricField', name: string, score: number, notes?: string | null }> } | null }> };
