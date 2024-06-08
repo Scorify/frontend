@@ -313,6 +313,6 @@ type Mutation {
     files: [Upload!]!
   ): InjectSubmission! @hasRole(roles: [user])
 
-  gradeInject(submissionID: ID!, rubric: RubricInput!): InjectSubmission!
+  gradeSubmission(submissionID: ID!, rubric: RubricInput!): InjectSubmission!
     @hasRole(roles: [admin])
 }
