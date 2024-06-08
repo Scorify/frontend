@@ -1651,6 +1651,40 @@ export type SubmissionsQueryHookResult = ReturnType<typeof useSubmissionsQuery>;
 export type SubmissionsLazyQueryHookResult = ReturnType<typeof useSubmissionsLazyQuery>;
 export type SubmissionsSuspenseQueryHookResult = ReturnType<typeof useSubmissionsSuspenseQuery>;
 export type SubmissionsQueryResult = Apollo.QueryResult<SubmissionsQuery, SubmissionsQueryVariables>;
+export const GradeSubmissionDocument = gql`
+    mutation GradeSubmission($submission_id: ID!, $rubric: RubricInput!) {
+  gradeSubmission(submissionID: $submission_id, rubric: $rubric) {
+    id
+  }
+}
+    `;
+export type GradeSubmissionMutationFn = Apollo.MutationFunction<GradeSubmissionMutation, GradeSubmissionMutationVariables>;
+
+/**
+ * __useGradeSubmissionMutation__
+ *
+ * To run a mutation, you first call `useGradeSubmissionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGradeSubmissionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [gradeSubmissionMutation, { data, loading, error }] = useGradeSubmissionMutation({
+ *   variables: {
+ *      submission_id: // value for 'submission_id'
+ *      rubric: // value for 'rubric'
+ *   },
+ * });
+ */
+export function useGradeSubmissionMutation(baseOptions?: Apollo.MutationHookOptions<GradeSubmissionMutation, GradeSubmissionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GradeSubmissionMutation, GradeSubmissionMutationVariables>(GradeSubmissionDocument, options);
+      }
+export type GradeSubmissionMutationHookResult = ReturnType<typeof useGradeSubmissionMutation>;
+export type GradeSubmissionMutationResult = Apollo.MutationResult<GradeSubmissionMutation>;
+export type GradeSubmissionMutationOptions = Apollo.BaseMutationOptions<GradeSubmissionMutation, GradeSubmissionMutationVariables>;
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1859,3 +1893,11 @@ export type SubmissionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type SubmissionsQuery = { __typename?: 'Query', injectSubmissions: Array<{ __typename?: 'InjectSubmission', id: string, create_time: any, update_time: any, graded: boolean, notes: string, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, user: { __typename?: 'User', id: string, username: string }, inject: { __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, create_time: any, update_time: any, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> } }, rubric?: { __typename?: 'Rubric', notes?: string | null, fields: Array<{ __typename?: 'RubricField', name: string, score: number, notes?: string | null }> } | null }> };
+
+export type GradeSubmissionMutationVariables = Exact<{
+  submission_id: Scalars['ID']['input'];
+  rubric: RubricInput;
+}>;
+
+
+export type GradeSubmissionMutation = { __typename?: 'Mutation', gradeSubmission: { __typename?: 'InjectSubmission', id: string } };
