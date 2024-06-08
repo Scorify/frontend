@@ -119,7 +119,7 @@ export type Mutation = {
   deleteInject: Scalars['Boolean']['output'];
   deleteUser: Scalars['Boolean']['output'];
   editConfig: Config;
-  gradeInject: InjectSubmission;
+  gradeSubmission: InjectSubmission;
   login: LoginOutput;
   sendGlobalNotification: Scalars['Boolean']['output'];
   startEngine: Scalars['Boolean']['output'];
@@ -194,7 +194,7 @@ export type MutationEditConfigArgs = {
 };
 
 
-export type MutationGradeInjectArgs = {
+export type MutationGradeSubmissionArgs = {
   rubric: RubricInput;
   submissionID: Scalars['ID']['input'];
 };
