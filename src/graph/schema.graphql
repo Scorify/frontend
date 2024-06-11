@@ -361,45 +361,51 @@ mutation SubmitInject($id: ID!, $files: [Upload!]!, $notes: String!) {
   }
 }
 
-query Submissions {
-  injectSubmissions {
-    id
-    create_time
-    update_time
-    files {
-      id
-      name
-      url
-    }
+query Submissions($inject_id: ID!) {
+  injectSubmissionsByUser(id: $inject_id) {
     user {
-      id
       username
+      number
     }
-    inject {
+    submissions {
       id
-      title
-      start_time
-      end_time
       create_time
       update_time
+      files {
+        id
+        name
+        url
+      }
+      user {
+        id
+        username
+      }
+      inject {
+        id
+        title
+        start_time
+        end_time
+        create_time
+        update_time
+        rubric {
+          fields {
+            name
+            max_score
+          }
+          max_score
+        }
+      }
       rubric {
         fields {
           name
-          max_score
+          score
+          notes
         }
-        max_score
-      }
-    }
-    rubric {
-      fields {
-        name
-        score
         notes
       }
+      graded
       notes
     }
-    graded
-    notes
   }
 }
 
