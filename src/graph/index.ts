@@ -345,9 +345,7 @@ export type RubricFieldInput = {
 
 export type RubricInput = {
   fields: Array<RubricFieldInput>;
-  max_score: Scalars['Int']['input'];
   notes?: InputMaybe<Scalars['String']['input']>;
-  score: Scalars['Int']['input'];
 };
 
 export type RubricTemplate = {
