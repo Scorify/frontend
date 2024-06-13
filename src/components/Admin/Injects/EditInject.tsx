@@ -28,6 +28,7 @@ import { DeleteInjectModal } from "../..";
 import {
   InjectsQuery,
   RubricTemplateInput,
+  SubmissionsQuery,
   useDeleteInjectMutation,
   useSubmissionsQuery,
   useUpdateInjectMutation,
@@ -321,6 +322,146 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   );
 }
 
+type TeamSubmissionsPanelProps = {
+  user: SubmissionsQuery["injectSubmissionsByUser"][0]["user"];
+  submissions: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"];
+};
+
+function TeamSubmissionsPanel({
+  user,
+  submissions,
+}: TeamSubmissionsPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
+
+  return (
+    <Grow in={true}>
+      <Card
+        sx={{
+          width: "100%",
+          marginBottom: "24px",
+        }}
+        variant='elevation'
+        elevation={2}
+      >
+        <CardHeader
+          title={
+            <Box display='flex' flexDirection='row' alignItems='center'>
+              <Typography variant='h6' component='div' marginRight='24px'>
+                {user.username}
+              </Typography>
+              <Chip
+                label={`${submissions.length} Submissions`}
+                size='small'
+                color={submissions.length == 0 ? "error" : "success"}
+              />
+            </Box>
+          }
+          action={
+            <Box display='flex' flexDirection='row' gap='12px'>
+              <IconButton onClick={() => setExpanded((prev) => !prev)}>
+                <ExpandMore />
+              </IconButton>
+            </Box>
+          }
+        />
+        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+        <Collapse
+          in={expanded}
+          timeout={300}
+          onEnter={() => {
+            setRenderPanel(true);
+          }}
+          onExited={() => {
+            setRenderPanel(false);
+          }}
+        >
+          {renderPanel && (
+            <CardContent>
+              {submissions.length == 0 ? (
+                <Typography variant='h6' align='center'>
+                  No Submissions
+                </Typography>
+              ) : (
+                submissions.map((submission, i) => (
+                  <Paper
+                    key={submission.id}
+                    sx={{
+                      padding: "16px",
+                      marginBottom: "16px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                    }}
+                    elevation={4}
+                  >
+                    <Box
+                      display='flex'
+                      flexDirection='row'
+                      gap='12px'
+                      alignItems='baseline'
+                      justifyContent='space-between'
+                      marginBottom='12px'
+                    >
+                      <Typography variant='h6'>{`Submission ${
+                        submissions.length - i
+                      }  `}</Typography>
+                      <Typography variant='h6'>
+                        {new Date(submission.create_time).toLocaleDateString()}{" "}
+                        -{" "}
+                        {new Date(submission.create_time).toLocaleTimeString()}
+                      </Typography>
+                    </Box>
+                    {submission.notes && (
+                      <TextField
+                        label='Notes'
+                        value={submission.notes}
+                        multiline
+                        fullWidth
+                        sx={{ marginBottom: "8px" }}
+                      />
+                    )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: "8px",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {submission.files.map((file) => (
+                        <Chip
+                          key={file.id}
+                          label={
+                            file.name.length > 25
+                              ? `${file.name.slice(
+                                  0,
+                                  10
+                                )}[...]${file.name.slice(
+                                  file.name.length - 10
+                                )}`
+                              : file.name
+                          }
+                          onClick={() =>
+                            window.open(
+                              "http://localhost:8080" + file.url,
+                              "_blank"
+                            )
+                          }
+                        />
+                      ))}
+                    </Box>
+                  </Paper>
+                ))
+              )}
+            </CardContent>
+          )}
+        </Collapse>
+      </Card>
+    </Grow>
+  );
+}
+
 type GradeInjectPanelProps = {
   inject: InjectsQuery["injects"][0];
 };
@@ -353,33 +494,11 @@ function GradeInjectPanel({ inject }: GradeInjectPanelProps) {
   return (
     <CardContent>
       {data?.injectSubmissionsByUser.map(({ user, submissions }) => (
-        <Paper
+        <TeamSubmissionsPanel
           key={user.number}
-          sx={{ padding: "12px", marginBottom: "12px" }}
-          elevation={2}
-        >
-          <Typography variant='h5'>{user.username}</Typography>
-          {submissions.map((submission, i) => (
-            <Paper
-              key={submission.id}
-              elevation={3}
-              sx={{ padding: "12px", marginTop: "12px" }}
-            >
-              <Typography variant='h6'>
-                Submission {submissions.length - i}
-              </Typography>
-              {submission.files.map((file) => (
-                <Chip
-                  key={file.id}
-                  label={file.name}
-                  onClick={() =>
-                    window.open("http://localhost:8080" + file.url, "_blank")
-                  }
-                />
-              ))}
-            </Paper>
-          ))}
-        </Paper>
+          user={user}
+          submissions={submissions}
+        />
       ))}
     </CardContent>
   );
