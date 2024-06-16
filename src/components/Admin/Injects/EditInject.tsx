@@ -355,6 +355,7 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
               flexDirection='row'
               alignItems='center'
               gap='24px'
+              onClick={() => setExpanded((prev) => !prev)}
             >
               <Typography variant='h6' component='div'>
                 {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
@@ -453,7 +454,12 @@ function TeamSubmissionsPanel({
       >
         <CardHeader
           title={
-            <Box display='flex' flexDirection='row' alignItems='center'>
+            <Box
+              display='flex'
+              flexDirection='row'
+              alignItems='center'
+              onClick={() => setExpanded((prev) => !prev)}
+            >
               <Typography variant='h6' component='div' marginRight='24px'>
                 {user.username}
               </Typography>
