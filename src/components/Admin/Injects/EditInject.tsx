@@ -265,7 +265,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </Slide>
                 </Box>
                 <IconButton>
-                  <ExpandMore />
+                  {expanded ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
               </Box>
             }
@@ -475,7 +475,7 @@ function TeamSubmissionsPanel({
           action={
             <Box display='flex' flexDirection='row' gap='12px'>
               <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                <ExpandMore />
+                {expanded ? <ExpandLess /> : <ExpandMore />}
               </IconButton>
             </Box>
           }

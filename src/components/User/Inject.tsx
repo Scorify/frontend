@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -98,7 +98,7 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
             action={
               <Box display='flex' flexDirection='row' gap='12px'>
                 <IconButton>
-                  <ExpandMore />
+                  {expanded ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
                 <Slide
                   in={expanded}
