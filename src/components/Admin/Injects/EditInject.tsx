@@ -19,6 +19,7 @@ import {
   Divider,
   Grow,
   IconButton,
+  Modal,
   Paper,
   Slide,
   TextField,
@@ -327,6 +328,50 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   );
 }
 
+type GradeSubmissonModalProps = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function GradeSubmissonModal({ open, setOpen }: GradeSubmissonModalProps) {
+  return (
+    <Modal
+      open={open}
+      onClose={() => {
+        setOpen(false);
+      }}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "25%",
+          left: "50%",
+          transform: "translate(-50%, -25%)",
+          width: "auto",
+          maxWidth: "90vw",
+          bgcolor: "background.paper",
+          border: `1px solid #000`,
+          borderRadius: "8px",
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant='h4' align='center'>
+            Grade Submission
+          </Typography>
+        </Box>
+      </Box>
+    </Modal>
+  );
+}
+
 type SubmissionPanelProps = {
   submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
   title: string;
@@ -336,135 +381,143 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
 
+  const [open, setOpen] = useState(false);
+
   const date = new Date(submission.create_time);
 
-  const gradeSubmission = () => {};
-
   return (
-    <Grow in={true}>
-      <Card
-        sx={{
-          marginBottom: "16px",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        elevation={4}
-      >
-        <CardHeader
-          title={
-            <Box
-              display='flex'
-              flexDirection='row'
-              alignItems='center'
-              gap='24px'
-              onClick={() => setExpanded((prev) => !prev)}
-            >
-              <Typography variant='h6' component='div'>
-                {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
-              </Typography>
-              <Chip
-                size='small'
-                label={`${submission.files.length} ${
-                  submission.files.length === 1 ? "File" : "Files"
-                }`}
-              />
-              {submission.graded && (
-                <Chip
-                  size='small'
-                  label={`Graded: ${submission.rubric?.fields.reduce(
-                    (total, field) => {
-                      return total + field.score;
-                    },
-                    0
-                  )} / ${submission.inject.rubric.max_score}`}
-                  color='success'
-                  sx={{ marginLeft: "8px" }}
-                />
-              )}
-            </Box>
-          }
-          action={
-            <Box display='flex' flexDirection='row' gap='12px'>
+    <>
+      <GradeSubmissonModal open={open} setOpen={setOpen} />
+      <Grow in={true}>
+        <Card
+          sx={{
+            marginBottom: "16px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          elevation={4}
+        >
+          <CardHeader
+            title={
               <Box
                 display='flex'
                 flexDirection='row'
-                gap='12px'
-                padding='0px 4px'
-                overflow='hidden'
+                alignItems='center'
+                gap='24px'
+                onClick={() => setExpanded((prev) => !prev)}
               >
-                <Slide
-                  in={expanded}
-                  timeout={300}
-                  direction='left'
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  <Button
-                    variant='contained'
-                    color='success'
-                    onClick={gradeSubmission}
-                  >
-                    Grade
-                  </Button>
-                </Slide>
-              </Box>
-              <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                {expanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            </Box>
-          }
-        />
-        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
-        <Collapse
-          in={expanded}
-          timeout={300}
-          onEnter={() => {
-            setRenderPanel(true);
-          }}
-          onExited={() => {
-            setRenderPanel(false);
-          }}
-        >
-          {renderPanel && (
-            <CardContent>
-              {submission.notes && (
-                <TextField
-                  label='Notes'
-                  value={submission.notes}
-                  multiline
-                  fullWidth
-                  sx={{ marginBottom: "8px" }}
+                <Typography variant='h6' component='div'>
+                  {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+                </Typography>
+                <Chip
+                  size='small'
+                  label={`${submission.files.length} ${
+                    submission.files.length === 1 ? "File" : "Files"
+                  }`}
                 />
-              )}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "8px",
-                  flexWrap: "wrap",
-                }}
-              >
-                {submission.files.map((file) => (
+                {submission.graded && (
                   <Chip
-                    key={file.id}
-                    label={
-                      file.name.length > 25
-                        ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                            file.name.length - 10
-                          )}`
-                        : file.name
-                    }
-                    onClick={() =>
-                      window.open("http://localhost:8080" + file.url, "_blank")
-                    }
+                    size='small'
+                    label={`Graded: ${submission.rubric?.fields.reduce(
+                      (total, field) => {
+                        return total + field.score;
+                      },
+                      0
+                    )} / ${submission.inject.rubric.max_score}`}
+                    color='success'
+                    sx={{ marginLeft: "8px" }}
                   />
-                ))}
+                )}
               </Box>
-            </CardContent>
-          )}
-        </Collapse>
-      </Card>
-    </Grow>
+            }
+            action={
+              <Box display='flex' flexDirection='row' gap='12px'>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  gap='12px'
+                  padding='0px 4px'
+                  overflow='hidden'
+                >
+                  <Slide
+                    in={expanded}
+                    timeout={300}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      color='success'
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                    >
+                      Grade
+                    </Button>
+                  </Slide>
+                </Box>
+                <IconButton onClick={() => setExpanded((prev) => !prev)}>
+                  {expanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+              </Box>
+            }
+          />
+          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+          <Collapse
+            in={expanded}
+            timeout={300}
+            onEnter={() => {
+              setRenderPanel(true);
+            }}
+            onExited={() => {
+              setRenderPanel(false);
+            }}
+          >
+            {renderPanel && (
+              <CardContent>
+                {submission.notes && (
+                  <TextField
+                    label='Notes'
+                    value={submission.notes}
+                    multiline
+                    fullWidth
+                    sx={{ marginBottom: "8px" }}
+                  />
+                )}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "8px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {submission.files.map((file) => (
+                    <Chip
+                      key={file.id}
+                      label={
+                        file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name
+                      }
+                      onClick={() =>
+                        window.open(
+                          "http://localhost:8080" + file.url,
+                          "_blank"
+                        )
+                      }
+                    />
+                  ))}
+                </Box>
+              </CardContent>
+            )}
+          </Collapse>
+        </Card>
+      </Grow>
+    </>
   );
 }
 
