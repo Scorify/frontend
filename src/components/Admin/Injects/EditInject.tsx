@@ -322,6 +322,79 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   );
 }
 
+type SubmissionPanelProps = {
+  submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
+  title: string;
+};
+
+function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
+
+  return (
+    <Grow in={true}>
+      <Paper
+        sx={{
+          padding: "16px",
+          marginBottom: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+        elevation={4}
+      >
+        <Box
+          display='flex'
+          flexDirection='row'
+          gap='12px'
+          alignItems='baseline'
+          justifyContent='space-between'
+          marginBottom='12px'
+        >
+          <Typography variant='h6'>{title}</Typography>
+          <Typography variant='h6'>
+            {new Date(submission.create_time).toLocaleDateString()} -{" "}
+            {new Date(submission.create_time).toLocaleTimeString()}
+          </Typography>
+        </Box>
+        {submission.notes && (
+          <TextField
+            label='Notes'
+            value={submission.notes}
+            multiline
+            fullWidth
+            sx={{ marginBottom: "8px" }}
+          />
+        )}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "8px",
+            flexWrap: "wrap",
+          }}
+        >
+          {submission.files.map((file) => (
+            <Chip
+              key={file.id}
+              label={
+                file.name.length > 25
+                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                      file.name.length - 10
+                    )}`
+                  : file.name
+              }
+              onClick={() =>
+                window.open("http://localhost:8080" + file.url, "_blank")
+              }
+            />
+          ))}
+        </Box>
+      </Paper>
+    </Grow>
+  );
+}
+
 type TeamSubmissionsPanelProps = {
   user: SubmissionsQuery["injectSubmissionsByUser"][0]["user"];
   submissions: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"];
@@ -384,74 +457,11 @@ function TeamSubmissionsPanel({
                 </Typography>
               ) : (
                 submissions.map((submission, i) => (
-                  <Paper
-                    key={submission.id}
-                    sx={{
-                      padding: "16px",
-                      marginBottom: "16px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
-                    elevation={4}
-                  >
-                    <Box
-                      display='flex'
-                      flexDirection='row'
-                      gap='12px'
-                      alignItems='baseline'
-                      justifyContent='space-between'
-                      marginBottom='12px'
-                    >
-                      <Typography variant='h6'>{`Submission ${
-                        submissions.length - i
-                      }  `}</Typography>
-                      <Typography variant='h6'>
-                        {new Date(submission.create_time).toLocaleDateString()}{" "}
-                        -{" "}
-                        {new Date(submission.create_time).toLocaleTimeString()}
-                      </Typography>
-                    </Box>
-                    {submission.notes && (
-                      <TextField
-                        label='Notes'
-                        value={submission.notes}
-                        multiline
-                        fullWidth
-                        sx={{ marginBottom: "8px" }}
-                      />
-                    )}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: "8px",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {submission.files.map((file) => (
-                        <Chip
-                          key={file.id}
-                          label={
-                            file.name.length > 25
-                              ? `${file.name.slice(
-                                  0,
-                                  10
-                                )}[...]${file.name.slice(
-                                  file.name.length - 10
-                                )}`
-                              : file.name
-                          }
-                          onClick={() =>
-                            window.open(
-                              "http://localhost:8080" + file.url,
-                              "_blank"
-                            )
-                          }
-                        />
-                      ))}
-                    </Box>
-                  </Paper>
+                  <SubmissionPanel
+                    key={i}
+                    submission={submission}
+                    title={`Submission ${submissions.length - i}`}
+                  />
                 ))
               )}
             </CardContent>
