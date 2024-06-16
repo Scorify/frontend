@@ -336,6 +336,8 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
 
+  const date = new Date(submission.create_time);
+
   return (
     <Grow in={true}>
       <Card
@@ -348,14 +350,21 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
       >
         <CardHeader
           title={
-            <Box display='flex' flexDirection='row' alignItems='center'>
-              <Typography variant='h6' component='div' marginRight='24px'>
-                {title}
+            <Box
+              display='flex'
+              flexDirection='row'
+              alignItems='center'
+              gap='24px'
+            >
+              <Typography variant='h6' component='div'>
+                {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
               </Typography>
-              <Typography variant='h6'>
-                {new Date(submission.create_time).toLocaleDateString()} -{" "}
-                {new Date(submission.create_time).toLocaleTimeString()}
-              </Typography>
+              <Chip
+                size='small'
+                label={`${submission.files.length} ${
+                  submission.files.length === 1 ? "File" : "Files"
+                }`}
+              />
             </Box>
           }
           action={
@@ -449,7 +458,9 @@ function TeamSubmissionsPanel({
                 {user.username}
               </Typography>
               <Chip
-                label={`${submissions.length} Submissions`}
+                label={`${submissions.length} ${
+                  submissions.length === 1 ? "Submission" : "Submissions"
+                }`}
                 size='small'
                 color={submissions.length == 0 ? "error" : "success"}
               />
