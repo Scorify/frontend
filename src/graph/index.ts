@@ -96,6 +96,12 @@ export type InjectSubmission = {
   user_id: Scalars['ID']['output'];
 };
 
+export type InjectSubmissionByUser = {
+  __typename?: 'InjectSubmissionByUser';
+  submissions: Array<InjectSubmission>;
+  user: User;
+};
+
 export type LoginOutput = {
   __typename?: 'LoginOutput';
   domain: Scalars['String']['output'];
@@ -269,6 +275,7 @@ export type Query = {
   inject: Inject;
   injectSubmission: InjectSubmission;
   injectSubmissions: Array<InjectSubmission>;
+  injectSubmissionsByUser: Array<InjectSubmissionByUser>;
   injects: Array<Inject>;
   me?: Maybe<User>;
   scoreboard: Scoreboard;
@@ -295,6 +302,11 @@ export type QueryInjectArgs = {
 
 
 export type QueryInjectSubmissionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryInjectSubmissionsByUserArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -345,9 +357,7 @@ export type RubricFieldInput = {
 
 export type RubricInput = {
   fields: Array<RubricFieldInput>;
-  max_score: Scalars['Int']['input'];
   notes?: InputMaybe<Scalars['String']['input']>;
-  score: Scalars['Int']['input'];
 };
 
 export type RubricTemplate = {
@@ -1577,45 +1587,51 @@ export type SubmitInjectMutationHookResult = ReturnType<typeof useSubmitInjectMu
 export type SubmitInjectMutationResult = Apollo.MutationResult<SubmitInjectMutation>;
 export type SubmitInjectMutationOptions = Apollo.BaseMutationOptions<SubmitInjectMutation, SubmitInjectMutationVariables>;
 export const SubmissionsDocument = gql`
-    query Submissions {
-  injectSubmissions {
-    id
-    create_time
-    update_time
-    files {
-      id
-      name
-      url
-    }
+    query Submissions($inject_id: ID!) {
+  injectSubmissionsByUser(id: $inject_id) {
     user {
-      id
       username
+      number
     }
-    inject {
+    submissions {
       id
-      title
-      start_time
-      end_time
       create_time
       update_time
+      files {
+        id
+        name
+        url
+      }
+      user {
+        id
+        username
+      }
+      inject {
+        id
+        title
+        start_time
+        end_time
+        create_time
+        update_time
+        rubric {
+          fields {
+            name
+            max_score
+          }
+          max_score
+        }
+      }
       rubric {
         fields {
           name
-          max_score
+          score
+          notes
         }
-        max_score
-      }
-    }
-    rubric {
-      fields {
-        name
-        score
         notes
       }
+      graded
       notes
     }
-    graded
-    notes
   }
 }
     `;
@@ -1632,10 +1648,11 @@ export const SubmissionsDocument = gql`
  * @example
  * const { data, loading, error } = useSubmissionsQuery({
  *   variables: {
+ *      inject_id: // value for 'inject_id'
  *   },
  * });
  */
-export function useSubmissionsQuery(baseOptions?: Apollo.QueryHookOptions<SubmissionsQuery, SubmissionsQueryVariables>) {
+export function useSubmissionsQuery(baseOptions: Apollo.QueryHookOptions<SubmissionsQuery, SubmissionsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<SubmissionsQuery, SubmissionsQueryVariables>(SubmissionsDocument, options);
       }
@@ -1889,10 +1906,12 @@ export type SubmitInjectMutationVariables = Exact<{
 
 export type SubmitInjectMutation = { __typename?: 'Mutation', submitInject: { __typename?: 'InjectSubmission', id: string } };
 
-export type SubmissionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type SubmissionsQueryVariables = Exact<{
+  inject_id: Scalars['ID']['input'];
+}>;
 
 
-export type SubmissionsQuery = { __typename?: 'Query', injectSubmissions: Array<{ __typename?: 'InjectSubmission', id: string, create_time: any, update_time: any, graded: boolean, notes: string, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, user: { __typename?: 'User', id: string, username: string }, inject: { __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, create_time: any, update_time: any, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> } }, rubric?: { __typename?: 'Rubric', notes?: string | null, fields: Array<{ __typename?: 'RubricField', name: string, score: number, notes?: string | null }> } | null }> };
+export type SubmissionsQuery = { __typename?: 'Query', injectSubmissionsByUser: Array<{ __typename?: 'InjectSubmissionByUser', user: { __typename?: 'User', username: string, number?: number | null }, submissions: Array<{ __typename?: 'InjectSubmission', id: string, create_time: any, update_time: any, graded: boolean, notes: string, files: Array<{ __typename?: 'File', id: string, name: string, url: string }>, user: { __typename?: 'User', id: string, username: string }, inject: { __typename?: 'Inject', id: string, title: string, start_time: any, end_time: any, create_time: any, update_time: any, rubric: { __typename?: 'RubricTemplate', max_score: number, fields: Array<{ __typename?: 'RubricTemplateField', name: string, max_score: number }> } }, rubric?: { __typename?: 'Rubric', notes?: string | null, fields: Array<{ __typename?: 'RubricField', name: string, score: number, notes?: string | null }> } | null }> }> };
 
 export type GradeSubmissionMutationVariables = Exact<{
   submission_id: Scalars['ID']['input'];

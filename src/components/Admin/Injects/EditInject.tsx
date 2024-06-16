@@ -1,7 +1,12 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState, Suspense } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { CloudUpload, ExpandMore, Close } from "@mui/icons-material";
+import {
+  Close,
+  CloudUpload,
+  ExpandLess,
+  ExpandMore,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -9,6 +14,7 @@ import {
   CardContent,
   CardHeader,
   Chip,
+  CircularProgress,
   Collapse,
   Divider,
   Grow,
@@ -27,7 +33,9 @@ import { DeleteInjectModal } from "../..";
 import {
   InjectsQuery,
   RubricTemplateInput,
+  SubmissionsQuery,
   useDeleteInjectMutation,
+  useSubmissionsQuery,
   useUpdateInjectMutation,
 } from "../../../graph";
 
@@ -108,21 +116,8 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
     },
   });
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setNewFiles((prev) => {
-        if (prev) {
-          return prev.concat(acceptedFiles);
-        } else {
-          return acceptedFiles;
-        }
-      });
-    },
-    onError: (error) => {
-      enqueueSnackbar(error.message, { variant: "error" });
-      console.error(error);
-    },
-  });
+  const [grading, setGrading] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
 
   const handleSave = () => {
     if (
@@ -177,7 +172,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
           <CardHeader
             title={
               <Box display='flex' flexDirection='row' alignItems='center'>
-                {expanded ? (
+                {expanded && !grading ? (
                   <TextField
                     label='Name'
                     value={title}
@@ -206,6 +201,24 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   padding='0px 4px'
                   overflow='hidden'
                 >
+                  <Slide
+                    in={expanded}
+                    timeout={300}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      onClick={(e) => {
+                        setGrading((prev) => !prev);
+                        e.stopPropagation();
+                      }}
+                      color='info'
+                    >
+                      {grading ? "Switch to Editting" : "Switch to Grading"}
+                    </Button>
+                  </Slide>
                   <Slide
                     in={expanded}
                     timeout={300}
@@ -252,7 +265,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </Slide>
                 </Box>
                 <IconButton>
-                  <ExpandMore />
+                  {expanded ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
               </Box>
             }
@@ -262,231 +275,536 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
           />
           {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
 
-          <Collapse in={expanded} timeout={300}>
-            <CardContent>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: "16px",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                  }}
-                >
-                  <DateTimePicker
-                    sx={{ marginTop: "24px" }}
-                    label='Start Time'
-                    value={startTime}
-                    onChange={(date) => {
-                      setStartTime(date);
-                    }}
-                  />
-                  <DateTimePicker
-                    sx={{ marginTop: "24px" }}
-                    label='End Time'
-                    value={endTime}
-                    onChange={(date) => {
-                      setEndTime(date);
-                    }}
-                  />
-                </Box>
-              </LocalizationProvider>
-              <Paper
-                sx={{
-                  marginTop: "24px",
-                  padding: "16px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                }}
-                elevation={2}
+          <Collapse
+            in={expanded}
+            timeout={300}
+            onEnter={() => {
+              setRenderPanel(true);
+            }}
+            onExited={() => {
+              setRenderPanel(false);
+            }}
+          >
+            {grading ? (
+              <Suspense
+                fallback={
+                  <CardContent>
+                    <CircularProgress />
+                  </CardContent>
+                }
               >
-                {rubric.fields.map((field, i) => (
-                  <Paper key={i} elevation={3}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px",
-                        gap: "16px",
-                      }}
-                    >
-                      <TextField
-                        label='Field Name'
-                        variant='outlined'
-                        size='small'
-                        value={field.name}
-                        onChange={(e) => {
-                          setRubric((prev) => ({
-                            ...prev,
-                            fields: prev.fields.map((f, index) =>
-                              index === i ? { ...f, name: e.target.value } : f
-                            ),
-                          }));
-                        }}
-                        fullWidth
-                      />
-                      <TextField
-                        label='Max Score'
-                        variant='outlined'
-                        size='small'
-                        type='number'
-                        value={field.max_score === 0 ? "" : field.max_score}
-                        onChange={(e) => {
-                          const newValue = e.target.value.replace(/^0+/, "");
-                          const newScore = parseInt(newValue, 10) || 0;
-                          setRubric((prev) => ({
-                            max_score:
-                              prev.max_score + newScore - field.max_score,
-                            fields: prev.fields.map((f, index) =>
-                              index === i ? { ...f, max_score: newScore } : f
-                            ),
-                          }));
-                        }}
-                        inputProps={{ inputMode: "numeric" }}
-                      />
-                      <IconButton
-                        onClick={() => {
-                          setRubric((prev) => ({
-                            max_score: prev.max_score - field.max_score,
-                            fields: prev.fields.filter(
-                              (_, index) => index !== i
-                            ),
-                          }));
-                        }}
-                      >
-                        <Close />
-                      </IconButton>
-                    </Box>
-                  </Paper>
-                ))}
-                <Box sx={{ display: "flex", gap: "16px" }}>
-                  <Button
-                    variant='contained'
-                    onClick={() => {
-                      setRubric((prev) => ({
-                        ...prev,
-                        fields: [...prev.fields, { name: "", max_score: 0 }],
-                      }));
-                    }}
-                    color='inherit'
-                    fullWidth
-                  >
-                    Add New Field
-                  </Button>
-                  <TextField
-                    label='Max Score'
-                    variant='outlined'
-                    size='small'
-                    type='number'
-                    value={rubric.max_score}
-                    onChange={(e) => {
-                      const newScore = parseInt(e.target.value, 10);
-                      setRubric((prev) => ({
-                        max_score: newScore,
-                        fields: prev.fields,
-                      }));
-                    }}
-                  />
-                </Box>
-              </Paper>
-              <Paper
-                {...getRootProps()}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "75px",
-                  borderRadius: "8px",
-                  border: "4px dashed #ccc",
-                  cursor: "pointer",
-                  margin: "24px 12px 16px 12px",
-                }}
-                elevation={4}
+                {renderPanel && <GradeInjectPanel inject={inject} />}
+              </Suspense>
+            ) : (
+              <Suspense
+                fallback={
+                  <CardContent>
+                    <CircularProgress />
+                  </CardContent>
+                }
               >
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                  <Typography variant='h5'>Drop files here...</Typography>
-                ) : (
-                  <>
-                    <CloudUpload
-                      sx={{
-                        fontSize: "36px",
-                        color: "#ccc",
-                        marginRight: "8px",
-                      }}
-                    />
-                    <Typography variant='h6'>Add Files</Typography>
-                  </>
+                {renderPanel && (
+                  <EditInjectPanel
+                    rubric={rubric}
+                    setRubric={setRubric}
+                    startTime={startTime}
+                    setStartTime={setStartTime}
+                    endTime={endTime}
+                    setEndTime={setEndTime}
+                    newFiles={newFiles}
+                    setNewFiles={setNewFiles}
+                    deleteFiles={deleteFiles}
+                    setDeleteFiles={setDeleteFiles}
+                    inject={inject}
+                  />
                 )}
-              </Paper>
-              {(newFiles.length > 0 ||
-                (inject.files && inject.files.length > 0)) && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    mt: "8px",
-                    gap: "8px",
-                  }}
-                >
-                  {inject.files.map((file) => (
-                    <Chip
-                      key={file.id}
-                      label={
-                        file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name
-                      }
-                      color={
-                        deleteFiles.includes(file.id) ? "error" : "default"
-                      }
-                      onClick={() =>
-                        window.open(
-                          "http://localhost:8080" + file.url,
-                          "_blank"
-                        )
-                      }
-                      onDelete={() => {
-                        if (deleteFiles.includes(file.id)) {
-                          setDeleteFiles((prev) =>
-                            prev.filter((id) => id != file.id)
-                          );
-                          return;
-                        }
-                        setDeleteFiles((prev) => [...prev, file.id]);
-                      }}
-                    />
-                  ))}
-                  {newFiles.map((file, i) => (
-                    <Chip
-                      key={`${file.name}-${i}`}
-                      label={
-                        file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name
-                      }
-                      onClick={() =>
-                        window.open(URL.createObjectURL(file), "_blank")
-                      }
-                      color='success'
-                      onDelete={() => {
-                        setNewFiles((prev) =>
-                          prev.filter((_, index) => i != index)
-                        );
-                      }}
-                    />
-                  ))}
-                </Box>
-              )}
-            </CardContent>
+              </Suspense>
+            )}
           </Collapse>
         </Card>
       </Grow>
     </>
+  );
+}
+
+type SubmissionPanelProps = {
+  submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
+  title: string;
+};
+
+function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
+
+  const date = new Date(submission.create_time);
+
+  return (
+    <Grow in={true}>
+      <Card
+        sx={{
+          marginBottom: "16px",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        elevation={4}
+      >
+        <CardHeader
+          title={
+            <Box
+              display='flex'
+              flexDirection='row'
+              alignItems='center'
+              gap='24px'
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              <Typography variant='h6' component='div'>
+                {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+              </Typography>
+              <Chip
+                size='small'
+                label={`${submission.files.length} ${
+                  submission.files.length === 1 ? "File" : "Files"
+                }`}
+              />
+            </Box>
+          }
+          action={
+            <Box display='flex' flexDirection='row' gap='12px'>
+              <IconButton onClick={() => setExpanded((prev) => !prev)}>
+                {expanded ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Box>
+          }
+        />
+        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+        <Collapse
+          in={expanded}
+          timeout={300}
+          onEnter={() => {
+            setRenderPanel(true);
+          }}
+          onExited={() => {
+            setRenderPanel(false);
+          }}
+        >
+          {renderPanel && (
+            <CardContent>
+              {submission.notes && (
+                <TextField
+                  label='Notes'
+                  value={submission.notes}
+                  multiline
+                  fullWidth
+                  sx={{ marginBottom: "8px" }}
+                />
+              )}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "8px",
+                  flexWrap: "wrap",
+                }}
+              >
+                {submission.files.map((file) => (
+                  <Chip
+                    key={file.id}
+                    label={
+                      file.name.length > 25
+                        ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                            file.name.length - 10
+                          )}`
+                        : file.name
+                    }
+                    onClick={() =>
+                      window.open("http://localhost:8080" + file.url, "_blank")
+                    }
+                  />
+                ))}
+              </Box>
+            </CardContent>
+          )}
+        </Collapse>
+      </Card>
+    </Grow>
+  );
+}
+
+type TeamSubmissionsPanelProps = {
+  user: SubmissionsQuery["injectSubmissionsByUser"][0]["user"];
+  submissions: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"];
+};
+
+function TeamSubmissionsPanel({
+  user,
+  submissions,
+}: TeamSubmissionsPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
+
+  return (
+    <Grow in={true}>
+      <Card
+        sx={{
+          width: "100%",
+          marginBottom: "24px",
+        }}
+        variant='elevation'
+        elevation={2}
+      >
+        <CardHeader
+          title={
+            <Box
+              display='flex'
+              flexDirection='row'
+              alignItems='center'
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              <Typography variant='h6' component='div' marginRight='24px'>
+                {user.username}
+              </Typography>
+              <Chip
+                label={`${submissions.length} ${
+                  submissions.length === 1 ? "Submission" : "Submissions"
+                }`}
+                size='small'
+                color={submissions.length == 0 ? "error" : "success"}
+              />
+            </Box>
+          }
+          action={
+            <Box display='flex' flexDirection='row' gap='12px'>
+              <IconButton onClick={() => setExpanded((prev) => !prev)}>
+                {expanded ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Box>
+          }
+        />
+        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+        <Collapse
+          in={expanded}
+          timeout={300}
+          onEnter={() => {
+            setRenderPanel(true);
+          }}
+          onExited={() => {
+            setRenderPanel(false);
+          }}
+        >
+          {renderPanel && (
+            <CardContent>
+              {submissions.length == 0 ? (
+                <Typography variant='h6' align='center'>
+                  No Submissions
+                </Typography>
+              ) : (
+                submissions.map((submission, i) => (
+                  <SubmissionPanel
+                    key={i}
+                    submission={submission}
+                    title={`Submission ${submissions.length - i}`}
+                  />
+                ))
+              )}
+            </CardContent>
+          )}
+        </Collapse>
+      </Card>
+    </Grow>
+  );
+}
+
+type GradeInjectPanelProps = {
+  inject: InjectsQuery["injects"][0];
+};
+
+function GradeInjectPanel({ inject }: GradeInjectPanelProps) {
+  const { data, loading, error } = useSubmissionsQuery({
+    variables: {
+      inject_id: inject.id,
+    },
+  });
+
+  if (loading) {
+    return (
+      <CardContent>
+        <CircularProgress />
+      </CardContent>
+    );
+  }
+
+  if (error) {
+    return (
+      <CardContent>
+        <Typography variant='h6' color='error'>
+          {error.message}
+        </Typography>
+      </CardContent>
+    );
+  }
+
+  return (
+    <CardContent>
+      {data?.injectSubmissionsByUser.map(({ user, submissions }) => (
+        <TeamSubmissionsPanel
+          key={user.number}
+          user={user}
+          submissions={submissions}
+        />
+      ))}
+    </CardContent>
+  );
+}
+
+type EditInjectPanelProps = {
+  rubric: RubricTemplateInput;
+  setRubric: React.Dispatch<React.SetStateAction<RubricTemplateInput>>;
+  startTime: Dayjs | null;
+  setStartTime: React.Dispatch<React.SetStateAction<Dayjs | null>>;
+  endTime: Dayjs | null;
+  setEndTime: React.Dispatch<React.SetStateAction<Dayjs | null>>;
+  newFiles: File[];
+  setNewFiles: React.Dispatch<React.SetStateAction<File[]>>;
+  deleteFiles: string[];
+  setDeleteFiles: React.Dispatch<React.SetStateAction<string[]>>;
+  inject: InjectsQuery["injects"][0];
+};
+
+function EditInjectPanel({
+  rubric,
+  setRubric,
+  startTime,
+  setStartTime,
+  endTime,
+  setEndTime,
+  newFiles,
+  setNewFiles,
+  deleteFiles,
+  setDeleteFiles,
+  inject,
+}: EditInjectPanelProps) {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setNewFiles((prev) => {
+        if (prev) {
+          return prev.concat(acceptedFiles);
+        } else {
+          return acceptedFiles;
+        }
+      });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+      console.error(error);
+    },
+  });
+
+  return (
+    <CardContent>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: "16px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          <DateTimePicker
+            sx={{ marginTop: "24px" }}
+            label='Start Time'
+            value={startTime}
+            onChange={(date) => {
+              setStartTime(date);
+            }}
+          />
+          <DateTimePicker
+            sx={{ marginTop: "24px" }}
+            label='End Time'
+            value={endTime}
+            onChange={(date) => {
+              setEndTime(date);
+            }}
+          />
+        </Box>
+      </LocalizationProvider>
+      <Paper
+        sx={{
+          marginTop: "24px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+        elevation={2}
+      >
+        {rubric.fields.map((field, i) => (
+          <Paper key={i} elevation={3}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "12px",
+                gap: "16px",
+              }}
+            >
+              <TextField
+                label='Field Name'
+                variant='outlined'
+                size='small'
+                value={field.name}
+                onChange={(e) => {
+                  setRubric((prev) => ({
+                    ...prev,
+                    fields: prev.fields.map((f, index) =>
+                      index === i ? { ...f, name: e.target.value } : f
+                    ),
+                  }));
+                }}
+                fullWidth
+              />
+              <TextField
+                label='Max Score'
+                variant='outlined'
+                size='small'
+                type='number'
+                value={field.max_score === 0 ? "" : field.max_score}
+                onChange={(e) => {
+                  const newValue = e.target.value.replace(/^0+/, "");
+                  const newScore = parseInt(newValue, 10) || 0;
+                  setRubric((prev) => ({
+                    max_score: prev.max_score + newScore - field.max_score,
+                    fields: prev.fields.map((f, index) =>
+                      index === i ? { ...f, max_score: newScore } : f
+                    ),
+                  }));
+                }}
+                inputProps={{ inputMode: "numeric" }}
+              />
+              <IconButton
+                onClick={() => {
+                  setRubric((prev) => ({
+                    max_score: prev.max_score - field.max_score,
+                    fields: prev.fields.filter((_, index) => index !== i),
+                  }));
+                }}
+              >
+                <Close />
+              </IconButton>
+            </Box>
+          </Paper>
+        ))}
+        <Box sx={{ display: "flex", gap: "16px" }}>
+          <Button
+            variant='contained'
+            onClick={() => {
+              setRubric((prev) => ({
+                ...prev,
+                fields: [...prev.fields, { name: "", max_score: 0 }],
+              }));
+            }}
+            color='inherit'
+            fullWidth
+          >
+            Add New Field
+          </Button>
+          <TextField
+            label='Max Score'
+            variant='outlined'
+            size='small'
+            type='number'
+            value={rubric.max_score}
+            onChange={(e) => {
+              const newScore = parseInt(e.target.value, 10);
+              setRubric((prev) => ({
+                max_score: newScore,
+                fields: prev.fields,
+              }));
+            }}
+          />
+        </Box>
+      </Paper>
+      <Paper
+        {...getRootProps()}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "75px",
+          borderRadius: "8px",
+          border: "4px dashed #ccc",
+          cursor: "pointer",
+          margin: "24px 12px 16px 12px",
+        }}
+        elevation={4}
+      >
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <Typography variant='h5'>Drop files here...</Typography>
+        ) : (
+          <>
+            <CloudUpload
+              sx={{
+                fontSize: "36px",
+                color: "#ccc",
+                marginRight: "8px",
+              }}
+            />
+            <Typography variant='h6'>Add Files</Typography>
+          </>
+        )}
+      </Paper>
+      {(newFiles.length > 0 || (inject.files && inject.files.length > 0)) && (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            mt: "8px",
+            gap: "8px",
+          }}
+        >
+          {inject.files.map((file) => (
+            <Chip
+              key={file.id}
+              label={
+                file.name.length > 25
+                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                      file.name.length - 10
+                    )}`
+                  : file.name
+              }
+              color={deleteFiles.includes(file.id) ? "error" : "default"}
+              onClick={() =>
+                window.open("http://localhost:8080" + file.url, "_blank")
+              }
+              onDelete={() => {
+                if (deleteFiles.includes(file.id)) {
+                  setDeleteFiles((prev) => prev.filter((id) => id != file.id));
+                  return;
+                }
+                setDeleteFiles((prev) => [...prev, file.id]);
+              }}
+            />
+          ))}
+          {newFiles.map((file, i) => (
+            <Chip
+              key={`${file.name}-${i}`}
+              label={
+                file.name.length > 25
+                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                      file.name.length - 10
+                    )}`
+                  : file.name
+              }
+              onClick={() => window.open(URL.createObjectURL(file), "_blank")}
+              color='success'
+              onDelete={() => {
+                setNewFiles((prev) => prev.filter((_, index) => i != index));
+              }}
+            />
+          ))}
+        </Box>
+      )}
+    </CardContent>
   );
 }

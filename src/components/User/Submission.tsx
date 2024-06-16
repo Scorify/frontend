@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -86,7 +86,7 @@ export default function Inject({ submission, inject }: props) {
           action={
             <Box display='flex' flexDirection='row' gap='12px'>
               <IconButton>
-                <ExpandMore />
+                {expanded ? <ExpandLess /> : <ExpandMore />}
               </IconButton>
             </Box>
           }

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -241,7 +241,7 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
                   </Slide>
                 </Box>
                 <IconButton>
-                  <ExpandMore />
+                  {expanded ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
               </Box>
             }
