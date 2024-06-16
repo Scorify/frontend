@@ -338,6 +338,8 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
 
   const date = new Date(submission.create_time);
 
+  const gradeSubmission = () => {};
+
   return (
     <Grow in={true}>
       <Card
@@ -397,7 +399,11 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
                   unmountOnExit
                   mountOnEnter
                 >
-                  <Button variant='contained' color='success'>
+                  <Button
+                    variant='contained'
+                    color='success'
+                    onClick={gradeSubmission}
+                  >
                     Grade
                   </Button>
                 </Slide>
