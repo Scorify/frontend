@@ -366,6 +366,19 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
                   submission.files.length === 1 ? "File" : "Files"
                 }`}
               />
+              {submission.graded && (
+                <Chip
+                  size='small'
+                  label={`Graded: ${submission.rubric?.fields.reduce(
+                    (total, field) => {
+                      return total + field.score;
+                    },
+                    0
+                  )} / ${submission.inject.rubric.max_score}`}
+                  color='success'
+                  sx={{ marginLeft: "8px" }}
+                />
+              )}
             </Box>
           }
           action={
