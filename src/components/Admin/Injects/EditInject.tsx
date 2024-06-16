@@ -370,6 +370,25 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
           }
           action={
             <Box display='flex' flexDirection='row' gap='12px'>
+              <Box
+                display='flex'
+                flexDirection='row'
+                gap='12px'
+                padding='0px 4px'
+                overflow='hidden'
+              >
+                <Slide
+                  in={expanded}
+                  timeout={300}
+                  direction='left'
+                  unmountOnExit
+                  mountOnEnter
+                >
+                  <Button variant='contained' color='success'>
+                    Grade
+                  </Button>
+                </Slide>
+              </Box>
               <IconButton onClick={() => setExpanded((prev) => !prev)}>
                 {expanded ? <ExpandLess /> : <ExpandMore />}
               </IconButton>
