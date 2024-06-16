@@ -1,7 +1,12 @@
 import React, { useMemo, useState, Suspense } from "react";
 import { useDropzone } from "react-dropzone";
 
-import { Close, CloudUpload, ExpandMore } from "@mui/icons-material";
+import {
+  Close,
+  CloudUpload,
+  ExpandLess,
+  ExpandMore,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -333,64 +338,84 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
 
   return (
     <Grow in={true}>
-      <Paper
+      <Card
         sx={{
-          padding: "16px",
           marginBottom: "16px",
           display: "flex",
           flexDirection: "column",
-          gap: "8px",
         }}
         elevation={4}
       >
-        <Box
-          display='flex'
-          flexDirection='row'
-          gap='12px'
-          alignItems='baseline'
-          justifyContent='space-between'
-          marginBottom='12px'
-        >
-          <Typography variant='h6'>{title}</Typography>
-          <Typography variant='h6'>
-            {new Date(submission.create_time).toLocaleDateString()} -{" "}
-            {new Date(submission.create_time).toLocaleTimeString()}
-          </Typography>
-        </Box>
-        {submission.notes && (
-          <TextField
-            label='Notes'
-            value={submission.notes}
-            multiline
-            fullWidth
-            sx={{ marginBottom: "8px" }}
-          />
-        )}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "8px",
-            flexWrap: "wrap",
+        <CardHeader
+          title={
+            <Box display='flex' flexDirection='row' alignItems='center'>
+              <Typography variant='h6' component='div' marginRight='24px'>
+                {title}
+              </Typography>
+              <Typography variant='h6'>
+                {new Date(submission.create_time).toLocaleDateString()} -{" "}
+                {new Date(submission.create_time).toLocaleTimeString()}
+              </Typography>
+            </Box>
+          }
+          action={
+            <Box display='flex' flexDirection='row' gap='12px'>
+              <IconButton onClick={() => setExpanded((prev) => !prev)}>
+                {expanded ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Box>
+          }
+        />
+        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+        <Collapse
+          in={expanded}
+          timeout={300}
+          onEnter={() => {
+            setRenderPanel(true);
+          }}
+          onExited={() => {
+            setRenderPanel(false);
           }}
         >
-          {submission.files.map((file) => (
-            <Chip
-              key={file.id}
-              label={
-                file.name.length > 25
-                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                      file.name.length - 10
-                    )}`
-                  : file.name
-              }
-              onClick={() =>
-                window.open("http://localhost:8080" + file.url, "_blank")
-              }
-            />
-          ))}
-        </Box>
-      </Paper>
+          {renderPanel && (
+            <CardContent>
+              {submission.notes && (
+                <TextField
+                  label='Notes'
+                  value={submission.notes}
+                  multiline
+                  fullWidth
+                  sx={{ marginBottom: "8px" }}
+                />
+              )}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "8px",
+                  flexWrap: "wrap",
+                }}
+              >
+                {submission.files.map((file) => (
+                  <Chip
+                    key={file.id}
+                    label={
+                      file.name.length > 25
+                        ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                            file.name.length - 10
+                          )}`
+                        : file.name
+                    }
+                    onClick={() =>
+                      window.open("http://localhost:8080" + file.url, "_blank")
+                    }
+                  />
+                ))}
+              </Box>
+            </CardContent>
+          )}
+        </Collapse>
+      </Card>
     </Grow>
   );
 }
@@ -556,8 +581,6 @@ function EditInjectPanel({
       console.error(error);
     },
   });
-
-  console.log("test");
 
   return (
     <CardContent>
