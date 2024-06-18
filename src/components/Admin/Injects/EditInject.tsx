@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Suspense } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 import {
@@ -19,6 +19,7 @@ import {
   Divider,
   Grow,
   IconButton,
+  Modal,
   Paper,
   Slide,
   TextField,
@@ -32,9 +33,11 @@ import { enqueueSnackbar } from "notistack";
 import { DeleteInjectModal } from "../..";
 import {
   InjectsQuery,
+  RubricInput,
   RubricTemplateInput,
   SubmissionsQuery,
   useDeleteInjectMutation,
+  useGradeSubmissionMutation,
   useSubmissionsQuery,
   useUpdateInjectMutation,
 } from "../../../graph";
@@ -293,7 +296,12 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </CardContent>
                 }
               >
-                {renderPanel && <GradeInjectPanel inject={inject} />}
+                {renderPanel && (
+                  <GradeInjectPanel
+                    inject={inject}
+                    handleRefetch={handleRefetch}
+                  />
+                )}
               </Suspense>
             ) : (
               <Suspense
@@ -327,120 +335,440 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   );
 }
 
-type SubmissionPanelProps = {
+type GradeSubmissonModalProps = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
-  title: string;
+  handleRefetch: () => void;
 };
 
-function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
-  const [expanded, setExpanded] = useState(false);
-  const [renderPanel, setRenderPanel] = useState(false);
+function GradeSubmissonModal({
+  open,
+  setOpen,
+  submission,
+  handleRefetch,
+}: GradeSubmissonModalProps) {
+  const [gradeSubmissionMutation] = useGradeSubmissionMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Submission graded successfully", { variant: "success" });
+      handleRefetch();
+      setOpen(false);
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
 
-  const date = new Date(submission.create_time);
+  const [rubricInput, setRubricInput] = useState<RubricInput>({
+    fields: submission.inject.rubric.fields.map((field) => ({
+      name: field.name,
+      score:
+        submission.rubric?.fields.find((f) => f.name === field.name)?.score ??
+        0,
+      notes:
+        submission.rubric?.fields.find((f) => f.name === field.name)?.notes ??
+        "",
+    })),
+    notes: submission.rubric?.notes ?? "",
+  });
+
+  const submitGrade = () => {
+    gradeSubmissionMutation({
+      variables: {
+        submission_id: submission.id,
+        rubric: rubricInput,
+      },
+    });
+  };
 
   return (
-    <Grow in={true}>
-      <Card
+    <Modal
+      open={open}
+      onClose={() => {
+        setOpen(false);
+      }}
+    >
+      <Box
         sx={{
-          marginBottom: "16px",
-          display: "flex",
-          flexDirection: "column",
+          position: "absolute",
+          top: "25%",
+          left: "50%",
+          transform: "translate(-50%, -25%)",
+          width: "auto",
+          maxWidth: "90vw",
+          bgcolor: "background.paper",
+          border: `1px solid #000`,
+          borderRadius: "8px",
+          boxShadow: 24,
+          p: 4,
         }}
-        elevation={4}
       >
-        <CardHeader
-          title={
-            <Box
-              display='flex'
-              flexDirection='row'
-              alignItems='center'
-              gap='24px'
-              onClick={() => setExpanded((prev) => !prev)}
-            >
-              <Typography variant='h6' component='div'>
-                {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
-              </Typography>
-              <Chip
-                size='small'
-                label={`${submission.files.length} ${
-                  submission.files.length === 1 ? "File" : "Files"
-                }`}
-              />
-            </Box>
-          }
-          action={
-            <Box display='flex' flexDirection='row' gap='12px'>
-              <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                {expanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            </Box>
-          }
-        />
-        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
-        <Collapse
-          in={expanded}
-          timeout={300}
-          onEnter={() => {
-            setRenderPanel(true);
-          }}
-          onExited={() => {
-            setRenderPanel(false);
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          {renderPanel && (
-            <CardContent>
-              {submission.notes && (
-                <TextField
-                  label='Notes'
-                  value={submission.notes}
-                  multiline
-                  fullWidth
-                  sx={{ marginBottom: "8px" }}
-                />
-              )}
+          <Typography variant='h4' align='center' onClick={submitGrade}>
+            Grade Submission
+          </Typography>
+          <Paper
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+              width: "100%",
+              marginTop: "16px",
+              padding: "16px",
+            }}
+            elevation={1}
+          >
+            {rubricInput.fields.map((field, i) => (
+              <Paper key={i} elevation={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "12px",
+                    gap: "16px",
+                  }}
+                >
+                  <TextField
+                    label='Field Name'
+                    variant='outlined'
+                    size='small'
+                    value={field.name}
+                  />
+                  <TextField
+                    label='Notes'
+                    variant='outlined'
+                    size='small'
+                    value={field.notes}
+                    onChange={(e) => {
+                      setRubricInput((prev) => ({
+                        ...prev,
+                        fields: prev.fields.map((f, index) =>
+                          index === i ? { ...f, notes: e.target.value } : f
+                        ),
+                      }));
+                    }}
+                    fullWidth
+                  />
+                  <TextField
+                    label='Score'
+                    variant='outlined'
+                    size='small'
+                    type='number'
+                    value={
+                      field.score.toString().replace(/^0+/, "") === ""
+                        ? "0"
+                        : field.score.toString().replace(/^0+/, "")
+                    }
+                    onChange={(e) => {
+                      const newScore = parseInt(e.target.value, 10);
+
+                      if (isNaN(newScore)) {
+                        setRubricInput((prev) => ({
+                          ...prev,
+                          fields: prev.fields.map((f, index) =>
+                            index === i ? { ...f, score: 0 } : f
+                          ),
+                        }));
+                        return;
+                      }
+
+                      const maxScore =
+                        submission.inject.rubric.fields.find(
+                          (f) => f.name === field.name
+                        )?.max_score ?? 0;
+
+                      setRubricInput((prev) => ({
+                        ...prev,
+                        fields: prev.fields.map((f, index) =>
+                          index === i
+                            ? {
+                                ...f,
+                                score:
+                                  newScore >= maxScore ? maxScore : newScore,
+                              }
+                            : f
+                        ),
+                      }));
+                    }}
+                    inputProps={{ inputMode: "numeric" }}
+                  />
+                  <TextField
+                    label='Max Score'
+                    variant='outlined'
+                    size='small'
+                    value={
+                      submission.inject.rubric.fields.find(
+                        (f) => f.name === field.name
+                      )?.max_score ?? 0
+                    }
+                  />
+                </Box>
+              </Paper>
+            ))}
+            <Divider />
+            <Paper
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "12px",
+                gap: "16px",
+              }}
+              elevation={2}
+            >
+              <TextField
+                label='Notes'
+                variant='outlined'
+                size='small'
+                value={rubricInput.notes}
+                onChange={(e) => {
+                  setRubricInput((prev) => ({
+                    ...prev,
+                    notes: e.target.value,
+                  }));
+                }}
+                multiline
+                rows={4}
+                fullWidth
+              />
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "row",
-                  gap: "8px",
-                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                  gap: "16px",
                 }}
               >
-                {submission.files.map((file) => (
-                  <Chip
-                    key={file.id}
-                    label={
-                      file.name.length > 25
-                        ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                            file.name.length - 10
-                          )}`
-                        : file.name
-                    }
-                    onClick={() =>
-                      window.open("http://localhost:8080" + file.url, "_blank")
-                    }
-                  />
-                ))}
+                <TextField
+                  label='Total Score'
+                  variant='outlined'
+                  size='small'
+                  value={rubricInput.fields.reduce((total, field) => {
+                    return total + field.score;
+                  }, 0)}
+                  fullWidth
+                />
+                <TextField
+                  label='Max Score'
+                  variant='outlined'
+                  size='small'
+                  value={submission.inject.rubric.max_score}
+                  fullWidth
+                />
+                <Button
+                  variant='contained'
+                  color='success'
+                  onClick={submitGrade}
+                  fullWidth
+                >
+                  Submit Grade
+                </Button>
               </Box>
-            </CardContent>
-          )}
-        </Collapse>
-      </Card>
-    </Grow>
+            </Paper>
+          </Paper>
+        </Box>
+      </Box>
+    </Modal>
+  );
+}
+
+type SubmissionPanelProps = {
+  submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
+  title: string;
+  handleRefetch: () => void;
+};
+
+function SubmissionPanel({
+  submission,
+  title,
+  handleRefetch,
+}: SubmissionPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
+
+  const [open, setOpen] = useState(false);
+
+  const date = new Date(submission.create_time);
+
+  return (
+    <>
+      <GradeSubmissonModal
+        open={open}
+        setOpen={setOpen}
+        submission={submission}
+        handleRefetch={handleRefetch}
+      />
+      <Grow in={true}>
+        <Card
+          sx={{
+            marginBottom: "16px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          elevation={4}
+        >
+          <CardHeader
+            title={
+              <Box
+                display='flex'
+                flexDirection='row'
+                alignItems='center'
+                gap='8px'
+                onClick={() => setExpanded((prev) => !prev)}
+              >
+                <Typography variant='h6' component='div'>
+                  {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+                </Typography>
+                <Chip
+                  size='small'
+                  label={`${submission.files.length} ${
+                    submission.files.length === 1 ? "File" : "Files"
+                  }`}
+                />
+                {submission.graded && (
+                  <Chip
+                    size='small'
+                    label={`Graded: ${submission.rubric?.fields.reduce(
+                      (total, field) => {
+                        return total + field.score;
+                      },
+                      0
+                    )} / ${submission.inject.rubric.max_score}`}
+                    color='success'
+                    sx={{ marginLeft: "8px" }}
+                  />
+                )}
+              </Box>
+            }
+            action={
+              <Box display='flex' flexDirection='row' gap='12px'>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  gap='12px'
+                  padding='0px 4px'
+                  overflow='hidden'
+                >
+                  <Slide
+                    in={expanded}
+                    timeout={300}
+                    direction='left'
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    <Button
+                      variant='contained'
+                      color='success'
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                    >
+                      Grade
+                    </Button>
+                  </Slide>
+                </Box>
+                <IconButton onClick={() => setExpanded((prev) => !prev)}>
+                  {expanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+              </Box>
+            }
+          />
+          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+          <Collapse
+            in={expanded}
+            timeout={300}
+            onEnter={() => {
+              setRenderPanel(true);
+            }}
+            onExited={() => {
+              setRenderPanel(false);
+            }}
+          >
+            {renderPanel && (
+              <CardContent>
+                {submission.notes && (
+                  <TextField
+                    label='Notes'
+                    value={submission.notes}
+                    multiline
+                    fullWidth
+                    sx={{ marginBottom: "8px" }}
+                  />
+                )}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "8px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {submission.files.map((file) => (
+                    <Chip
+                      key={file.id}
+                      label={
+                        file.name.length > 25
+                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
+                              file.name.length - 10
+                            )}`
+                          : file.name
+                      }
+                      onClick={() =>
+                        window.open(
+                          "http://localhost:8080" + file.url,
+                          "_blank"
+                        )
+                      }
+                    />
+                  ))}
+                </Box>
+              </CardContent>
+            )}
+          </Collapse>
+        </Card>
+      </Grow>
+    </>
   );
 }
 
 type TeamSubmissionsPanelProps = {
   user: SubmissionsQuery["injectSubmissionsByUser"][0]["user"];
   submissions: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"];
+  handleRefetch: () => void;
 };
 
 function TeamSubmissionsPanel({
   user,
   submissions,
+  handleRefetch,
 }: TeamSubmissionsPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
+
+  const highestScore =
+    submissions.filter((submission) => submission.graded).length === 0
+      ? undefined
+      : submissions
+          .filter((submission) => submission.graded)
+          .sort((a, b) => {
+            return (
+              (b.rubric?.fields.reduce(
+                (total, field) => total + field.score,
+                0
+              ) ?? 0) -
+              (a.rubric?.fields.reduce(
+                (total, field) => total + field.score,
+                0
+              ) ?? 0)
+            );
+          })[0]
+          .rubric?.fields.reduce((total, field) => total + field.score, 0) ??
+        undefined;
 
   return (
     <Grow in={true}>
@@ -459,8 +787,9 @@ function TeamSubmissionsPanel({
               flexDirection='row'
               alignItems='center'
               onClick={() => setExpanded((prev) => !prev)}
+              gap='8px'
             >
-              <Typography variant='h6' component='div' marginRight='24px'>
+              <Typography variant='h6' component='div'>
                 {user.username}
               </Typography>
               <Chip
@@ -470,6 +799,15 @@ function TeamSubmissionsPanel({
                 size='small'
                 color={submissions.length == 0 ? "error" : "success"}
               />
+              {highestScore !== undefined &&
+                submissions.filter((submission) => submission.graded).length >
+                  0 && (
+                  <Chip
+                    label={`Graded: ${highestScore}/${submissions[0].inject.rubric.max_score}`}
+                    color='success'
+                    size='small'
+                  />
+                )}
             </Box>
           }
           action={
@@ -503,6 +841,7 @@ function TeamSubmissionsPanel({
                     key={i}
                     submission={submission}
                     title={`Submission ${submissions.length - i}`}
+                    handleRefetch={handleRefetch}
                   />
                 ))
               )}
@@ -516,9 +855,10 @@ function TeamSubmissionsPanel({
 
 type GradeInjectPanelProps = {
   inject: InjectsQuery["injects"][0];
+  handleRefetch: () => void;
 };
 
-function GradeInjectPanel({ inject }: GradeInjectPanelProps) {
+function GradeInjectPanel({ inject, handleRefetch }: GradeInjectPanelProps) {
   const { data, loading, error } = useSubmissionsQuery({
     variables: {
       inject_id: inject.id,
@@ -550,6 +890,7 @@ function GradeInjectPanel({ inject }: GradeInjectPanelProps) {
           key={user.number}
           user={user}
           submissions={submissions}
+          handleRefetch={handleRefetch}
         />
       ))}
     </CardContent>
