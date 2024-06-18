@@ -451,9 +451,19 @@ function GradeSubmissonModal({
                     variant='outlined'
                     size='small'
                     type='number'
-                    value={field.score}
+                    value={field.score.toString().replace(/^0+/, "")}
                     onChange={(e) => {
                       const newScore = parseInt(e.target.value, 10);
+
+                      if (isNaN(newScore)) {
+                        setRubricInput((prev) => ({
+                          ...prev,
+                          fields: prev.fields.map((f, index) =>
+                            index === i ? { ...f, score: 0 } : f
+                          ),
+                        }));
+                        return;
+                      }
 
                       const maxScore =
                         submission.inject.rubric.fields.find(
