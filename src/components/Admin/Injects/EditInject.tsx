@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Suspense } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 import {
@@ -33,9 +33,11 @@ import { enqueueSnackbar } from "notistack";
 import { DeleteInjectModal } from "../..";
 import {
   InjectsQuery,
+  RubricInput,
   RubricTemplateInput,
   SubmissionsQuery,
   useDeleteInjectMutation,
+  useGradeSubmissionMutation,
   useSubmissionsQuery,
   useUpdateInjectMutation,
 } from "../../../graph";
@@ -331,9 +333,45 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
 type GradeSubmissonModalProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
 };
 
-function GradeSubmissonModal({ open, setOpen }: GradeSubmissonModalProps) {
+function GradeSubmissonModal({
+  open,
+  setOpen,
+  submission,
+}: GradeSubmissonModalProps) {
+  const [gradeSubmissionMutation] = useGradeSubmissionMutation({
+    onCompleted: () => {
+      enqueueSnackbar("Submission graded successfully", { variant: "success" });
+    },
+    onError: (error) => {
+      enqueueSnackbar(error.message, { variant: "error" });
+    },
+  });
+
+  const [rubricInput, setRubricInput] = useState<RubricInput>({
+    fields: submission.inject.rubric.fields.map((field) => ({
+      name: field.name,
+      score:
+        submission.rubric?.fields.find((f) => f.name === field.name)?.score ??
+        0,
+      notes:
+        submission.rubric?.fields.find((f) => f.name === field.name)?.notes ??
+        "",
+    })),
+    notes: submission.rubric?.notes ?? "",
+  });
+
+  const submitGrade = () => {
+    gradeSubmissionMutation({
+      variables: {
+        submission_id: submission.id,
+        rubric: rubricInput,
+      },
+    });
+  };
+
   return (
     <Modal
       open={open}
@@ -363,7 +401,7 @@ function GradeSubmissonModal({ open, setOpen }: GradeSubmissonModalProps) {
             alignItems: "center",
           }}
         >
-          <Typography variant='h4' align='center'>
+          <Typography variant='h4' align='center' onClick={submitGrade}>
             Grade Submission
           </Typography>
         </Box>
@@ -387,7 +425,11 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
 
   return (
     <>
-      <GradeSubmissonModal open={open} setOpen={setOpen} />
+      <GradeSubmissonModal
+        open={open}
+        setOpen={setOpen}
+        submission={submission}
+      />
       <Grow in={true}>
         <Card
           sx={{
