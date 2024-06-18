@@ -296,7 +296,12 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
                   </CardContent>
                 }
               >
-                {renderPanel && <GradeInjectPanel inject={inject} />}
+                {renderPanel && (
+                  <GradeInjectPanel
+                    inject={inject}
+                    handleRefetch={handleRefetch}
+                  />
+                )}
               </Suspense>
             ) : (
               <Suspense
@@ -334,16 +339,20 @@ type GradeSubmissonModalProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
+  handleRefetch: () => void;
 };
 
 function GradeSubmissonModal({
   open,
   setOpen,
   submission,
+  handleRefetch,
 }: GradeSubmissonModalProps) {
   const [gradeSubmissionMutation] = useGradeSubmissionMutation({
     onCompleted: () => {
       enqueueSnackbar("Submission graded successfully", { variant: "success" });
+      handleRefetch();
+      setOpen(false);
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -571,9 +580,14 @@ function GradeSubmissonModal({
 type SubmissionPanelProps = {
   submission: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"][0];
   title: string;
+  handleRefetch: () => void;
 };
 
-function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
+function SubmissionPanel({
+  submission,
+  title,
+  handleRefetch,
+}: SubmissionPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
 
@@ -587,6 +601,7 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
         open={open}
         setOpen={setOpen}
         submission={submission}
+        handleRefetch={handleRefetch}
       />
       <Grow in={true}>
         <Card
@@ -724,11 +739,13 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
 type TeamSubmissionsPanelProps = {
   user: SubmissionsQuery["injectSubmissionsByUser"][0]["user"];
   submissions: SubmissionsQuery["injectSubmissionsByUser"][0]["submissions"];
+  handleRefetch: () => void;
 };
 
 function TeamSubmissionsPanel({
   user,
   submissions,
+  handleRefetch,
 }: TeamSubmissionsPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
@@ -824,6 +841,7 @@ function TeamSubmissionsPanel({
                     key={i}
                     submission={submission}
                     title={`Submission ${submissions.length - i}`}
+                    handleRefetch={handleRefetch}
                   />
                 ))
               )}
@@ -837,9 +855,10 @@ function TeamSubmissionsPanel({
 
 type GradeInjectPanelProps = {
   inject: InjectsQuery["injects"][0];
+  handleRefetch: () => void;
 };
 
-function GradeInjectPanel({ inject }: GradeInjectPanelProps) {
+function GradeInjectPanel({ inject, handleRefetch }: GradeInjectPanelProps) {
   const { data, loading, error } = useSubmissionsQuery({
     variables: {
       inject_id: inject.id,
@@ -871,6 +890,7 @@ function GradeInjectPanel({ inject }: GradeInjectPanelProps) {
           key={user.number}
           user={user}
           submissions={submissions}
+          handleRefetch={handleRefetch}
         />
       ))}
     </CardContent>
