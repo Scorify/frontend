@@ -599,7 +599,7 @@ function SubmissionPanel({ submission, title }: SubmissionPanelProps) {
                 display='flex'
                 flexDirection='row'
                 alignItems='center'
-                gap='24px'
+                gap='8px'
                 onClick={() => setExpanded((prev) => !prev)}
               >
                 <Typography variant='h6' component='div'>
@@ -729,6 +729,26 @@ function TeamSubmissionsPanel({
   const [expanded, setExpanded] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
 
+  const highestScore =
+    submissions.filter((submission) => submission.graded).length === 0
+      ? undefined
+      : submissions
+          .filter((submission) => submission.graded)
+          .sort((a, b) => {
+            return (
+              (b.rubric?.fields.reduce(
+                (total, field) => total + field.score,
+                0
+              ) ?? 0) -
+              (a.rubric?.fields.reduce(
+                (total, field) => total + field.score,
+                0
+              ) ?? 0)
+            );
+          })[0]
+          .rubric?.fields.reduce((total, field) => total + field.score, 0) ??
+        undefined;
+
   return (
     <Grow in={true}>
       <Card
@@ -746,8 +766,9 @@ function TeamSubmissionsPanel({
               flexDirection='row'
               alignItems='center'
               onClick={() => setExpanded((prev) => !prev)}
+              gap='8px'
             >
-              <Typography variant='h6' component='div' marginRight='24px'>
+              <Typography variant='h6' component='div'>
                 {user.username}
               </Typography>
               <Chip
@@ -757,6 +778,15 @@ function TeamSubmissionsPanel({
                 size='small'
                 color={submissions.length == 0 ? "error" : "success"}
               />
+              {highestScore !== undefined &&
+                submissions.filter((submission) => submission.graded).length >
+                  0 && (
+                  <Chip
+                    label={`Graded: ${highestScore}/${submissions[0].inject.rubric.max_score}`}
+                    color='success'
+                    size='small'
+                  />
+                )}
             </Box>
           }
           action={
