@@ -451,7 +451,11 @@ function GradeSubmissonModal({
                     variant='outlined'
                     size='small'
                     type='number'
-                    value={field.score.toString().replace(/^0+/, "")}
+                    value={
+                      field.score.toString().replace(/^0+/, "") === ""
+                        ? "0"
+                        : field.score.toString().replace(/^0+/, "")
+                    }
                     onChange={(e) => {
                       const newScore = parseInt(e.target.value, 10);
 
