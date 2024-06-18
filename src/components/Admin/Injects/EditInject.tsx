@@ -404,6 +404,150 @@ function GradeSubmissonModal({
           <Typography variant='h4' align='center' onClick={submitGrade}>
             Grade Submission
           </Typography>
+          <Paper
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+              width: "100%",
+              marginTop: "16px",
+              padding: "16px",
+            }}
+            elevation={1}
+          >
+            {rubricInput.fields.map((field, i) => (
+              <Paper key={i} elevation={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "12px",
+                    gap: "16px",
+                  }}
+                >
+                  <TextField
+                    label='Field Name'
+                    variant='outlined'
+                    size='small'
+                    value={field.name}
+                  />
+                  <TextField
+                    label='Notes'
+                    variant='outlined'
+                    size='small'
+                    value={field.notes}
+                    onChange={(e) => {
+                      setRubricInput((prev) => ({
+                        ...prev,
+                        fields: prev.fields.map((f, index) =>
+                          index === i ? { ...f, notes: e.target.value } : f
+                        ),
+                      }));
+                    }}
+                    fullWidth
+                  />
+                  <TextField
+                    label='Score'
+                    variant='outlined'
+                    size='small'
+                    type='number'
+                    value={field.score}
+                    onChange={(e) => {
+                      const newScore = parseInt(e.target.value, 10);
+
+                      const maxScore =
+                        submission.inject.rubric.fields.find(
+                          (f) => f.name === field.name
+                        )?.max_score ?? 0;
+
+                      setRubricInput((prev) => ({
+                        ...prev,
+                        fields: prev.fields.map((f, index) =>
+                          index === i
+                            ? {
+                                ...f,
+                                score:
+                                  newScore >= maxScore ? maxScore : newScore,
+                              }
+                            : f
+                        ),
+                      }));
+                    }}
+                    inputProps={{ inputMode: "numeric" }}
+                  />
+                  <TextField
+                    label='Max Score'
+                    variant='outlined'
+                    size='small'
+                    value={
+                      submission.inject.rubric.fields.find(
+                        (f) => f.name === field.name
+                      )?.max_score ?? 0
+                    }
+                  />
+                </Box>
+              </Paper>
+            ))}
+            <Divider />
+            <Paper
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "12px",
+                gap: "16px",
+              }}
+              elevation={2}
+            >
+              <TextField
+                label='Notes'
+                variant='outlined'
+                size='small'
+                value={rubricInput.notes}
+                onChange={(e) => {
+                  setRubricInput((prev) => ({
+                    ...prev,
+                    notes: e.target.value,
+                  }));
+                }}
+                multiline
+                rows={4}
+                fullWidth
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: "16px",
+                }}
+              >
+                <TextField
+                  label='Total Score'
+                  variant='outlined'
+                  size='small'
+                  value={rubricInput.fields.reduce((total, field) => {
+                    return total + field.score;
+                  }, 0)}
+                  fullWidth
+                />
+                <TextField
+                  label='Max Score'
+                  variant='outlined'
+                  size='small'
+                  value={submission.inject.rubric.max_score}
+                  fullWidth
+                />
+                <Button
+                  variant='contained'
+                  color='success'
+                  onClick={submitGrade}
+                  fullWidth
+                >
+                  Submit Grade
+                </Button>
+              </Box>
+            </Paper>
+          </Paper>
         </Box>
       </Box>
     </Modal>
