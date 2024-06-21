@@ -150,6 +150,16 @@ export default function Inject({ submission, inject }: props) {
                               size='small'
                               label='Name'
                               value={field.name}
+                            />
+                            <TextField
+                              size='small'
+                              label='Notes'
+                              value={
+                                submission.rubric?.fields.find(
+                                  (submissionFieldName) =>
+                                    submissionFieldName.name === field.name
+                                )?.notes
+                              }
                               fullWidth
                             />
                             <TextField
