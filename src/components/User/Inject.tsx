@@ -39,12 +39,22 @@ function CountdownChip({ target }: countdownChipProps) {
 
   const handleLabel = (durationMs: number) => {
     let duration = Math.floor(durationMs / 1000);
-    if (duration < 60) {
-      return `${Math.floor(duration)} seconds`;
-    } else if (duration < 90 * 60) {
-      return `${Math.floor(duration / 60)} minutes`;
+    if (difference < 0) {
+      if (duration < 60) {
+        return `Closed ${Math.floor(duration)} seconds ago`;
+      } else if (duration < 90 * 60) {
+        return `Closed ${Math.floor(duration / 60)} minutes ago`;
+      } else {
+        return `Closed ${(duration / 3600).toFixed(1)} hours ago`;
+      }
     } else {
-      return `${(duration / 3600).toFixed(1)} hours`;
+      if (duration < 60) {
+        return `Closes in ${Math.floor(duration)} seconds`;
+      } else if (duration < 90 * 60) {
+        return `Closes in ${Math.floor(duration / 60)} minutes`;
+      } else {
+        return `Closes in ${(duration / 3600).toFixed(1)} hours`;
+      }
     }
   };
 
