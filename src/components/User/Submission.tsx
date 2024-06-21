@@ -77,10 +77,16 @@ export default function Inject({ submission, inject }: props) {
                 }
                 size='small'
               />
-              {submission.graded && (
+              {submission.graded && submission.rubric && (
                 <Chip
                   color='success'
-                  label='graded'
+                  label={`Graded: ${submission.rubric.fields.reduce(
+                    (acc, field) => acc + field.score,
+                    0
+                  )}/${inject.rubric.fields.reduce(
+                    (acc, field) => acc + field.max_score,
+                    0
+                  )}`}
                   size='small'
                   sx={{ marginLeft: "8px" }}
                 />
