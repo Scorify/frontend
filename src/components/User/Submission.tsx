@@ -75,7 +75,7 @@ export default function Inject({ submission, inject }: props) {
               />
               {submission.graded && (
                 <Chip
-                  color='default'
+                  color='success'
                   label='graded'
                   size='small'
                   sx={{ marginLeft: "8px" }}
