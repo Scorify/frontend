@@ -247,8 +247,31 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                           size='small'
                           label='Criteria Name'
                           value={field.name}
-                          fullWidth
+                          fullWidth={sortedSubmissions.length == 0}
                         />
+                        {sortedSubmissions.length > 0 && (
+                          <>
+                            <TextField
+                              size='small'
+                              label='Submission Notes'
+                              value={
+                                sortedSubmissions[0].rubric?.fields.find(
+                                  (f) => f.name === field.name
+                                )?.notes
+                              }
+                              fullWidth
+                            />
+                            <TextField
+                              size='small'
+                              label='Submission Score'
+                              value={
+                                sortedSubmissions[0].rubric?.fields.find(
+                                  (f) => f.name === field.name
+                                )?.score
+                              }
+                            />
+                          </>
+                        )}
                         <TextField
                           size='small'
                           label='Criteria Max Points'
@@ -256,11 +279,36 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                         />
                       </Paper>
                     ))}
-                    <TextField
-                      size='small'
-                      label='Inject Max Points'
-                      value={inject.rubric.max_score}
-                    />
+                    {sortedSubmissions.length > 0 && (
+                      <TextField
+                        size='small'
+                        label='Inject Notes'
+                        value={sortedSubmissions[0].rubric?.notes}
+                        fullWidth
+                      />
+                    )}
+                    <Box
+                      display='flex'
+                      flexDirection='row'
+                      gap='8px'
+                      marginTop='8px'
+                    >
+                      <TextField
+                        size='small'
+                        label='Total Score'
+                        value={sortedSubmissions[0].rubric?.fields.reduce(
+                          (acc, field) => acc + field.score,
+                          0
+                        )}
+                        fullWidth
+                      />
+                      <TextField
+                        size='small'
+                        label='Inject Max Points'
+                        value={inject.rubric.max_score}
+                        fullWidth
+                      />
+                    </Box>
                   </Box>
                 )}
               </Paper>
