@@ -11,7 +11,9 @@ import {
   Divider,
   Grow,
   IconButton,
+  Paper,
   Typography,
+  TextField,
 } from "@mui/material";
 
 import { InjectsQuery } from "../../graph";
@@ -40,6 +42,8 @@ export default function Inject({ submission, inject }: props) {
       return `${(duration / 3600).toFixed(1)} hours`;
     }
   };
+
+  console.log(submission.rubric);
 
   const timeLabel = handleTime();
 
@@ -73,10 +77,16 @@ export default function Inject({ submission, inject }: props) {
                 }
                 size='small'
               />
-              {submission.graded && (
+              {submission.graded && submission.rubric && (
                 <Chip
-                  color='default'
-                  label='graded'
+                  color='success'
+                  label={`Graded: ${submission.rubric.fields.reduce(
+                    (acc, field) => acc + field.score,
+                    0
+                  )}/${inject.rubric.fields.reduce(
+                    (acc, field) => acc + field.max_score,
+                    0
+                  )}`}
                   size='small'
                   sx={{ marginLeft: "8px" }}
                 />
@@ -92,10 +102,125 @@ export default function Inject({ submission, inject }: props) {
           }
           onClick={handleExpandClick}
         />
-        {expanded && <Divider sx={{ margin: "0px 20%" }} />}
+        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
 
         <Collapse in={expanded} timeout={300}>
           <CardContent>
+            {submission.graded && submission.rubric && (
+              <>
+                <Typography variant='h4' align='center'>
+                  Rubric
+                </Typography>
+                <Paper
+                  elevation={4}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "16px",
+                    marginTop: "8px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  {submission.graded &&
+                    submission.rubric &&
+                    inject.rubric.fields.length && (
+                      <Box
+                        display='flex'
+                        flexDirection='column'
+                        gap='8px'
+                        width='100%'
+                      >
+                        {inject.rubric.fields.map((field) => (
+                          <Paper
+                            elevation={5}
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              padding: "12px",
+                              width: "100%",
+                              marginBottom: "8px",
+                              gap: "16px",
+                            }}
+                          >
+                            <TextField
+                              size='small'
+                              label='Name'
+                              value={field.name}
+                            />
+                            <TextField
+                              size='small'
+                              label='Notes'
+                              value={
+                                submission.rubric?.fields.find(
+                                  (submissionFieldName) =>
+                                    submissionFieldName.name === field.name
+                                )?.notes
+                              }
+                              fullWidth
+                            />
+                            <TextField
+                              size='small'
+                              label='Scored Points'
+                              value={
+                                submission.rubric?.fields.find(
+                                  (submissionFieldName) =>
+                                    submissionFieldName.name === field.name
+                                )?.score
+                              }
+                            />
+                            <TextField
+                              size='small'
+                              label='Max Points'
+                              value={field.max_score}
+                            />
+                          </Paper>
+                        ))}
+                        <TextField
+                          size='small'
+                          label='Submission Notes'
+                          value={submission.notes}
+                          fullWidth
+                        />
+                        <Box
+                          display='flex'
+                          flexDirection='row'
+                          justifyContent='space-between'
+                          alignItems='center'
+                          width='100%'
+                          marginBottom='8px'
+                          marginTop='8px'
+                          gap='16px'
+                        >
+                          <TextField
+                            size='small'
+                            label='Total Score'
+                            value={submission.rubric.fields.reduce(
+                              (acc, field) =>
+                                acc +
+                                (submission.rubric?.fields.find(
+                                  (submissionFieldName) =>
+                                    submissionFieldName.name === field.name
+                                )?.score || 0),
+                              0
+                            )}
+                            fullWidth
+                          />
+                          <TextField
+                            size='small'
+                            label='Inject Max Points'
+                            value={inject.rubric.max_score}
+                            fullWidth
+                          />
+                        </Box>
+                      </Box>
+                    )}
+                </Paper>
+              </>
+            )}
             <Typography variant='h4' align='center'>
               Files
             </Typography>

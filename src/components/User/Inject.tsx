@@ -39,12 +39,22 @@ function CountdownChip({ target }: countdownChipProps) {
 
   const handleLabel = (durationMs: number) => {
     let duration = Math.floor(durationMs / 1000);
-    if (duration < 60) {
-      return `${Math.floor(duration)} seconds`;
-    } else if (duration < 90 * 60) {
-      return `${Math.floor(duration / 60)} minutes`;
+    if (difference < 0) {
+      if (duration < 60) {
+        return `Closed ${Math.floor(duration)} seconds ago`;
+      } else if (duration < 90 * 60) {
+        return `Closed ${Math.floor(duration / 60)} minutes ago`;
+      } else {
+        return `Closed ${(duration / 3600).toFixed(1)} hours ago`;
+      }
     } else {
-      return `${(duration / 3600).toFixed(1)} hours`;
+      if (duration < 60) {
+        return `Closes in ${Math.floor(duration)} seconds`;
+      } else if (duration < 90 * 60) {
+        return `Closes in ${Math.floor(duration / 60)} minutes`;
+      } else {
+        return `Closes in ${(duration / 3600).toFixed(1)} hours`;
+      }
     }
   };
 
@@ -68,6 +78,20 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
   const [open, setOpen] = useState(false);
 
   const handleExpandClick = () => setExpanded((prev) => !prev);
+
+  const sortedSubmissions = inject.submissions
+    .filter((submission) => submission.graded)
+    .sort(
+      (submissionA, submissionB) =>
+        (submissionB.rubric?.fields.reduce(
+          (acc, field) => acc + field.score,
+          0
+        ) ?? 0) -
+        (submissionA.rubric?.fields.reduce(
+          (acc, field) => acc + field.score,
+          0
+        ) ?? 0)
+    );
 
   return (
     <>
@@ -93,6 +117,19 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                   {inject.title}
                 </Typography>
                 <CountdownChip target={new Date(inject.end_time).getTime()} />
+                {sortedSubmissions.length > 0 && (
+                  <Chip
+                    label={`Score: ${
+                      sortedSubmissions[0].rubric?.fields.reduce(
+                        (acc, field) => acc + field.score,
+                        0
+                      ) ?? 0
+                    }/${inject.rubric.max_score}`}
+                    color='success'
+                    size='small'
+                    sx={{ marginLeft: "12px" }}
+                  />
+                )}
               </Box>
             }
             action={
@@ -210,8 +247,31 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                           size='small'
                           label='Criteria Name'
                           value={field.name}
-                          fullWidth
+                          fullWidth={sortedSubmissions.length == 0}
                         />
+                        {sortedSubmissions.length > 0 && (
+                          <>
+                            <TextField
+                              size='small'
+                              label='Submission Notes'
+                              value={
+                                sortedSubmissions[0].rubric?.fields.find(
+                                  (f) => f.name === field.name
+                                )?.notes
+                              }
+                              fullWidth
+                            />
+                            <TextField
+                              size='small'
+                              label='Submission Score'
+                              value={
+                                sortedSubmissions[0].rubric?.fields.find(
+                                  (f) => f.name === field.name
+                                )?.score
+                              }
+                            />
+                          </>
+                        )}
                         <TextField
                           size='small'
                           label='Criteria Max Points'
@@ -219,11 +279,38 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                         />
                       </Paper>
                     ))}
-                    <TextField
-                      size='small'
-                      label='Inject Max Points'
-                      value={inject.rubric.max_score}
-                    />
+                    {sortedSubmissions.length > 0 && (
+                      <TextField
+                        size='small'
+                        label='Inject Notes'
+                        value={sortedSubmissions[0].rubric?.notes}
+                        fullWidth
+                      />
+                    )}
+                    <Box
+                      display='flex'
+                      flexDirection='row'
+                      gap='8px'
+                      marginTop='8px'
+                    >
+                      {sortedSubmissions.length > 0 && (
+                        <TextField
+                          size='small'
+                          label='Total Score'
+                          value={sortedSubmissions[0].rubric?.fields.reduce(
+                            (acc, field) => acc + field.score,
+                            0
+                          )}
+                          fullWidth
+                        />
+                      )}
+                      <TextField
+                        size='small'
+                        label='Inject Max Points'
+                        value={inject.rubric.max_score}
+                        fullWidth
+                      />
+                    </Box>
                   </Box>
                 )}
               </Paper>
