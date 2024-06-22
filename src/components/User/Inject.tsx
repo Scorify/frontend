@@ -79,6 +79,20 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
 
   const handleExpandClick = () => setExpanded((prev) => !prev);
 
+  const sortedSubmissions = inject.submissions
+    .filter((submission) => submission.graded)
+    .sort(
+      (submissionA, submissionB) =>
+        (submissionB.rubric?.fields.reduce(
+          (acc, field) => acc + field.score,
+          0
+        ) ?? 0) -
+        (submissionA.rubric?.fields.reduce(
+          (acc, field) => acc + field.score,
+          0
+        ) ?? 0)
+    );
+
   return (
     <>
       <SubmitInjectModal
@@ -103,6 +117,19 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                   {inject.title}
                 </Typography>
                 <CountdownChip target={new Date(inject.end_time).getTime()} />
+                {sortedSubmissions.length > 0 && (
+                  <Chip
+                    label={`Score: ${
+                      sortedSubmissions[0].rubric?.fields.reduce(
+                        (acc, field) => acc + field.score,
+                        0
+                      ) ?? 0
+                    }/${inject.rubric.max_score}`}
+                    color='success'
+                    size='small'
+                    sx={{ marginLeft: "12px" }}
+                  />
+                )}
               </Box>
             }
             action={
