@@ -179,6 +179,12 @@ export default function Inject({ submission, inject }: props) {
                             />
                           </Paper>
                         ))}
+                        <TextField
+                          size='small'
+                          label='Submission Notes'
+                          value={submission.notes}
+                          fullWidth
+                        />
                         <Box
                           display='flex'
                           flexDirection='row'
@@ -186,6 +192,7 @@ export default function Inject({ submission, inject }: props) {
                           alignItems='center'
                           width='100%'
                           marginBottom='8px'
+                          marginTop='8px'
                           gap='16px'
                         >
                           <TextField
