@@ -293,15 +293,17 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                       gap='8px'
                       marginTop='8px'
                     >
-                      <TextField
-                        size='small'
-                        label='Total Score'
-                        value={sortedSubmissions[0].rubric?.fields.reduce(
-                          (acc, field) => acc + field.score,
-                          0
-                        )}
-                        fullWidth
-                      />
+                      {sortedSubmissions.length > 0 && (
+                        <TextField
+                          size='small'
+                          label='Total Score'
+                          value={sortedSubmissions[0].rubric?.fields.reduce(
+                            (acc, field) => acc + field.score,
+                            0
+                          )}
+                          fullWidth
+                        />
+                      )}
                       <TextField
                         size='small'
                         label='Inject Max Points'
