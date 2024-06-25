@@ -15,11 +15,11 @@ export default function Admin() {
     }
   }, [meError, navigate]);
 
-  if (!me || meLoading) {
+  if (meLoading) {
     return <Loading />;
   }
 
-  if (me.me?.role !== Role.Admin) {
+  if (me && me.me?.role !== Role.Admin) {
     return <Error code={403} message='Forbidden' />;
   }
 
