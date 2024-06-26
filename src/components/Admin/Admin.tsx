@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { Suspense, useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import { Error, Loading } from "..";
@@ -8,12 +8,14 @@ import { AuthContext } from "../Context";
 export default function Admin() {
   const { me, meLoading, meError } = useContext(AuthContext);
   const navigate = useNavigate();
+  const urlParameters = new URLSearchParams(location.search);
 
   useEffect(() => {
-    if (meError) {
-      navigate("/login");
+    if (meError && location.pathname !== "/login") {
+      urlParameters.set("next", location.pathname);
+      navigate(`/login?${urlParameters.toString()}`);
     }
-  }, [meError, navigate]);
+  }, [meError]);
 
   if (!me || meLoading) {
     return <Loading />;
@@ -23,5 +25,9 @@ export default function Admin() {
     return <Error code={403} message='Forbidden' />;
   }
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <Outlet />
+    </Suspense>
+  );
 }
