@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { Suspense, useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import { Error, Loading } from "..";
@@ -9,9 +9,12 @@ export default function User() {
   const { me, meLoading, meError } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const urlParameters = new URLSearchParams(location.search);
+
   useEffect(() => {
-    if (meError) {
-      navigate("/login");
+    if (meError && location.pathname !== "/login") {
+      urlParameters.set("next", location.pathname);
+      navigate(`/login?${urlParameters.toString()}`);
     }
   }, [meError, navigate]);
 
@@ -23,5 +26,9 @@ export default function User() {
     return <Error code={400} message='Competitor Page' />;
   }
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <Outlet />
+    </Suspense>
+  );
 }
