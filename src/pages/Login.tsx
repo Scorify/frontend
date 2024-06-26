@@ -36,15 +36,9 @@ export default function Login() {
       const next = urlParameters.get("next");
       urlParameters.delete("next");
 
-      console.log({
-        next,
-        jwt,
-        urlParameters: urlParameters.toString(),
-        location: location.pathname,
-        search: location.search,
-        redirect: next || "/",
-      });
       navigate(next || "/");
+    } else if (jwt) {
+      navigate("/");
     }
   }, [jwt]);
 
