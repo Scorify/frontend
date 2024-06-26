@@ -1,20 +1,33 @@
-import { useContext } from "react";
-import { Outlet } from "react-router-dom";
+import { Suspense, useContext, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
-import { Error } from "..";
+import { Error, Loading } from "..";
 import { Role } from "../../graph";
 import { AuthContext } from "../Context";
 
 export default function Admin() {
-  const { me } = useContext(AuthContext);
+  const { me, meLoading, meError } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const urlParameters = new URLSearchParams(location.search);
 
-  if (!me) {
-    return <Error code={401} message='Unauthorized' />;
+  useEffect(() => {
+    if (meError && location.pathname !== "/login") {
+      urlParameters.set("next", location.pathname);
+      navigate(`/login?${urlParameters.toString()}`);
+    }
+  }, [meError]);
+
+  if (!me || meLoading) {
+    return <Loading />;
   }
 
   if (me.me?.role !== Role.Admin) {
     return <Error code={403} message='Forbidden' />;
   }
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <Outlet />
+    </Suspense>
+  );
 }

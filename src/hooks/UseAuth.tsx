@@ -10,6 +10,8 @@ import { Cookies, JWT, RemoveCookie, SetCookie, UpdateCookie } from "../models";
 type returns = {
   jwt: JWT | undefined;
   me: MeQuery | undefined;
+  meLoading: boolean;
+  meError: Error | undefined;
   cookies: Cookies;
   setCookie: SetCookie;
   removeCookie: RemoveCookie;
@@ -21,13 +23,18 @@ export function useAuth(
 ): returns {
   const [cookies, setCookie, removeCookie, updateCookie] = useCookies(["auth"]);
 
-  const { data: me, refetch } = useMeQuery({
+  const {
+    data: me,
+    loading: meLoading,
+    error: meError,
+    refetch: meRefetch,
+  } = useMeQuery({
     onError: (error) => console.error(error),
   });
 
   useEffect(() => {
     apolloClient.clearStore().then(() => {
-      refetch();
+      meRefetch();
     });
   }, [cookies?.auth]);
 
@@ -39,6 +46,8 @@ export function useAuth(
   return {
     jwt,
     me,
+    meLoading,
+    meError,
     cookies,
     setCookie,
     removeCookie,

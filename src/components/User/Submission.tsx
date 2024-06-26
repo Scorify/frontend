@@ -43,8 +43,6 @@ export default function Inject({ submission, inject }: props) {
     }
   };
 
-  console.log(submission.rubric);
-
   const timeLabel = handleTime();
 
   return (

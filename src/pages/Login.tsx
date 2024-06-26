@@ -3,13 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { PasswordInput } from "../components";
 import { AuthContext } from "../components/Context";
 import { useLoginMutation } from "../graph";
 
 export default function Login() {
-  const { setCookie } = useContext(AuthContext);
+  const { setCookie, jwt } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const urlParameters = new URLSearchParams(location.search);
 
   const [loginMutation] = useLoginMutation({
     onCompleted: (data) => {
@@ -20,16 +23,26 @@ export default function Login() {
         secure: data.login.secure,
       });
 
-      navigate("/");
-
       enqueueSnackbar("Logged in successfully", { variant: "success" });
+
+      if (!urlParameters.has("next")) {
+        navigate("/");
+      }
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
       console.error(error);
     },
   });
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (jwt && urlParameters.has("next")) {
+      const next = urlParameters.get("next");
+      urlParameters.delete("next");
+
+      navigate(next || "/");
+    }
+  }, [jwt]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
