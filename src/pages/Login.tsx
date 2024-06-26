@@ -24,6 +24,10 @@ export default function Login() {
       });
 
       enqueueSnackbar("Logged in successfully", { variant: "success" });
+
+      if (!urlParameters.has("next")) {
+        navigate("/");
+      }
     },
     onError: (error) => {
       enqueueSnackbar(error.message, { variant: "error" });
@@ -37,8 +41,6 @@ export default function Login() {
       urlParameters.delete("next");
 
       navigate(next || "/");
-    } else if (jwt) {
-      navigate("/");
     }
   }, [jwt]);
 
