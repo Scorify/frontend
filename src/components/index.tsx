@@ -12,6 +12,7 @@ import CreateUserModal from "./Admin/Users/CreateUserModal";
 import DeleteUserModal from "./Admin/Users/DeleteUserModal";
 import EditUser from "./Admin/Users/EditUser";
 import FileChip from "./Common/FileChip";
+import FileDrop from "./Common/FileDrop";
 import ConfirmModal from "./Core/ConfirmModal";
 import DrawerComponent from "./Core/Drawer";
 import Error from "./Core/Error";
@@ -48,6 +49,7 @@ export {
   EngineState,
   Error,
   FileChip,
+  FileDrop,
   Inject,
   Loading,
   Main,
