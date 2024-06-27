@@ -1,12 +1,6 @@
 import React, { Suspense, useMemo, useState } from "react";
-import { useDropzone } from "react-dropzone";
 
-import {
-  Close,
-  CloudUpload,
-  ExpandLess,
-  ExpandMore,
-} from "@mui/icons-material";
+import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -30,7 +24,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
-import { DeleteInjectModal, FileChip } from "../..";
+import { DeleteInjectModal, FileChip, FileDrop } from "../..";
 import {
   InjectsQuery,
   RubricInput,
@@ -909,21 +903,20 @@ function EditInjectPanel({
   setDeleteFiles,
   inject,
 }: EditInjectPanelProps) {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setNewFiles((prev) => {
-        if (prev) {
-          return prev.concat(acceptedFiles);
-        } else {
-          return acceptedFiles;
-        }
-      });
-    },
-    onError: (error) => {
-      enqueueSnackbar(error.message, { variant: "error" });
-      console.error(error);
-    },
-  });
+  const onDrop = (files: File[]) => {
+    setNewFiles((prev) => {
+      if (prev) {
+        return prev.concat(files);
+      } else {
+        return files;
+      }
+    });
+  };
+
+  const onError = (error: Error) => {
+    enqueueSnackbar(error.message, { variant: "error" });
+    console.error(error);
+  };
 
   return (
     <CardContent>
@@ -1050,36 +1043,7 @@ function EditInjectPanel({
           />
         </Box>
       </Paper>
-      <Paper
-        {...getRootProps()}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "75px",
-          borderRadius: "8px",
-          border: "4px dashed #ccc",
-          cursor: "pointer",
-          margin: "24px 12px 16px 12px",
-        }}
-        elevation={4}
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <Typography variant='h5'>Drop files here...</Typography>
-        ) : (
-          <>
-            <CloudUpload
-              sx={{
-                fontSize: "36px",
-                color: "#ccc",
-                marginRight: "8px",
-              }}
-            />
-            <Typography variant='h6'>Add Files</Typography>
-          </>
-        )}
-      </Paper>
+      <FileDrop onDrop={onDrop} onError={onError} elevation={4} />
       {(newFiles.length > 0 || (inject.files && inject.files.length > 0)) && (
         <Box
           sx={{
