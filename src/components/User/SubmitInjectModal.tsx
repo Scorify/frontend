@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
+import { CloudUpload } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,12 +9,11 @@ import {
   Paper,
   TextField,
   Typography,
-  IconButton,
 } from "@mui/material";
-import { CloudUpload, Close } from "@mui/icons-material";
 import { enqueueSnackbar } from "notistack";
 
 import { InjectsQuery, useSubmitInjectMutation } from "../../graph";
+import FileChip from "../Common/FileChip";
 
 type props = {
   inject: InjectsQuery["injects"][0];
@@ -160,42 +160,16 @@ export default function SubmitInjectModal({
               sx={{
                 display: "flex",
                 flexWrap: "wrap",
-                mt: "8px",
+                mt: "12px",
                 justifyContent: "center",
               }}
             >
               {files.map((file, i) => (
-                <Paper
-                  key={file.name}
-                  sx={{
-                    padding: "0px 12px",
-                    borderRadius: "16px",
-                    margin: "2px",
-                    display: "flex",
-                    alignItems: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() =>
-                    window.open(URL.createObjectURL(file), "_blank")
-                  }
-                >
-                  <Typography variant='body2'>
-                    {file.name.length > 25
-                      ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                          file.name.length - 10
-                        )}`
-                      : file.name}
-                  </Typography>
-                  <IconButton
-                    sx={{ ml: "auto" }}
-                    onClick={(e) => {
-                      removeFile(i);
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Close />
-                  </IconButton>
-                </Paper>
+                <FileChip
+                  key={`${file.name}-${i}`}
+                  file={file}
+                  onDelete={() => removeFile(i)}
+                />
               ))}
             </Box>
           )}

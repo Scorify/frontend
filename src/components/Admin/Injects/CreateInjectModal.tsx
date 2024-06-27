@@ -18,6 +18,7 @@ import { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
 
 import { useCreateInjectMutation, RubricTemplateInput } from "../../../graph";
+import FileChip from "../../Common/FileChip";
 
 type props = {
   open: boolean;
@@ -288,39 +289,20 @@ export default function CreateCheckModal({
                 )}
               </Paper>
               {files && files.length > 0 && (
-                <Box sx={{ display: "flex", flexWrap: "wrap", mt: "8px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    mt: "8px",
+                    gap: "8px",
+                  }}
+                >
                   {files.map((file, i) => (
-                    <Paper
-                      key={file.name}
-                      sx={{
-                        padding: "0px 12px",
-                        borderRadius: "16px",
-                        margin: "2px",
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                      }}
-                      onClick={() =>
-                        window.open(URL.createObjectURL(file), "_blank")
-                      }
-                    >
-                      <Typography variant='body2'>
-                        {file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name}
-                      </Typography>
-                      <IconButton
-                        sx={{ ml: "auto" }}
-                        onClick={(e) => {
-                          removeFile(i);
-                          e.stopPropagation();
-                        }}
-                      >
-                        <Close />
-                      </IconButton>
-                    </Paper>
+                    <FileChip
+                      key={`${file.name}-${i}`}
+                      file={file}
+                      onDelete={() => removeFile(i)}
+                    />
                   ))}
                 </Box>
               )}

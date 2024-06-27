@@ -30,7 +30,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
-import { DeleteInjectModal } from "../..";
+import { DeleteInjectModal, FileChip } from "../..";
 import {
   InjectsQuery,
   RubricInput,
@@ -709,22 +709,7 @@ function SubmissionPanel({
                   }}
                 >
                   {submission.files.map((file) => (
-                    <Chip
-                      key={file.id}
-                      label={
-                        file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name
-                      }
-                      onClick={() =>
-                        window.open(
-                          "http://localhost:8080" + file.url,
-                          "_blank"
-                        )
-                      }
-                    />
+                    <FileChip key={file.id} file={file} />
                   ))}
                 </Box>
               </CardContent>
@@ -1105,19 +1090,10 @@ function EditInjectPanel({
           }}
         >
           {inject.files.map((file) => (
-            <Chip
+            <FileChip
               key={file.id}
-              label={
-                file.name.length > 25
-                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                      file.name.length - 10
-                    )}`
-                  : file.name
-              }
+              file={file}
               color={deleteFiles.includes(file.id) ? "error" : "default"}
-              onClick={() =>
-                window.open("http://localhost:8080" + file.url, "_blank")
-              }
               onDelete={() => {
                 if (deleteFiles.includes(file.id)) {
                   setDeleteFiles((prev) => prev.filter((id) => id != file.id));
@@ -1128,16 +1104,9 @@ function EditInjectPanel({
             />
           ))}
           {newFiles.map((file, i) => (
-            <Chip
+            <FileChip
               key={`${file.name}-${i}`}
-              label={
-                file.name.length > 25
-                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                      file.name.length - 10
-                    )}`
-                  : file.name
-              }
-              onClick={() => window.open(URL.createObjectURL(file), "_blank")}
+              file={file}
               color='success'
               onDelete={() => {
                 setNewFiles((prev) => prev.filter((_, index) => i != index));

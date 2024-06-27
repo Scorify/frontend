@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 
 import { InjectsQuery } from "../../graph";
+import FileChip from "../Common/FileChip";
 
 type props = {
   submission: InjectsQuery["injects"][0]["submissions"][0];
@@ -234,19 +235,7 @@ export default function Inject({ submission, inject }: props) {
             >
               {submission.files.length ? (
                 submission.files.map((file) => (
-                  <Chip
-                    key={file.id}
-                    label={
-                      file.name.length > 25
-                        ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                            file.name.length - 10
-                          )}`
-                        : file.name
-                    }
-                    onClick={() =>
-                      window.open("http://localhost:8080" + file.url, "_blank")
-                    }
-                  />
+                  <FileChip key={file.id} file={file} />
                 ))
               ) : (
                 <Typography variant='body1' align='center'>
