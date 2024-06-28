@@ -11,10 +11,11 @@ import EditInject from "./Admin/Injects/EditInject";
 import CreateUserModal from "./Admin/Users/CreateUserModal";
 import DeleteUserModal from "./Admin/Users/DeleteUserModal";
 import EditUser from "./Admin/Users/EditUser";
+import Dropdown from "./Common/Dropdown";
 import FileChip from "./Common/FileChip";
 import FileDrop from "./Common/FileDrop";
 import ConfirmModal from "./Core/ConfirmModal";
-import DrawerComponent from "./Core/Drawer";
+import Drawer from "./Core/Drawer";
 import Error from "./Core/Error";
 import Loading from "./Core/Loading";
 import Main from "./Core/Main";
@@ -42,7 +43,8 @@ export {
   DeleteCheckModal,
   DeleteInjectModal,
   DeleteUserModal,
-  DrawerComponent as Drawer,
+  Drawer,
+  Dropdown,
   EditCheck,
   EditInject,
   EditUser,
