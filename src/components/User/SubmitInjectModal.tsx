@@ -1,19 +1,11 @@
 import { useState } from "react";
-import { useDropzone } from "react-dropzone";
 
-import {
-  Box,
-  Button,
-  Modal,
-  Paper,
-  TextField,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import { CloudUpload, Close } from "@mui/icons-material";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
 import { InjectsQuery, useSubmitInjectMutation } from "../../graph";
+import FileChip from "../Common/FileChip";
+import FileDrop from "../Common/FileDrop";
 
 type props = {
   inject: InjectsQuery["injects"][0];
@@ -52,17 +44,20 @@ export default function SubmitInjectModal({
     });
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setFiles((prev) => {
-        if (prev) {
-          return prev.concat(acceptedFiles);
-        } else {
-          return acceptedFiles;
-        }
-      });
-    },
-  });
+  const onDrop = (files: File[]) => {
+    setFiles((prev) => {
+      if (prev) {
+        return prev.concat(files);
+      } else {
+        return files;
+      }
+    });
+  };
+
+  const onError = (error: Error) => {
+    enqueueSnackbar(error.message, { variant: "error" });
+    console.error(error);
+  };
 
   return (
     <Modal
@@ -120,89 +115,31 @@ export default function SubmitInjectModal({
             }}
             required
           />
-          <Paper
-            {...getRootProps()}
+        </Box>
+        <FileDrop onDrop={onDrop} onError={onError} />
+        {files && files.length > 0 && (
+          <Box
             sx={{
               display: "flex",
+              flexWrap: "wrap",
+              mt: "12px",
+              mb: files.length > 0 ? "12px" : "0px",
               justifyContent: "center",
-              alignItems: "center",
-              minHeight: "75px",
-              padding: "12px",
-              borderRadius: "8px",
-              border: "4px dashed #ccc",
-              cursor: "pointer",
-              marginTop: "24px",
-              width: "100%",
             }}
           >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <Typography variant='h5' sx={{ color: "#999" }}>
-                Drop files here...
-              </Typography>
-            ) : (
-              <>
-                <CloudUpload
-                  sx={{
-                    fontSize: "36px",
-                    color: "#ccc",
-                    marginRight: "8px",
-                  }}
-                />
-                <Typography variant='h6' sx={{ color: "#999" }}>
-                  Add Files
-                </Typography>
-              </>
-            )}
-          </Paper>
-          {files && files.length > 0 && (
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                mt: "8px",
-                justifyContent: "center",
-              }}
-            >
-              {files.map((file, i) => (
-                <Paper
-                  key={file.name}
-                  sx={{
-                    padding: "0px 12px",
-                    borderRadius: "16px",
-                    margin: "2px",
-                    display: "flex",
-                    alignItems: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() =>
-                    window.open(URL.createObjectURL(file), "_blank")
-                  }
-                >
-                  <Typography variant='body2'>
-                    {file.name.length > 25
-                      ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                          file.name.length - 10
-                        )}`
-                      : file.name}
-                  </Typography>
-                  <IconButton
-                    sx={{ ml: "auto" }}
-                    onClick={(e) => {
-                      removeFile(i);
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Close />
-                  </IconButton>
-                </Paper>
-              ))}
-            </Box>
-          )}
+            {files.map((file, i) => (
+              <FileChip
+                key={`${file.name}-${i}`}
+                file={file}
+                onDelete={() => removeFile(i)}
+              />
+            ))}
+          </Box>
+        )}
 
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Button
             variant='contained'
-            sx={{ marginTop: "24px" }}
             disabled={files !== null && files.length === 0}
             onClick={() => {
               submitInjectMutation({
@@ -213,6 +150,7 @@ export default function SubmitInjectModal({
                 },
               });
             }}
+            sx={{ alignSelf: "center" }}
           >
             Submit Inject
           </Button>

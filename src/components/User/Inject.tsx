@@ -21,6 +21,7 @@ import {
 import { InjectsQuery } from "../../graph";
 import Submission from "./Submission";
 import SubmitInjectModal from "./SubmitInjectModal";
+import FileChip from "../Common/FileChip";
 
 type countdownChipProps = {
   target: number;
@@ -184,22 +185,7 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
               >
                 {inject.files.length ? (
                   inject.files.map((file) => (
-                    <Chip
-                      key={file.id}
-                      label={
-                        file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name
-                      }
-                      onClick={() =>
-                        window.open(
-                          "http://localhost:8080" + file.url,
-                          "_blank"
-                        )
-                      }
-                    />
+                    <FileChip key={file.id} file={file} />
                   ))
                 ) : (
                   <Typography variant='body1' align='center'>

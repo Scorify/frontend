@@ -1,12 +1,6 @@
-import React, { Suspense, useMemo, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import React, { useMemo, useState } from "react";
 
-import {
-  Close,
-  CloudUpload,
-  ExpandLess,
-  ExpandMore,
-} from "@mui/icons-material";
+import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -30,7 +24,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
-import { DeleteInjectModal } from "../..";
+import { DeleteInjectModal, Dropdown, FileChip, FileDrop } from "../..";
 import {
   InjectsQuery,
   RubricInput,
@@ -120,7 +114,6 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   });
 
   const [grading, setGrading] = useState(false);
-  const [renderPanel, setRenderPanel] = useState(false);
 
   const handleSave = () => {
     if (
@@ -156,182 +149,100 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
   };
 
   return (
-    <>
-      <DeleteInjectModal
-        inject={inject.title}
-        open={open}
-        setOpen={setOpen}
-        handleDelete={handleDelete}
-      />
-      <Grow in={true}>
-        <Card
-          sx={{
-            width: "100%",
-            marginBottom: "24px",
-            display: visible ? "block" : "none",
-          }}
-          variant='elevation'
-        >
-          <CardHeader
-            title={
-              <Box display='flex' flexDirection='row' alignItems='center'>
-                {expanded && !grading ? (
-                  <TextField
-                    label='Name'
-                    value={title}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    onChange={(e) => {
-                      setTitle(e.target.value);
-                    }}
-                    sx={{ marginRight: "24px" }}
-                    size='small'
-                  />
-                ) : (
-                  <Typography variant='h6' component='div' marginRight='24px'>
-                    {inject.title}
-                  </Typography>
-                )}
-              </Box>
-            }
-            action={
-              <Box display='flex' flexDirection='row' gap='12px'>
-                <Box
-                  display='flex'
-                  flexDirection='row'
-                  gap='12px'
-                  padding='0px 4px'
-                  overflow='hidden'
-                >
-                  <Slide
-                    in={expanded}
-                    timeout={300}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      onClick={(e) => {
-                        setGrading((prev) => !prev);
-                        e.stopPropagation();
-                      }}
-                      color='info'
-                    >
-                      {grading ? "Switch to Editting" : "Switch to Grading"}
-                    </Button>
-                  </Slide>
-                  <Slide
-                    in={expanded}
-                    timeout={300}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      onClick={() => {
-                        setOpen(true);
-                      }}
-                      color='error'
-                    >
-                      Delete
-                    </Button>
-                  </Slide>
-                  <Slide
-                    in={
-                      titleChanged ||
-                      startTimeChanged ||
-                      endTimeChanged ||
-                      filesChanged ||
-                      rubricChanged
-                    }
-                    timeout={300}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      color='success'
-                      onClick={(e) => {
-                        if (!expanded) {
-                          e.stopPropagation();
-                        }
-
-                        handleSave();
-                      }}
-                    >
-                      Save
-                    </Button>
-                  </Slide>
-                </Box>
-                <IconButton>
-                  {expanded ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Box>
-            }
-            onClick={() => {
-              setExpanded((prev) => !prev);
+    <Dropdown
+      modal={
+        <DeleteInjectModal
+          inject={inject.title}
+          open={open}
+          setOpen={setOpen}
+          handleDelete={handleDelete}
+        />
+      }
+      title={
+        expanded && !grading ? (
+          <TextField
+            label='Name'
+            value={title}
+            onClick={(e) => {
+              e.stopPropagation();
             }}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+            sx={{ marginRight: "24px" }}
+            size='small'
           />
-          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
+        ) : (
+          <Typography variant='h6' component='div' marginRight='24px'>
+            {inject.title}
+          </Typography>
+        )
+      }
+      expandableButtons={[
+        <Button
+          variant='contained'
+          onClick={(e) => {
+            setGrading((prev) => !prev);
+            e.stopPropagation();
+          }}
+          color='info'
+        >
+          {grading ? "Switch to Editting" : "Switch to Grading"}
+        </Button>,
+        <Button
+          variant='contained'
+          onClick={() => {
+            setOpen(true);
+          }}
+          color='error'
+        >
+          Delete
+        </Button>,
+      ]}
+      toggleButton={
+        <Button
+          variant='contained'
+          color='success'
+          onClick={(e) => {
+            if (!expanded) {
+              e.stopPropagation();
+            }
 
-          <Collapse
-            in={expanded}
-            timeout={300}
-            onEnter={() => {
-              setRenderPanel(true);
-            }}
-            onExited={() => {
-              setRenderPanel(false);
-            }}
-          >
-            {grading ? (
-              <Suspense
-                fallback={
-                  <CardContent>
-                    <CircularProgress />
-                  </CardContent>
-                }
-              >
-                {renderPanel && (
-                  <GradeInjectPanel
-                    inject={inject}
-                    handleRefetch={handleRefetch}
-                  />
-                )}
-              </Suspense>
-            ) : (
-              <Suspense
-                fallback={
-                  <CardContent>
-                    <CircularProgress />
-                  </CardContent>
-                }
-              >
-                {renderPanel && (
-                  <EditInjectPanel
-                    rubric={rubric}
-                    setRubric={setRubric}
-                    startTime={startTime}
-                    setStartTime={setStartTime}
-                    endTime={endTime}
-                    setEndTime={setEndTime}
-                    newFiles={newFiles}
-                    setNewFiles={setNewFiles}
-                    deleteFiles={deleteFiles}
-                    setDeleteFiles={setDeleteFiles}
-                    inject={inject}
-                  />
-                )}
-              </Suspense>
-            )}
-          </Collapse>
-        </Card>
-      </Grow>
-    </>
+            handleSave();
+          }}
+        >
+          Save
+        </Button>
+      }
+      toggleButtonVisible={
+        titleChanged ||
+        startTimeChanged ||
+        endTimeChanged ||
+        filesChanged ||
+        rubricChanged
+      }
+      visible={visible}
+      expanded={expanded}
+      setExpanded={setExpanded}
+    >
+      {grading ? (
+        <GradeInjectPanel inject={inject} handleRefetch={handleRefetch} />
+      ) : (
+        <EditInjectPanel
+          rubric={rubric}
+          setRubric={setRubric}
+          startTime={startTime}
+          setStartTime={setStartTime}
+          endTime={endTime}
+          setEndTime={setEndTime}
+          newFiles={newFiles}
+          setNewFiles={setNewFiles}
+          deleteFiles={deleteFiles}
+          setDeleteFiles={setDeleteFiles}
+          inject={inject}
+        />
+      )}
+    </Dropdown>
   );
 }
 
@@ -709,22 +620,7 @@ function SubmissionPanel({
                   }}
                 >
                   {submission.files.map((file) => (
-                    <Chip
-                      key={file.id}
-                      label={
-                        file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name
-                      }
-                      onClick={() =>
-                        window.open(
-                          "http://localhost:8080" + file.url,
-                          "_blank"
-                        )
-                      }
-                    />
+                    <FileChip key={file.id} file={file} />
                   ))}
                 </Box>
               </CardContent>
@@ -924,21 +820,20 @@ function EditInjectPanel({
   setDeleteFiles,
   inject,
 }: EditInjectPanelProps) {
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setNewFiles((prev) => {
-        if (prev) {
-          return prev.concat(acceptedFiles);
-        } else {
-          return acceptedFiles;
-        }
-      });
-    },
-    onError: (error) => {
-      enqueueSnackbar(error.message, { variant: "error" });
-      console.error(error);
-    },
-  });
+  const onDrop = (files: File[]) => {
+    setNewFiles((prev) => {
+      if (prev) {
+        return prev.concat(files);
+      } else {
+        return files;
+      }
+    });
+  };
+
+  const onError = (error: Error) => {
+    enqueueSnackbar(error.message, { variant: "error" });
+    console.error(error);
+  };
 
   return (
     <CardContent>
@@ -1065,36 +960,7 @@ function EditInjectPanel({
           />
         </Box>
       </Paper>
-      <Paper
-        {...getRootProps()}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "75px",
-          borderRadius: "8px",
-          border: "4px dashed #ccc",
-          cursor: "pointer",
-          margin: "24px 12px 16px 12px",
-        }}
-        elevation={4}
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <Typography variant='h5'>Drop files here...</Typography>
-        ) : (
-          <>
-            <CloudUpload
-              sx={{
-                fontSize: "36px",
-                color: "#ccc",
-                marginRight: "8px",
-              }}
-            />
-            <Typography variant='h6'>Add Files</Typography>
-          </>
-        )}
-      </Paper>
+      <FileDrop onDrop={onDrop} onError={onError} elevation={4} />
       {(newFiles.length > 0 || (inject.files && inject.files.length > 0)) && (
         <Box
           sx={{
@@ -1105,19 +971,10 @@ function EditInjectPanel({
           }}
         >
           {inject.files.map((file) => (
-            <Chip
+            <FileChip
               key={file.id}
-              label={
-                file.name.length > 25
-                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                      file.name.length - 10
-                    )}`
-                  : file.name
-              }
+              file={file}
               color={deleteFiles.includes(file.id) ? "error" : "default"}
-              onClick={() =>
-                window.open("http://localhost:8080" + file.url, "_blank")
-              }
               onDelete={() => {
                 if (deleteFiles.includes(file.id)) {
                   setDeleteFiles((prev) => prev.filter((id) => id != file.id));
@@ -1128,16 +985,9 @@ function EditInjectPanel({
             />
           ))}
           {newFiles.map((file, i) => (
-            <Chip
+            <FileChip
               key={`${file.name}-${i}`}
-              label={
-                file.name.length > 25
-                  ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                      file.name.length - 10
-                    )}`
-                  : file.name
-              }
-              onClick={() => window.open(URL.createObjectURL(file), "_blank")}
+              file={file}
               color='success'
               onDelete={() => {
                 setNewFiles((prev) => prev.filter((_, index) => i != index));

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useDropzone } from "react-dropzone";
 
-import { Close, CloudUpload } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -17,7 +16,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
 
-import { useCreateInjectMutation, RubricTemplateInput } from "../../../graph";
+import { RubricTemplateInput, useCreateInjectMutation } from "../../../graph";
+import FileChip from "../../Common/FileChip";
+import FileDrop from "../../Common/FileDrop";
 
 type props = {
   open: boolean;
@@ -50,17 +51,20 @@ export default function CreateCheckModal({
     fields: [],
   });
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setFiles((prev) => {
-        if (prev) {
-          return prev.concat(acceptedFiles);
-        } else {
-          return acceptedFiles;
-        }
-      });
-    },
-  });
+  const onDrop = (files: File[]) => {
+    setFiles((prev) => {
+      if (prev) {
+        return prev.concat(files);
+      } else {
+        return files;
+      }
+    });
+  };
+
+  const onError = (error: Error) => {
+    enqueueSnackbar(error.message, { variant: "error" });
+    console.error(error);
+  };
 
   const removeFile = (index: number) => {
     setFiles((prev) => {
@@ -253,74 +257,22 @@ export default function CreateCheckModal({
                   />
                 </Box>
               </Paper>
-              <Paper
-                {...getRootProps()}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "75px",
-                  padding: "12px",
-                  borderRadius: "8px",
-                  border: "4px dashed #ccc",
-                  cursor: "pointer",
-                  marginTop: "24px",
-                }}
-              >
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                  <Typography variant='h5' sx={{ color: "#999" }}>
-                    Drop files here...
-                  </Typography>
-                ) : (
-                  <>
-                    <CloudUpload
-                      sx={{
-                        fontSize: "36px",
-                        color: "#ccc",
-                        marginRight: "8px",
-                      }}
-                    />
-                    <Typography variant='h6' sx={{ color: "#999" }}>
-                      Add Files
-                    </Typography>
-                  </>
-                )}
-              </Paper>
+              <FileDrop onDrop={onDrop} onError={onError} />
               {files && files.length > 0 && (
-                <Box sx={{ display: "flex", flexWrap: "wrap", mt: "8px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    mt: "8px",
+                    gap: "8px",
+                  }}
+                >
                   {files.map((file, i) => (
-                    <Paper
-                      key={file.name}
-                      sx={{
-                        padding: "0px 12px",
-                        borderRadius: "16px",
-                        margin: "2px",
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                      }}
-                      onClick={() =>
-                        window.open(URL.createObjectURL(file), "_blank")
-                      }
-                    >
-                      <Typography variant='body2'>
-                        {file.name.length > 25
-                          ? `${file.name.slice(0, 10)}[...]${file.name.slice(
-                              file.name.length - 10
-                            )}`
-                          : file.name}
-                      </Typography>
-                      <IconButton
-                        sx={{ ml: "auto" }}
-                        onClick={(e) => {
-                          removeFile(i);
-                          e.stopPropagation();
-                        }}
-                      >
-                        <Close />
-                      </IconButton>
-                    </Paper>
+                    <FileChip
+                      key={`${file.name}-${i}`}
+                      file={file}
+                      onDelete={() => removeFile(i)}
+                    />
                   ))}
                 </Box>
               )}
@@ -328,7 +280,6 @@ export default function CreateCheckModal({
           </LocalizationProvider>
           <Button
             variant='contained'
-            sx={{ marginTop: "24px" }}
             disabled={name === "" || !startTime || !endTime}
             onClick={handleCreateInject}
           >
