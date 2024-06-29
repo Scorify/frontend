@@ -499,8 +499,6 @@ function SubmissionPanel({
   handleRefetch,
 }: SubmissionPanelProps) {
   const [expanded, setExpanded] = useState(false);
-  const [renderPanel, setRenderPanel] = useState(false);
-
   const [open, setOpen] = useState(false);
 
   const date = new Date(submission.create_time);
