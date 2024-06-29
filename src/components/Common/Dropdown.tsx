@@ -15,7 +15,7 @@ import {
 import Loading from "../Core/Loading";
 
 type props = {
-  modal: ReactNode;
+  modal?: ReactNode;
   title: ReactNode;
   expandableButtons?: ReactElement[];
   toggleButton?: ReactElement;
