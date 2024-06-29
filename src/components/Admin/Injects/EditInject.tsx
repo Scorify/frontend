@@ -15,7 +15,6 @@ import {
   IconButton,
   Modal,
   Paper,
-  Slide,
   TextField,
   Typography,
 } from "@mui/material";
@@ -507,128 +506,76 @@ function SubmissionPanel({
   const date = new Date(submission.create_time);
 
   return (
-    <>
-      <GradeSubmissonModal
-        open={open}
-        setOpen={setOpen}
-        submission={submission}
-        handleRefetch={handleRefetch}
-      />
-      <Grow in={true}>
-        <Card
-          sx={{
-            marginBottom: "16px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-          elevation={4}
-        >
-          <CardHeader
-            title={
-              <Box
-                display='flex'
-                flexDirection='row'
-                alignItems='center'
-                gap='8px'
-                onClick={() => setExpanded((prev) => !prev)}
-              >
-                <Typography variant='h6' component='div'>
-                  {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
-                </Typography>
-                <Chip
-                  size='small'
-                  label={`${submission.files.length} ${
-                    submission.files.length === 1 ? "File" : "Files"
-                  }`}
-                />
-                {submission.graded && (
-                  <Chip
-                    size='small'
-                    label={`Graded: ${submission.rubric?.fields.reduce(
-                      (total, field) => {
-                        return total + field.score;
-                      },
-                      0
-                    )} / ${submission.inject.rubric.max_score}`}
-                    color='success'
-                    sx={{ marginLeft: "8px" }}
-                  />
-                )}
-              </Box>
-            }
-            action={
-              <Box display='flex' flexDirection='row' gap='12px'>
-                <Box
-                  display='flex'
-                  flexDirection='row'
-                  gap='12px'
-                  padding='0px 4px'
-                  overflow='hidden'
-                >
-                  <Slide
-                    in={expanded}
-                    timeout={300}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      color='success'
-                      onClick={() => {
-                        setOpen(true);
-                      }}
-                    >
-                      Grade
-                    </Button>
-                  </Slide>
-                </Box>
-                <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                  {expanded ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Box>
-            }
+    <Dropdown
+      modal={
+        <GradeSubmissonModal
+          open={open}
+          setOpen={setOpen}
+          submission={submission}
+          handleRefetch={handleRefetch}
+        />
+      }
+      title={
+        <>
+          <Typography variant='h6' component='div'>
+            {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+          </Typography>
+          <Chip
+            size='small'
+            label={`${submission.files.length} ${
+              submission.files.length === 1 ? "File" : "Files"
+            }`}
           />
-          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
-          <Collapse
-            in={expanded}
-            timeout={300}
-            onEnter={() => {
-              setRenderPanel(true);
-            }}
-            onExited={() => {
-              setRenderPanel(false);
-            }}
-          >
-            {renderPanel && (
-              <CardContent>
-                {submission.notes && (
-                  <TextField
-                    label='Notes'
-                    value={submission.notes}
-                    multiline
-                    fullWidth
-                    sx={{ marginBottom: "8px" }}
-                  />
-                )}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "8px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {submission.files.map((file) => (
-                    <FileChip key={file.id} file={file} />
-                  ))}
-                </Box>
-              </CardContent>
-            )}
-          </Collapse>
-        </Card>
-      </Grow>
-    </>
+          {submission.graded && (
+            <Chip
+              size='small'
+              label={`Graded: ${submission.rubric?.fields.reduce(
+                (total, field) => {
+                  return total + field.score;
+                },
+                0
+              )} / ${submission.inject.rubric.max_score}`}
+              color='success'
+            />
+          )}
+        </>
+      }
+      expandableButtons={[
+        <Button
+          variant='contained'
+          color='success'
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Grade
+        </Button>,
+      ]}
+      expanded={expanded}
+      setExpanded={setExpanded}
+    >
+      {submission.notes && (
+        <TextField
+          label='Notes'
+          value={submission.notes}
+          multiline
+          fullWidth
+          sx={{ marginBottom: "8px" }}
+        />
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        {submission.files.map((file) => (
+          <FileChip key={file.id} file={file} />
+        ))}
+      </Box>
+    </Dropdown>
   );
 }
 
