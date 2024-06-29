@@ -1,17 +1,13 @@
 import React, { useMemo, useState } from "react";
 
-import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Card,
   CardContent,
-  CardHeader,
   Chip,
   CircularProgress,
-  Collapse,
   Divider,
-  Grow,
   IconButton,
   Modal,
   Paper,
@@ -589,7 +585,6 @@ function TeamSubmissionsPanel({
   handleRefetch,
 }: TeamSubmissionsPanelProps) {
   const [expanded, setExpanded] = useState(false);
-  const [renderPanel, setRenderPanel] = useState(false);
 
   const highestScore =
     submissions.filter((submission) => submission.graded).length === 0
@@ -612,85 +607,48 @@ function TeamSubmissionsPanel({
         undefined;
 
   return (
-    <Grow in={true}>
-      <Card
-        sx={{
-          width: "100%",
-          marginBottom: "24px",
-        }}
-        variant='elevation'
-        elevation={2}
-      >
-        <CardHeader
-          title={
-            <Box
-              display='flex'
-              flexDirection='row'
-              alignItems='center'
-              onClick={() => setExpanded((prev) => !prev)}
-              gap='8px'
-            >
-              <Typography variant='h6' component='div'>
-                {user.username}
-              </Typography>
+    <Dropdown
+      title={
+        <>
+          <Typography variant='h6' component='div'>
+            {user.username}
+          </Typography>
+          <Chip
+            label={`${submissions.length} ${
+              submissions.length === 1 ? "Submission" : "Submissions"
+            }`}
+            size='small'
+            color={submissions.length == 0 ? "error" : "success"}
+          />
+          {highestScore !== undefined &&
+            submissions.filter((submission) => submission.graded).length >
+              0 && (
               <Chip
-                label={`${submissions.length} ${
-                  submissions.length === 1 ? "Submission" : "Submissions"
-                }`}
+                label={`Graded: ${highestScore}/${submissions[0].inject.rubric.max_score}`}
+                color='success'
                 size='small'
-                color={submissions.length == 0 ? "error" : "success"}
               />
-              {highestScore !== undefined &&
-                submissions.filter((submission) => submission.graded).length >
-                  0 && (
-                  <Chip
-                    label={`Graded: ${highestScore}/${submissions[0].inject.rubric.max_score}`}
-                    color='success'
-                    size='small'
-                  />
-                )}
-            </Box>
-          }
-          action={
-            <Box display='flex' flexDirection='row' gap='12px'>
-              <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                {expanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            </Box>
-          }
-        />
-        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
-        <Collapse
-          in={expanded}
-          timeout={300}
-          onEnter={() => {
-            setRenderPanel(true);
-          }}
-          onExited={() => {
-            setRenderPanel(false);
-          }}
-        >
-          {renderPanel && (
-            <CardContent>
-              {submissions.length == 0 ? (
-                <Typography variant='h6' align='center'>
-                  No Submissions
-                </Typography>
-              ) : (
-                submissions.map((submission, i) => (
-                  <SubmissionPanel
-                    key={i}
-                    submission={submission}
-                    title={`Submission ${submissions.length - i}`}
-                    handleRefetch={handleRefetch}
-                  />
-                ))
-              )}
-            </CardContent>
-          )}
-        </Collapse>
-      </Card>
-    </Grow>
+            )}
+        </>
+      }
+      expanded={expanded}
+      setExpanded={setExpanded}
+    >
+      {submissions.length == 0 ? (
+        <Typography variant='h6' align='center'>
+          No Submissions
+        </Typography>
+      ) : (
+        submissions.map((submission, i) => (
+          <SubmissionPanel
+            key={i}
+            submission={submission}
+            title={`Submission ${submissions.length - i}`}
+            handleRefetch={handleRefetch}
+          />
+        ))
+      )}
+    </Dropdown>
   );
 }
 
