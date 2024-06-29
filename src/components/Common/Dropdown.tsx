@@ -20,7 +20,7 @@ type props = {
   expandableButtons?: ReactElement[];
   toggleButton?: ReactElement;
   toggleButtonVisible?: boolean;
-  visible: boolean;
+  visible?: boolean;
   expanded: boolean;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactNode;
@@ -49,12 +49,17 @@ export default function Dropdown({
           sx={{
             width: "100%",
             marginBottom: "24px",
-            display: visible ? "block" : "none",
+            display: visible || visible === undefined ? "block" : "none",
           }}
         >
           <CardHeader
             title={
-              <Box display='flex' flexDirection='row' alignItems='baseline'>
+              <Box
+                display='flex'
+                flexDirection='row'
+                alignItems='baseline'
+                gap='12px'
+              >
                 {title}
               </Box>
             }
