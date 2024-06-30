@@ -4,9 +4,7 @@ import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
-  CardContent,
   Chip,
-  CircularProgress,
   Divider,
   IconButton,
   Modal,
@@ -19,7 +17,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
-import { DeleteInjectModal, Dropdown, FileChip, FileDrop } from "../..";
+import {
+  DeleteInjectModal,
+  Dropdown,
+  FileChip,
+  FileDrop,
+  Loading,
+} from "../..";
 import {
   InjectsQuery,
   RubricInput,
@@ -665,25 +669,19 @@ function GradeInjectPanel({ inject, handleRefetch }: GradeInjectPanelProps) {
   });
 
   if (loading) {
-    return (
-      <CardContent>
-        <CircularProgress />
-      </CardContent>
-    );
+    return <Loading />;
   }
 
   if (error) {
     return (
-      <CardContent>
-        <Typography variant='h6' color='error'>
-          {error.message}
-        </Typography>
-      </CardContent>
+      <Typography variant='h6' color='error'>
+        {error.message}
+      </Typography>
     );
   }
 
   return (
-    <CardContent>
+    <>
       {data?.injectSubmissionsByUser.map(({ user, submissions }) => (
         <TeamSubmissionsPanel
           key={user.number}
@@ -692,7 +690,7 @@ function GradeInjectPanel({ inject, handleRefetch }: GradeInjectPanelProps) {
           handleRefetch={handleRefetch}
         />
       ))}
-    </CardContent>
+    </>
   );
 }
 
@@ -739,7 +737,7 @@ function EditInjectPanel({
   };
 
   return (
-    <CardContent>
+    <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box
           sx={{
@@ -899,6 +897,6 @@ function EditInjectPanel({
           ))}
         </Box>
       )}
-    </CardContent>
+    </>
   );
 }
