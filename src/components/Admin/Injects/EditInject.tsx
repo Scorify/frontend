@@ -1,21 +1,14 @@
 import React, { useMemo, useState } from "react";
 
-import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   Chip,
-  CircularProgress,
-  Collapse,
   Divider,
-  Grow,
   IconButton,
   Modal,
   Paper,
-  Slide,
   TextField,
   Typography,
 } from "@mui/material";
@@ -24,7 +17,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import dayjs, { Dayjs } from "dayjs";
 import { enqueueSnackbar } from "notistack";
-import { DeleteInjectModal, Dropdown, FileChip, FileDrop } from "../..";
+import {
+  DeleteInjectModal,
+  Dropdown,
+  FileChip,
+  FileDrop,
+  Loading,
+} from "../..";
 import {
   InjectsQuery,
   RubricInput,
@@ -150,6 +149,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
 
   return (
     <Dropdown
+      elevation={1}
       modal={
         <DeleteInjectModal
           inject={inject.title}
@@ -500,135 +500,82 @@ function SubmissionPanel({
   handleRefetch,
 }: SubmissionPanelProps) {
   const [expanded, setExpanded] = useState(false);
-  const [renderPanel, setRenderPanel] = useState(false);
-
   const [open, setOpen] = useState(false);
 
   const date = new Date(submission.create_time);
 
   return (
-    <>
-      <GradeSubmissonModal
-        open={open}
-        setOpen={setOpen}
-        submission={submission}
-        handleRefetch={handleRefetch}
-      />
-      <Grow in={true}>
-        <Card
-          sx={{
-            marginBottom: "16px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-          elevation={4}
-        >
-          <CardHeader
-            title={
-              <Box
-                display='flex'
-                flexDirection='row'
-                alignItems='center'
-                gap='8px'
-                onClick={() => setExpanded((prev) => !prev)}
-              >
-                <Typography variant='h6' component='div'>
-                  {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
-                </Typography>
-                <Chip
-                  size='small'
-                  label={`${submission.files.length} ${
-                    submission.files.length === 1 ? "File" : "Files"
-                  }`}
-                />
-                {submission.graded && (
-                  <Chip
-                    size='small'
-                    label={`Graded: ${submission.rubric?.fields.reduce(
-                      (total, field) => {
-                        return total + field.score;
-                      },
-                      0
-                    )} / ${submission.inject.rubric.max_score}`}
-                    color='success'
-                    sx={{ marginLeft: "8px" }}
-                  />
-                )}
-              </Box>
-            }
-            action={
-              <Box display='flex' flexDirection='row' gap='12px'>
-                <Box
-                  display='flex'
-                  flexDirection='row'
-                  gap='12px'
-                  padding='0px 4px'
-                  overflow='hidden'
-                >
-                  <Slide
-                    in={expanded}
-                    timeout={300}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      color='success'
-                      onClick={() => {
-                        setOpen(true);
-                      }}
-                    >
-                      Grade
-                    </Button>
-                  </Slide>
-                </Box>
-                <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                  {expanded ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Box>
-            }
+    <Dropdown
+      elevation={3}
+      modal={
+        <GradeSubmissonModal
+          open={open}
+          setOpen={setOpen}
+          submission={submission}
+          handleRefetch={handleRefetch}
+        />
+      }
+      title={
+        <>
+          <Typography variant='h6' component='div'>
+            {`${title} - ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+          </Typography>
+          <Chip
+            size='small'
+            label={`${submission.files.length} ${
+              submission.files.length === 1 ? "File" : "Files"
+            }`}
           />
-          {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
-          <Collapse
-            in={expanded}
-            timeout={300}
-            onEnter={() => {
-              setRenderPanel(true);
-            }}
-            onExited={() => {
-              setRenderPanel(false);
-            }}
-          >
-            {renderPanel && (
-              <CardContent>
-                {submission.notes && (
-                  <TextField
-                    label='Notes'
-                    value={submission.notes}
-                    multiline
-                    fullWidth
-                    sx={{ marginBottom: "8px" }}
-                  />
-                )}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "8px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {submission.files.map((file) => (
-                    <FileChip key={file.id} file={file} />
-                  ))}
-                </Box>
-              </CardContent>
-            )}
-          </Collapse>
-        </Card>
-      </Grow>
-    </>
+          {submission.graded && (
+            <Chip
+              size='small'
+              label={`Graded: ${submission.rubric?.fields.reduce(
+                (total, field) => {
+                  return total + field.score;
+                },
+                0
+              )} / ${submission.inject.rubric.max_score}`}
+              color='success'
+            />
+          )}
+        </>
+      }
+      expandableButtons={[
+        <Button
+          variant='contained'
+          color='success'
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Grade
+        </Button>,
+      ]}
+      expanded={expanded}
+      setExpanded={setExpanded}
+    >
+      {submission.notes && (
+        <TextField
+          label='Notes'
+          value={submission.notes}
+          multiline
+          fullWidth
+          sx={{ marginBottom: "8px" }}
+        />
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        {submission.files.map((file) => (
+          <FileChip key={file.id} file={file} />
+        ))}
+      </Box>
+    </Dropdown>
   );
 }
 
@@ -644,7 +591,6 @@ function TeamSubmissionsPanel({
   handleRefetch,
 }: TeamSubmissionsPanelProps) {
   const [expanded, setExpanded] = useState(false);
-  const [renderPanel, setRenderPanel] = useState(false);
 
   const highestScore =
     submissions.filter((submission) => submission.graded).length === 0
@@ -667,85 +613,49 @@ function TeamSubmissionsPanel({
         undefined;
 
   return (
-    <Grow in={true}>
-      <Card
-        sx={{
-          width: "100%",
-          marginBottom: "24px",
-        }}
-        variant='elevation'
-        elevation={2}
-      >
-        <CardHeader
-          title={
-            <Box
-              display='flex'
-              flexDirection='row'
-              alignItems='center'
-              onClick={() => setExpanded((prev) => !prev)}
-              gap='8px'
-            >
-              <Typography variant='h6' component='div'>
-                {user.username}
-              </Typography>
+    <Dropdown
+      elevation={2}
+      title={
+        <>
+          <Typography variant='h6' component='div'>
+            {user.username}
+          </Typography>
+          <Chip
+            label={`${submissions.length} ${
+              submissions.length === 1 ? "Submission" : "Submissions"
+            }`}
+            size='small'
+            color={submissions.length == 0 ? "error" : "success"}
+          />
+          {highestScore !== undefined &&
+            submissions.filter((submission) => submission.graded).length >
+              0 && (
               <Chip
-                label={`${submissions.length} ${
-                  submissions.length === 1 ? "Submission" : "Submissions"
-                }`}
+                label={`Graded: ${highestScore}/${submissions[0].inject.rubric.max_score}`}
+                color='success'
                 size='small'
-                color={submissions.length == 0 ? "error" : "success"}
               />
-              {highestScore !== undefined &&
-                submissions.filter((submission) => submission.graded).length >
-                  0 && (
-                  <Chip
-                    label={`Graded: ${highestScore}/${submissions[0].inject.rubric.max_score}`}
-                    color='success'
-                    size='small'
-                  />
-                )}
-            </Box>
-          }
-          action={
-            <Box display='flex' flexDirection='row' gap='12px'>
-              <IconButton onClick={() => setExpanded((prev) => !prev)}>
-                {expanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            </Box>
-          }
-        />
-        {expanded && <Divider sx={{ margin: "0px 1rem" }} />}
-        <Collapse
-          in={expanded}
-          timeout={300}
-          onEnter={() => {
-            setRenderPanel(true);
-          }}
-          onExited={() => {
-            setRenderPanel(false);
-          }}
-        >
-          {renderPanel && (
-            <CardContent>
-              {submissions.length == 0 ? (
-                <Typography variant='h6' align='center'>
-                  No Submissions
-                </Typography>
-              ) : (
-                submissions.map((submission, i) => (
-                  <SubmissionPanel
-                    key={i}
-                    submission={submission}
-                    title={`Submission ${submissions.length - i}`}
-                    handleRefetch={handleRefetch}
-                  />
-                ))
-              )}
-            </CardContent>
-          )}
-        </Collapse>
-      </Card>
-    </Grow>
+            )}
+        </>
+      }
+      expanded={expanded}
+      setExpanded={setExpanded}
+    >
+      {submissions.length == 0 ? (
+        <Typography variant='h6' align='center'>
+          No Submissions
+        </Typography>
+      ) : (
+        submissions.map((submission, i) => (
+          <SubmissionPanel
+            key={i}
+            submission={submission}
+            title={`Submission ${submissions.length - i}`}
+            handleRefetch={handleRefetch}
+          />
+        ))
+      )}
+    </Dropdown>
   );
 }
 
@@ -762,25 +672,19 @@ function GradeInjectPanel({ inject, handleRefetch }: GradeInjectPanelProps) {
   });
 
   if (loading) {
-    return (
-      <CardContent>
-        <CircularProgress />
-      </CardContent>
-    );
+    return <Loading />;
   }
 
   if (error) {
     return (
-      <CardContent>
-        <Typography variant='h6' color='error'>
-          {error.message}
-        </Typography>
-      </CardContent>
+      <Typography variant='h6' color='error'>
+        {error.message}
+      </Typography>
     );
   }
 
   return (
-    <CardContent>
+    <>
       {data?.injectSubmissionsByUser.map(({ user, submissions }) => (
         <TeamSubmissionsPanel
           key={user.number}
@@ -789,7 +693,7 @@ function GradeInjectPanel({ inject, handleRefetch }: GradeInjectPanelProps) {
           handleRefetch={handleRefetch}
         />
       ))}
-    </CardContent>
+    </>
   );
 }
 
@@ -836,7 +740,7 @@ function EditInjectPanel({
   };
 
   return (
-    <CardContent>
+    <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box
           sx={{
@@ -996,6 +900,6 @@ function EditInjectPanel({
           ))}
         </Box>
       )}
-    </CardContent>
+    </>
   );
 }

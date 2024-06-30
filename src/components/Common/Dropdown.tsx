@@ -15,24 +15,26 @@ import {
 import Loading from "../Core/Loading";
 
 type props = {
-  modal: ReactNode;
+  elevation?: number;
+  modal?: ReactNode;
   title: ReactNode;
   expandableButtons?: ReactElement[];
   toggleButton?: ReactElement;
   toggleButtonVisible?: boolean;
-  visible: boolean;
+  visible?: boolean;
   expanded: boolean;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactNode;
 };
 
 export default function Dropdown({
+  elevation,
   modal,
   title,
   expandableButtons,
   toggleButton,
   toggleButtonVisible,
-  visible,
+  visible = true,
   expanded,
   setExpanded,
   children,
@@ -51,10 +53,16 @@ export default function Dropdown({
             marginBottom: "24px",
             display: visible ? "block" : "none",
           }}
+          elevation={elevation}
         >
           <CardHeader
             title={
-              <Box display='flex' flexDirection='row' alignItems='baseline'>
+              <Box
+                display='flex'
+                flexDirection='row'
+                alignItems='baseline'
+                gap='12px'
+              >
                 {title}
               </Box>
             }

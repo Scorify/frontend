@@ -1,24 +1,16 @@
 import { useMemo, useState } from "react";
 
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   Chip,
-  Collapse,
   Divider,
-  Grow,
-  IconButton,
-  Slide,
   TextField,
   Typography,
 } from "@mui/material";
 
 import { enqueueSnackbar } from "notistack";
-import { ConfigField, DeleteCheckModal, Multiselect } from "../..";
+import { ConfigField, DeleteCheckModal, Dropdown, Multiselect } from "../..";
 import {
   ChecksQuery,
   useDeleteCheckMutation,
@@ -92,10 +84,6 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
     setConfig({ ...config, [key]: value });
   };
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   const handleSave = () => {
     updateCheckMutation({
       variables: {
@@ -117,172 +105,123 @@ export default function EditCheck({ check, visible, handleRefetch }: props) {
   };
 
   return (
-    <>
-      <DeleteCheckModal
-        check={check.name}
-        open={open}
-        setOpen={setOpen}
-        handleDelete={handleDelete}
-      />
-      <Grow in={true}>
-        <Card
-          sx={{
-            width: "100%",
-            marginBottom: "24px",
-            display: visible ? "block" : "none",
+    <Dropdown
+      modal={
+        <DeleteCheckModal
+          check={check.name}
+          open={open}
+          setOpen={setOpen}
+          handleDelete={handleDelete}
+        />
+      }
+      title={
+        <>
+          {expanded ? (
+            <TextField
+              label='Name'
+              value={name}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              sx={{ marginRight: "24px" }}
+              size='small'
+            />
+          ) : (
+            <Typography variant='h6' component='div' marginRight='24px'>
+              {check.name}
+            </Typography>
+          )}
+          <Typography
+            variant='subtitle1'
+            color='textSecondary'
+            component='div'
+            marginRight='24px'
+          >
+            {check.source.name}
+          </Typography>
+          {expanded ? (
+            <TextField
+              label='Weight'
+              type='number'
+              value={weight}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onChange={(e) => {
+                setWeight(parseInt(e.target.value));
+              }}
+              sx={{ marginRight: "24px", width: "100px" }}
+              size='small'
+            />
+          ) : (
+            <Chip size='small' label={`weight:${weight}`} />
+          )}
+        </>
+      }
+      expandableButtons={[
+        <Button
+          variant='contained'
+          onClick={() => {
+            setOpen(true);
           }}
-          variant='elevation'
+          color='error'
         >
-          <CardHeader
-            title={
-              <Box display='flex' flexDirection='row' alignItems='center'>
-                {expanded ? (
-                  <TextField
-                    label='Name'
-                    value={name}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                    sx={{ marginRight: "24px" }}
-                    size='small'
-                  />
-                ) : (
-                  <Typography variant='h6' component='div' marginRight='24px'>
-                    {check.name}
-                  </Typography>
-                )}
-                <Typography
-                  variant='subtitle1'
-                  color='textSecondary'
-                  component='div'
-                  marginRight='24px'
-                >
-                  {check.source.name}
-                </Typography>
-                {expanded ? (
-                  <TextField
-                    label='Weight'
-                    type='number'
-                    value={weight}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    onChange={(e) => {
-                      setWeight(parseInt(e.target.value));
-                    }}
-                    sx={{ marginRight: "24px", width: "100px" }}
-                    size='small'
-                  />
-                ) : (
-                  <Chip size='small' label={`weight:${weight}`} />
-                )}
-              </Box>
+          Delete
+        </Button>,
+      ]}
+      toggleButton={
+        <Button
+          variant='contained'
+          color='success'
+          onClick={(e) => {
+            if (!expanded) {
+              e.stopPropagation();
             }
-            action={
-              <Box display='flex' flexDirection='row' gap='12px'>
-                <Box
-                  display='flex'
-                  flexDirection='row'
-                  gap='12px'
-                  padding='0px 4px'
-                  overflow='hidden'
-                >
-                  <Slide
-                    in={expanded}
-                    timeout={300}
-                    style={{
-                      transformOrigin: "right",
-                    }}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      onClick={() => {
-                        setOpen(true);
-                      }}
-                      color='error'
-                    >
-                      Delete
-                    </Button>
-                  </Slide>
-                  <Slide
-                    in={
-                      configChanged ||
-                      nameChanged ||
-                      editableFieldsChanged ||
-                      weightChanged
-                    }
-                    timeout={300}
-                    style={{
-                      transformOrigin: "right",
-                    }}
-                    direction='left'
-                    unmountOnExit
-                    mountOnEnter
-                  >
-                    <Button
-                      variant='contained'
-                      color='success'
-                      onClick={(e) => {
-                        if (!expanded) {
-                          e.stopPropagation();
-                        }
 
-                        handleSave();
-                      }}
-                    >
-                      Save
-                    </Button>
-                  </Slide>
-                </Box>
-                <IconButton>
-                  {expanded ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Box>
-            }
-            onClick={handleExpandClick}
-          />
-          {expanded && <Divider sx={{ margin: "0px 20%" }} />}
-
-          <Collapse in={expanded} timeout={300}>
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "16px",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                }}
-              >
-                {Object.entries(JSON.parse(check.source.schema)).map(
-                  ([index, type]) => (
-                    <ConfigField
-                      key={index}
-                      index={index}
-                      handleInputChange={handleConfigChange}
-                      value={type as "string" | "int" | "bool"}
-                      config={config}
-                    />
-                  )
-                )}
-              </Box>
-              <Divider sx={{ margin: "16px 20% 20px 20%" }} />
-              <Multiselect
-                label='Set User Editable Fields'
-                placeholder='Select fields'
-                options={Object.keys(config)}
-                selected={editableFields}
-                setSelected={setEditableFields}
-              />
-            </CardContent>
-          </Collapse>
-        </Card>
-      </Grow>
-    </>
+            handleSave();
+          }}
+        >
+          Save
+        </Button>
+      }
+      expanded={expanded}
+      setExpanded={setExpanded}
+      visible={visible}
+      toggleButtonVisible={
+        configChanged || nameChanged || editableFieldsChanged || weightChanged
+      }
+    >
+      <Box
+        sx={{
+          display: "flex",
+          gap: "16px",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {Object.entries(JSON.parse(check.source.schema)).map(
+          ([index, type]) => (
+            <ConfigField
+              key={index}
+              index={index}
+              handleInputChange={handleConfigChange}
+              value={type as "string" | "int" | "bool"}
+              config={config}
+            />
+          )
+        )}
+      </Box>
+      <Divider sx={{ margin: "16px 20% 20px 20%" }} />
+      <Multiselect
+        label='Set User Editable Fields'
+        placeholder='Select fields'
+        options={Object.keys(config)}
+        selected={editableFields}
+        setSelected={setEditableFields}
+      />
+    </Dropdown>
   );
 }
