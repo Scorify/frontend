@@ -15,6 +15,7 @@ import {
 import Loading from "../Core/Loading";
 
 type props = {
+  elevation?: number;
   modal?: ReactNode;
   title: ReactNode;
   expandableButtons?: ReactElement[];
@@ -27,12 +28,13 @@ type props = {
 };
 
 export default function Dropdown({
+  elevation,
   modal,
   title,
   expandableButtons,
   toggleButton,
   toggleButtonVisible,
-  visible,
+  visible = true,
   expanded,
   setExpanded,
   children,
@@ -49,8 +51,9 @@ export default function Dropdown({
           sx={{
             width: "100%",
             marginBottom: "24px",
-            display: visible || visible === undefined ? "block" : "none",
+            display: visible ? "block" : "none",
           }}
+          elevation={elevation}
         >
           <CardHeader
             title={
