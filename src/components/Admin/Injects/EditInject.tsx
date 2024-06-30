@@ -149,6 +149,7 @@ export default function EditInject({ inject, handleRefetch, visible }: props) {
 
   return (
     <Dropdown
+      elevation={1}
       modal={
         <DeleteInjectModal
           inject={inject.title}
@@ -505,6 +506,7 @@ function SubmissionPanel({
 
   return (
     <Dropdown
+      elevation={3}
       modal={
         <GradeSubmissonModal
           open={open}
@@ -612,6 +614,7 @@ function TeamSubmissionsPanel({
 
   return (
     <Dropdown
+      elevation={2}
       title={
         <>
           <Typography variant='h6' component='div'>
