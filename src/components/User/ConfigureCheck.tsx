@@ -1,23 +1,9 @@
 import { useMemo, useState } from "react";
 
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  Collapse,
-  Divider,
-  Grow,
-  IconButton,
-  Slide,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, Typography } from "@mui/material";
 
 import { enqueueSnackbar } from "notistack";
-import { ConfigField } from "..";
+import { ConfigField, Dropdown } from "..";
 import { ConfigsQuery, useEditConfigMutation } from "../../graph";
 
 type props = {
@@ -59,10 +45,6 @@ export default function ConfigureCheck({
     setCheckConfig({ ...checkConfig, [key]: value });
   };
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   const handleSave = () => {
     useEditConfig({
       variables: {
@@ -73,101 +55,72 @@ export default function ConfigureCheck({
   };
 
   return (
-    <Grow in={true}>
-      <Card
+    <Dropdown
+      title={
+        <>
+          <Typography variant='h6' component='div' marginRight='24px'>
+            {config.check.name}
+          </Typography>
+          <Typography
+            variant='subtitle1'
+            color='textSecondary'
+            component='div'
+            marginRight='24px'
+          >
+            {config.check.source.name}
+          </Typography>
+          <Chip size='small' label={`weight:${config.check.weight}`} />
+        </>
+      }
+      toggleButton={
+        <Button
+          variant='contained'
+          color='success'
+          onClick={(e) => {
+            if (!expanded) {
+              e.stopPropagation();
+            }
+
+            handleSave();
+          }}
+        >
+          Save
+        </Button>
+      }
+      expanded={expanded}
+      setExpanded={setExpanded}
+      toggleButtonVisible={configChanged}
+      visible={visible}
+    >
+      <Box
         sx={{
-          width: "100%",
-          marginBottom: "24px",
-          display: visible ? "block" : "none",
+          display: "flex",
+          gap: "16px",
+          flexWrap: "wrap",
+          justifyContent: "center",
         }}
-        variant='elevation'
       >
-        <CardHeader
-          title={
-            <Box display='flex' flexDirection='row' alignItems='center'>
-              <Typography variant='h6' component='div' marginRight='24px'>
-                {config.check.name}
-              </Typography>
-              <Typography
-                variant='subtitle1'
-                color='textSecondary'
-                component='div'
-                marginRight='24px'
-              >
-                {config.check.source.name}
-              </Typography>
-              <Chip size='small' label={`weight:${config.check.weight}`} />
-            </Box>
-          }
-          action={
-            <Box display='flex' flexDirection='row' gap='12px'>
-              <IconButton>
-                {expanded ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-              <Slide
-                in={configChanged}
-                timeout={300}
-                style={{
-                  transformOrigin: "right",
-                }}
-                direction='left'
-                unmountOnExit
-                mountOnEnter
-              >
-                <Button
-                  variant='contained'
-                  color='success'
-                  onClick={(e) => {
-                    if (!expanded) {
-                      e.stopPropagation();
-                    }
-
-                    handleSave();
-                  }}
-                >
-                  Save
-                </Button>
-              </Slide>
-            </Box>
-          }
-          onClick={handleExpandClick}
-        />
-        {expanded && <Divider sx={{ margin: "0px 20%" }} />}
-
-        <Collapse in={expanded} timeout={300}>
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                gap: "16px",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {Object.keys(checkConfig).length ? (
-                <>
-                  {Object.entries(checkConfig).map(([key]) => (
-                    <ConfigField
-                      key={key}
-                      index={key}
-                      handleInputChange={handleConfigChange}
-                      value={
-                        JSON.parse(config.check.source.schema)[key] as
-                          | "string"
-                          | "int"
-                          | "bool"
-                      }
-                      config={checkConfig}
-                    />
-                  ))}
-                </>
-              ) : (
-                <Typography variant='h5'>No configuration required</Typography>
-              )}
-            </Box>
-          </CardContent>
-        </Collapse>
-      </Card>
-    </Grow>
+        {Object.keys(checkConfig).length ? (
+          <>
+            {Object.entries(checkConfig).map(([key]) => (
+              <ConfigField
+                key={key}
+                index={key}
+                handleInputChange={handleConfigChange}
+                value={
+                  JSON.parse(config.check.source.schema)[key] as
+                    | "string"
+                    | "int"
+                    | "bool"
+                }
+                config={checkConfig}
+              />
+            ))}
+          </>
+        ) : (
+          <Typography variant='h5'>No configuration required</Typography>
+        )}
+      </Box>
+    </Dropdown>
   );
 }
