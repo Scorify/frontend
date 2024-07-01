@@ -167,6 +167,7 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
           <Box display='flex' flexDirection='column' gap='8px' width='100%'>
             {inject.rubric.fields.map((field) => (
               <Paper
+                key={field.name}
                 elevation={4}
                 sx={{
                   display: "flex",
@@ -266,7 +267,11 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
                   new Date(a.create_time).getTime()
               )
               .map((submission) => (
-                <Submission inject={inject} submission={submission} />
+                <Submission
+                  key={submission.id}
+                  inject={inject}
+                  submission={submission}
+                />
               ))}
           </>
         ) : (
