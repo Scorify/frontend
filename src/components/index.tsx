@@ -14,6 +14,7 @@ import EditUser from "./Admin/Users/EditUser";
 import Dropdown from "./Common/Dropdown";
 import FileChip from "./Common/FileChip";
 import FileDrop from "./Common/FileDrop";
+import Rubric from "./Common/Rubric";
 import ConfirmModal from "./Core/ConfirmModal";
 import Drawer from "./Core/Drawer";
 import Error from "./Core/Error";
@@ -59,6 +60,7 @@ export {
   Navbar,
   Notification,
   PasswordInput,
+  Rubric,
   Scoreboard,
   ScoreboardWrapper,
   Scores,
