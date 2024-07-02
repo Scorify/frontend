@@ -99,6 +99,7 @@ export default function Inject({ submission, inject }: props) {
                 >
                   {inject.rubric.fields.map((field) => (
                     <Paper
+                      key={field.name}
                       elevation={5}
                       sx={{
                         display: "flex",

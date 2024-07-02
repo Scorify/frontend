@@ -87,6 +87,7 @@ export default function Injects() {
           ) : (
             data.injects.map((inject) => (
               <Inject
+                key={inject.id}
                 inject={inject}
                 visible={inject.title
                   .toLowerCase()
