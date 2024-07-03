@@ -4,24 +4,11 @@ import { InjectsQuery } from "../../graph";
 
 type props = {
   elevation?: number;
-  inject: InjectsQuery["injects"][0];
+  rubric: InjectsQuery["injects"][0]["rubric"];
+  submission?: InjectsQuery["injects"][0]["submissions"][0];
 };
 
-export default function Rubric({ elevation = 1, inject }: props) {
-  const sortedSubmissions = inject.submissions
-    .filter((submission) => submission.graded)
-    .sort(
-      (submissionA, submissionB) =>
-        (submissionB.rubric?.fields.reduce(
-          (acc, field) => acc + field.score,
-          0
-        ) ?? 0) -
-        (submissionA.rubric?.fields.reduce(
-          (acc, field) => acc + field.score,
-          0
-        ) ?? 0)
-    );
-
+export default function Rubric({ elevation = 1, rubric, submission }: props) {
   return (
     <Paper
       elevation={elevation}
@@ -35,9 +22,9 @@ export default function Rubric({ elevation = 1, inject }: props) {
         marginBottom: "24px",
       }}
     >
-      {inject.rubric.fields.length && (
+      {rubric.fields.length && (
         <Box display='flex' flexDirection='column' gap='8px' width='100%'>
-          {inject.rubric.fields.map((field) => (
+          {rubric.fields.map((field) => (
             <Paper
               key={field.name}
               elevation={elevation + 1}
@@ -56,25 +43,21 @@ export default function Rubric({ elevation = 1, inject }: props) {
                 size='small'
                 label='Criteria'
                 value={field.name}
-                fullWidth={sortedSubmissions.length == 0}
+                fullWidth={!submission}
               />
-              {sortedSubmissions.length > 0 && (
+              {submission && (
                 <>
                   <TextField
                     size='small'
                     label='Notes'
-                    value={
-                      sortedSubmissions[0].rubric?.fields.find(
-                        (f) => f.name === field.name
-                      )?.notes
-                    }
+                    value={submission.notes}
                     fullWidth
                   />
                   <TextField
                     size='small'
                     label='Score'
                     value={
-                      sortedSubmissions[0].rubric?.fields.find(
+                      submission.rubric?.fields.find(
                         (f) => f.name === field.name
                       )?.score
                     }
@@ -88,23 +71,23 @@ export default function Rubric({ elevation = 1, inject }: props) {
               />
             </Paper>
           ))}
-          {sortedSubmissions.length > 0 && (
+          {submission && (
             <>
               <Divider sx={{ marginBottom: "12px" }} />
               <TextField
                 size='small'
                 label='Notes'
-                value={sortedSubmissions[0].rubric?.notes}
+                value={submission.rubric?.notes}
                 fullWidth
               />
             </>
           )}
           <Box display='flex' flexDirection='row' gap='8px' marginTop='8px'>
-            {sortedSubmissions.length > 0 && (
+            {submission && (
               <TextField
                 size='small'
                 label='Total Score'
-                value={sortedSubmissions[0].rubric?.fields.reduce(
+                value={submission.rubric?.fields.reduce(
                   (acc, field) => acc + field.score,
                   0
                 )}
@@ -114,7 +97,7 @@ export default function Rubric({ elevation = 1, inject }: props) {
             <TextField
               size='small'
               label='Max Score'
-              value={inject.rubric.max_score}
+              value={rubric.max_score}
               fullWidth
             />
           </Box>
