@@ -154,7 +154,11 @@ export default function Inject({ handleRefetch, inject, visible }: props) {
       <Typography variant='h4' align='center'>
         Rubric
       </Typography>
-      <Rubric inject={inject} elevation={2} />
+      <Rubric
+        submission={sortedSubmissions[0]}
+        rubric={inject.rubric}
+        elevation={2}
+      />
       <Typography variant='h4' align='center'>
         Submissions
       </Typography>
